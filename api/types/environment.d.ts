@@ -5,6 +5,8 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       MONGO_URI: string;
+      RUPT_SECRET_KEY: string;
+      DEFAULT_EMAIL_DOMAIN: string;
     }
   }
   namespace Express {

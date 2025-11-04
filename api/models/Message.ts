@@ -8,7 +8,9 @@ export default interface Message {
   from: string;
   to: string;
   subject: string;
-  body: string;
+  text: string;
+  html: string;
+  attachments: mongoose.Types.Array<mongoose.Types.ObjectId>;
   createdAt: Date | null;
   updatedAt: Date | null;
 }

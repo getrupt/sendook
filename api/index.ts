@@ -5,6 +5,7 @@ import passport from "passport";
 import { passportBearerStrategy, passportApiKeyStrategy } from "./controllers/PassportController";
 import cors from "cors";
 import authRouter from "./routes/auth";
+import organizationsRouter from "./routes/organizations";
 
 startMongo();
 
@@ -43,6 +44,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/organizations", organizationsRouter);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
