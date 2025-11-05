@@ -67,7 +67,7 @@ export async function sendSESMessage({
     },
     Tags: [
       {
-        Name: "sendook:message",
+        Name: "message",
         Value: messageId,
       },
     ],
@@ -79,7 +79,8 @@ export async function sendSESMessage({
 export async function handleDeliveryNotification(rawMessage: string) {
   try {
     const notification: SNSMessage = JSON.parse(rawMessage);
-    const messageId = notification.mail?.tags?.["sendook:message"]?.[0];
+    console.log("Received SES delivery notification", notification);
+    const messageId = notification.mail?.tags?.["message"]?.[0];
     if (!messageId) {
       console.error(
         "No sendook:message tag found in SES delivery notification"

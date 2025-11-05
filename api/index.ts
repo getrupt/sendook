@@ -6,6 +6,7 @@ import { passportBearerStrategy, passportApiKeyStrategy } from "./controllers/Pa
 import cors from "cors";
 import authRouter from "./routes/auth";
 import organizationsRouter from "./routes/organizations";
+import webhooksRouter from "./routes/webhooks";
 
 startMongo();
 
@@ -45,6 +46,7 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/organizations", organizationsRouter);
+app.use("/webhooks", webhooksRouter);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);

@@ -35,7 +35,6 @@ export async function sendWebhookEvent({
     webhookAttempt.inboxId = inboxId ? new mongoose.Types.ObjectId(inboxId) : undefined;
     webhookAttempt.messageId = messageId ? new mongoose.Types.ObjectId(messageId) : undefined;
     webhookAttempt.payload = payload;
-    await webhookAttempt.save();
 
     try {
       const response = await axios.post(webhook.url, {

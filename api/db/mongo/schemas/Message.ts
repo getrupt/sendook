@@ -4,10 +4,6 @@ import { MessageStatus } from "../../../models/Message";
 
 const messageSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
@@ -18,11 +14,11 @@ const messageSchema = new mongoose.Schema(
       ref: "Inbox",
       required: true,
     },
-    threadId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Thread",
-      required: true,
-    },
+    // threadId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Thread",
+    //   required: true,
+    // },
     fromInboxId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Inbox",

@@ -12,7 +12,7 @@ export default interface Message {
   id: string;
   organizationId: mongoose.Types.ObjectId;
   inboxId: mongoose.Types.ObjectId;
-  threadId: mongoose.Types.ObjectId;
+  // threadId: mongoose.Types.ObjectId;
   fromInboxId?: mongoose.Types.ObjectId;
   from: string;
   toInboxId?: mongoose.Types.ObjectId;
