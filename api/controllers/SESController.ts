@@ -32,6 +32,7 @@ export async function domainVerificationStatus({ domain }: { domain: string }) {
 export async function sendSESMessage({
   messageId,
   from,
+  fromName,
   to,
   subject,
   text,
@@ -39,13 +40,15 @@ export async function sendSESMessage({
 }: {
   messageId: string;
   from: string;
+  fromName?: string;
   to: string;
   subject: string;
   text: string;
   html: string;
 }) {
+  console.log("Sending SES message", { messageId, from, to, fromName, subject, text, html });
   const command = new SendEmailCommand({
-    Source: from,
+    Source: fromName ? `${fromName} <${from}>` : from,
     Destination: {
       ToAddresses: [to],
     },
@@ -79,7 +82,6 @@ export async function sendSESMessage({
 export async function handleDeliveryNotification(rawMessage: string) {
   try {
     const notification: SNSMessage = JSON.parse(rawMessage);
-    console.log("Received SES delivery notification", notification);
     const messageId = notification.mail?.tags?.["message"]?.[0];
     if (!messageId) {
       console.error(

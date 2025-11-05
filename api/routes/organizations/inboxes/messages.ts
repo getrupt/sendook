@@ -52,6 +52,7 @@ router.post(
     sendSESMessage({
       messageId: message.id,
       from: inbox.email,
+      fromName: inbox.name,
       to: req.body.to,
       subject: req.body.subject,
       text: req.body.text,

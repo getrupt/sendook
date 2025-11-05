@@ -25,7 +25,8 @@ describe("MessageController", function () {
         faker.internet.password()
       );
       const toEmail = "marc@rupt.dev";
-      const name = faker.person.firstName();
+      const name = faker.person.fullName();
+      console.log("name", name);
       const inbox = await createInbox({
         organization_id: organization.id,
         name,
@@ -55,6 +56,7 @@ describe("MessageController", function () {
       await sendSESMessage({
         messageId: message.id,
         from: inbox.email,
+        fromName: inbox.name,
         to: toEmail,
         subject: message.subject,
         text: message.text,
