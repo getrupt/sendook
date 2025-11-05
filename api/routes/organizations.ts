@@ -1,6 +1,6 @@
 import { Router } from "express";
-import apiKeyRouter from "./organizations/apiKey";
-import inboxRouter from "./organizations/inbox";
+import apiKeyRouter from "./organizations/apiKeys";
+import inboxRouter from "./organizations/inboxes";
 
 const router = Router();
 

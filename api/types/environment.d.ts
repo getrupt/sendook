@@ -7,6 +7,8 @@ declare global {
       MONGO_URI: string;
       RUPT_SECRET_KEY: string;
       DEFAULT_EMAIL_DOMAIN: string;
+      AWS_ACCESS_KEY_ID: string;
+      AWS_SECRET_ACCESS_KEY: string;
     }
   }
   namespace Express {

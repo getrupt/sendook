@@ -4,17 +4,17 @@ import { WebhookEvents } from "../../../models/Webhook";
 
 const webhookSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
       required: true,
     },
-    event: {
+    url: {
       type: String,
+      required: true,
+    },
+    events: {
+      type: [String],
       required: true,
       enum: WebhookEvents,
     },

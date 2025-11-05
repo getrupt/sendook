@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import type IMessage from "../../../models/Message";
+import { MessageStatus } from "../../../models/Message";
 
 const messageSchema = new mongoose.Schema(
   {
@@ -22,9 +23,19 @@ const messageSchema = new mongoose.Schema(
       ref: "Thread",
       required: true,
     },
+    fromInboxId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Inbox",
+      required: false,
+    },
     from: {
       type: String,
       required: true,
+    },
+    toInboxId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Inbox",
+      required: false,
     },
     to: {
       type: String,
@@ -46,6 +57,11 @@ const messageSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Attachment",
       required: false,
+    },
+    status: {
+      type: String,
+      required: false,
+      enum: MessageStatus,
     },
   },
   {

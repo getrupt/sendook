@@ -1,8 +1,8 @@
 import { Router } from "express";
 import passport from "passport";
 import type { Request, Response } from "express";
-import { getOrganizationById } from "../../controllers/OrganizationController.js";
-import { getApiKeysByOrganizationId } from "../../controllers/ApiKeyController.js";
+import { getOrganizationById } from "../../controllers/OrganizationController";
+import { getApiKeysByOrganizationId } from "../../controllers/ApiKeyController";
 
 const router = Router({ mergeParams: true });
 
