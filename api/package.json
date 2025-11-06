@@ -14,7 +14,10 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.922.0",
+    "@faker-js/faker": "^10.1.0",
     "@ruptjs/core": "^0.1.0",
+    "axios": "^1.13.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

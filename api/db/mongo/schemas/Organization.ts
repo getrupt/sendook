@@ -12,18 +12,18 @@ const organizationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    stripeCustomerId: {
-      type: String,
-      required: true,
-    },
-    stripeSubscriptionId: {
-      type: String,
-      required: true,
-    },
-    stripePaymentMethodId: {
-      type: String,
-      required: false,
-    },
+    // stripeCustomerId: {
+    //   type: String,
+    //   required: true,
+    // },
+    // stripeSubscriptionId: {
+    //   type: String,
+    //   required: true,
+    // },
+    // stripePaymentMethodId: {
+    //   type: String,
+    //   required: false,
+    // },
   },
   {
     timestamps: true,

@@ -1,13 +1,8 @@
 import mongoose from "mongoose";
-import type IWebhook from "../../../models/Webhook";
-import { WebhookEvents } from "../../../models/Webhook";
+import type IWebhookAttempt from "../../../models/WebhookAttempt";
 
-const webhookSchema = new mongoose.Schema(
+const webhookAttemptSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     webhookId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Webhook",
@@ -54,4 +49,4 @@ const webhookSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model<IWebhook>("Webhook", webhookSchema);
+export default mongoose.model<IWebhookAttempt>("WebhookAttempt", webhookAttemptSchema);

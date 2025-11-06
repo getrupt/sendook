@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
 
-export default interface Inbox {
+export default interface Domain {
   id: string;
   organizationId: mongoose.Types.ObjectId;
-  domainId?: mongoose.Types.ObjectId;
   name: string;
-  email: string;
+  verified: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
 }

@@ -4,15 +4,18 @@ export const WebhookEvents = [
   "inbox.created",
   "inbox.deleted",
   "inbox.updated",
-  "message.created",
-  "message.deleted",
-  "message.updated",
+  "message.sent",
+  "message.delivered",
+  "message.bounced",
+  "message.complained",
+  "message.rejected",
 ] as const;
 
 export default interface Webhook {
   id: string;
   organizationId: mongoose.Types.ObjectId;
-  event: (typeof WebhookEvents)[number];
+  events: (typeof WebhookEvents)[number][];
+  url: string;
   createdAt: Date | null;
   updatedAt: Date | null;
 }

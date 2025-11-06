@@ -3,6 +3,7 @@ import { createApiKey } from "./ApiKeyController";
 import { createUser, getUserByEmail } from "./UserController";
 import { createAccessToken } from "./AccessTokenController";
 import { verifyHash } from "./EncryptionController";
+import { createInbox, getInboxByEmail, getNewRandomInboxEmail } from "./InboxController";
 
 export async function login(username: string, password: string) {
   const user = await getUserByEmail(username);
@@ -35,5 +36,13 @@ export async function register(
     name: "Default API Key",
   });
 
-  return { user, organization, apiKey };
+  const inboxEmail = await getNewRandomInboxEmail({ name: "inbox" });
+
+  const inbox = await createInbox({
+    organization_id: organization.id,
+    name: "My Inbox",
+    email: inboxEmail,
+  });
+
+  return { user, organization, apiKey, inbox };
 }

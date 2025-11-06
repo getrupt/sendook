@@ -1,12 +1,9 @@
 import mongoose from "mongoose";
 import type IMessage from "../../../models/Message";
+import { MessageStatus } from "../../../models/Message";
 
 const messageSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
@@ -17,14 +14,24 @@ const messageSchema = new mongoose.Schema(
       ref: "Inbox",
       required: true,
     },
-    threadId: {
+    // threadId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Thread",
+    //   required: true,
+    // },
+    fromInboxId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Thread",
-      required: true,
+      ref: "Inbox",
+      required: false,
     },
     from: {
       type: String,
       required: true,
+    },
+    toInboxId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Inbox",
+      required: false,
     },
     to: {
       type: String,
@@ -34,7 +41,11 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    body: {
+    text: {
+      type: String,
+      required: true,
+    },
+    html: {
       type: String,
       required: true,
     },
@@ -42,6 +53,11 @@ const messageSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Attachment",
       required: false,
+    },
+    status: {
+      type: String,
+      required: false,
+      enum: MessageStatus,
     },
   },
   {
