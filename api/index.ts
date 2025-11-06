@@ -7,6 +7,7 @@ import cors from "cors";
 import authRouter from "./routes/auth";
 import organizationsRouter from "./routes/organizations";
 import webhooksRouter from "./routes/webhooks";
+import inboxesRouter from "./routes/inboxes";
 
 startMongo();
 
@@ -46,6 +47,7 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/organizations", organizationsRouter);
+app.use("/inboxes", inboxesRouter);
 app.use("/webhooks", webhooksRouter);
 
 app.listen(port, () => {
