@@ -82,6 +82,7 @@ export async function sendSESMessage({
 export async function handleDeliveryNotification(rawMessage: string) {
   try {
     const notification: SNSMessage = JSON.parse(rawMessage);
+
     const messageId = notification.mail?.tags?.["message"]?.[0];
     if (!messageId) {
       console.error(

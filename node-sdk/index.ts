@@ -6,26 +6,36 @@ class SendookAPI {
 
   constructor(apiSecret: string, apiUrl?: string) {
     this.apiSecret = apiSecret;
-    this.apiUrl = apiUrl || "https://api.sendook.com/v1";
+    this.apiUrl = apiUrl || "https://api.sendook.com";
   }
 
-  async createInbox({
-    name,
-    email,
-  }: {
-    name: string;
-    email?: string;
-  }) {
-    const response = await axios.post(`${this.apiUrl}/inboxes`, {
+  public inbox = {
+    create: async ({
       name,
       email,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${this.apiSecret}`,
-      },
-    });
-    return response.data;
-  }
+    }: {
+      name: string;
+      email?: string;
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/inboxes`, {
+        name,
+        email,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    list: async () => {
+      const response = await axios.get(`${this.apiUrl}/v1/inboxes`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    }
+  };
 }
 
 export default SendookAPI;

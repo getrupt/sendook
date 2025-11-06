@@ -7,7 +7,7 @@ import cors from "cors";
 import authRouter from "./routes/auth";
 import organizationsRouter from "./routes/organizations";
 import webhooksRouter from "./routes/webhooks";
-import inboxesRouter from "./routes/inboxes";
+import v1Router from "./routes/v1/index";
 
 startMongo();
 
@@ -47,8 +47,8 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/organizations", organizationsRouter);
-app.use("/inboxes", inboxesRouter);
 app.use("/webhooks", webhooksRouter);
+app.use("/v1", v1Router);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
