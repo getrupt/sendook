@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { faker } from "@faker-js/faker";
 dotenv.config();
 // @ts-ignore
 import { expect, describe, it } from "bun:test";
