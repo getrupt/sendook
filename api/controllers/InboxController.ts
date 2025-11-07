@@ -10,7 +10,7 @@ export async function createInbox({
   organization_id: string;
   domain_id?: string;
   name: string;
-  email: string;
+  email?: string;
 }) {
   const inbox = new Inbox();
   inbox.organizationId = new mongoose.Types.ObjectId(organization_id);
@@ -18,7 +18,7 @@ export async function createInbox({
     ? new mongoose.Types.ObjectId(domain_id)
     : undefined;
   inbox.name = name;
-  inbox.email = email;
+  inbox.email = email || await getNewRandomInboxEmail({ name });
   await inbox.save();
   return inbox;
 }

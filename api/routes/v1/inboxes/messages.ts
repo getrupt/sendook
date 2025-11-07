@@ -1,11 +1,12 @@
 import { Router } from "express";
 import passport from "passport";
 import type { Request, Response } from "express";
-import { getOrganizationById } from "../../../controllers/OrganizationController";
 import { getInboxByOrganizationIdAndInboxId } from "../../../controllers/InboxController";
 import { createMessage } from "../../../controllers/MessageController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 import { sendSESMessage } from "../../../controllers/SESController";
+import type { HydratedDocument } from "mongoose";
+import type Organization from "../../../models/Organization";
 
 const router = Router({ mergeParams: true });
 
@@ -25,13 +26,10 @@ router.post(
     >,
     res: Response
   ) => {
-    const organization = await getOrganizationById(req.params.organizationId!);
-    if (!organization) {
-      return res.status(404).json({ error: "Organization not found" });
-    }
+    const organization = req.user as HydratedDocument<Organization>;
 
     const inbox = await getInboxByOrganizationIdAndInboxId({
-      organizationId: req.params.organizationId!,
+      organizationId: organization._id.toString(),
       inboxId: req.params.inboxId!,
     });
     if (!inbox) {
@@ -39,7 +37,7 @@ router.post(
     }
 
     const message = await createMessage({
-      organizationId: req.params.organizationId,
+      organizationId: organization._id.toString(),
       inboxId: req.params.inboxId,
       fromInboxId: req.params.inboxId,
       from: inbox.email,
@@ -60,7 +58,7 @@ router.post(
     });
     
     await sendWebhookEvent({
-      organizationId: req.params.organizationId,
+      organizationId: organization._id.toString(),
       event: "message.sent",
       messageId: message.id,
       payload: message,

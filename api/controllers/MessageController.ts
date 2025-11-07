@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Message from "../db/mongo/schemas/Message";
+import type { MessageStatus } from "../models/Message";
 
 export async function createMessage({
   organizationId,
@@ -11,6 +12,7 @@ export async function createMessage({
   subject,
   text,
   html,
+  status,
 }: {
   organizationId: string;
   inboxId: string;
@@ -21,6 +23,7 @@ export async function createMessage({
   subject: string;
   text: string;
   html: string;
+  status?: (typeof MessageStatus)[number];
 }) {
   const message = new Message();
   message.organizationId = new mongoose.Types.ObjectId(organizationId);
@@ -32,6 +35,7 @@ export async function createMessage({
   message.subject = subject;
   message.text = text;
   message.html = html;
+  message.status = status;
   await message.save();
   return message;
 }

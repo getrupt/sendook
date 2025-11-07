@@ -5,6 +5,7 @@ export const WebhookEvents = [
   "inbox.deleted",
   "inbox.updated",
   "message.sent",
+  "message.received",
   "message.delivered",
   "message.bounced",
   "message.complained",

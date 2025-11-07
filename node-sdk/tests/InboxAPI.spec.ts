@@ -5,7 +5,7 @@ dotenv.config();
 import { expect, describe, it } from "bun:test";
 import Sendook from "../index";
 
-describe("SendookAPI", function () {
+describe("InboxAPI", function () {
   describe("createInbox", function () {
     it("should create an inbox", async function () {
       const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
@@ -25,6 +25,20 @@ describe("SendookAPI", function () {
       console.log("inboxes", inboxes);
       expect(inboxes).toBeDefined();
       expect(inboxes.length).toBeGreaterThan(0);
+    });
+  });
+  describe("getInbox", function () {
+    it("should get an inbox", async function () {
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const name = faker.person.fullName();
+      const newInbox = await sendook.inbox.create({
+        name,
+      });
+      const inbox = await sendook.inbox.get(newInbox.id);
+      expect(inbox).toBeDefined();
+      expect(inbox.id).toBe(newInbox.id);
+      expect(inbox.name).toBe(name);
+      expect(inbox.email).toBeDefined();
     });
   });
 });

@@ -36,12 +36,9 @@ export async function register(
     name: "Default API Key",
   });
 
-  const inboxEmail = await getNewRandomInboxEmail({ name: "inbox" });
-
   const inbox = await createInbox({
     organization_id: organization.id,
     name: "My Inbox",
-    email: inboxEmail,
   });
 
   return { user, organization, apiKey, inbox };

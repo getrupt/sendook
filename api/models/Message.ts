@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export const MessageStatus = [
   "sent",
+  "received",
   "delivered",
   "bounced",
   "complained",

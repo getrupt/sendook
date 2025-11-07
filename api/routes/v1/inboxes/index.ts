@@ -3,10 +3,10 @@ import passport from "passport";
 import type { Request, Response } from "express";
 import { body } from "express-validator";
 import type { HydratedDocument } from "mongoose";
-import type Organization from "../../models/Organization";
-import { expressValidatorMiddleware } from "../../middlewares/expressValidatorMiddleware";
-import { createInbox, getInboxesByOrganizationId, getNewRandomInboxEmail } from "../../controllers/InboxController";
-import { sendWebhookEvent } from "../../controllers/WebhookAttemptController";
+import type Organization from "../../../models/Organization";
+import { expressValidatorMiddleware } from "../../../middlewares/expressValidatorMiddleware";
+import { createInbox, getInboxByOrganizationIdAndInboxId, getInboxesByOrganizationId, getNewRandomInboxEmail } from "../../../controllers/InboxController";
+import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 
 const router = Router({ mergeParams: true });
 
@@ -35,7 +35,6 @@ router.post(
     const inbox = await createInbox({
       organization_id: organization._id.toString(),
       name: req.body.name,
-      email: await getNewRandomInboxEmail({ name: req.body.name }),
     });
 
     await sendWebhookEvent({
@@ -45,6 +44,22 @@ router.post(
       payload: inbox,
     });
 
+    return res.json(inbox);
+  }
+);
+
+router.get(
+  "/:inboxId",
+  passport.authenticate("api_key", { session: false }),
+  async (req: Request<{ organizationId: string, inboxId: string }, {}, {}>, res: Response) => {
+    const organization = req.user as HydratedDocument<Organization>;
+    const inbox = await getInboxByOrganizationIdAndInboxId({
+      organizationId: organization._id.toString(),
+      inboxId: req.params.inboxId,
+    });
+    if (!inbox) {
+      return res.status(404).json({ error: "Inbox not found" });
+    }
     return res.json(inbox);
   }
 );

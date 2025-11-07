@@ -26,11 +26,9 @@ describe("MessageController", function () {
       );
       const toEmail = "marc@rupt.dev";
       const name = faker.person.fullName();
-      console.log("name", name);
       const inbox = await createInbox({
         organization_id: organization.id,
         name,
-        email: await getNewRandomInboxEmail({ name })
       });
       const subject = faker.lorem.sentence();
       const text = faker.lorem.paragraph();
