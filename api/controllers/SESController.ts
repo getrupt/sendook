@@ -5,13 +5,14 @@ import {
   VerifyDomainDkimCommand,
 } from "@aws-sdk/client-ses";
 import type { SNSMessage } from "../models/SES";
-import { createMessage, getMessageById } from "./MessageController";
+import { createMessage, getMessageByExternalMessageId, getMessageById } from "./MessageController";
 import type { MessageStatus } from "../models/Message";
 import type { WebhookEvents } from "../models/Webhook";
 import { sendWebhookEvent } from "./WebhookAttemptController";
 import { getInboxByEmail } from "./InboxController";
 import { simpleParser } from "mailparser";
 import EmailReplyParser from "email-reply-parser";
+import { addMessageToThread, createThread } from "./ThreadController";
 
 export const ses = new SESClient({
   region: "us-east-2",
@@ -49,15 +50,6 @@ export async function sendSESMessage({
   text: string;
   html: string;
 }) {
-  console.log("Sending SES message", {
-    messageId,
-    from,
-    to,
-    fromName,
-    subject,
-    text,
-    html,
-  });
   const command = new SendEmailCommand({
     Source: fromName ? `${fromName} <${from}>` : from,
     Destination: {
@@ -133,9 +125,29 @@ export async function handleInboundSESMessage({
 
   const fromInboxId = await getInboxByEmail(notification.mail.source);
 
+  const reference = notification.mail.headers?.find(header => header.name === "References")?.value;
+  const replyToMessageId = reference?.match(/<([^@>]+)@us-east-2\.amazonses\.com>/)?.[1];
+
+  let threadId: string | undefined;
+  if (replyToMessageId) {
+    const message = await getMessageByExternalMessageId(replyToMessageId);
+    if (message) {
+      threadId = message.threadId.toString();
+    }
+  }
+
+  if (!threadId) {
+    const thread = await createThread({
+      organizationId: inbox.organizationId.toString(),
+      inboxId: inbox.id,
+    });
+    threadId = thread._id.toString();
+  }
+
   const message = await createMessage({
     organizationId: inbox.organizationId.toString(),
     inboxId: inbox.id,
+    threadId,
     from: notification.mail.source,
     fromInboxId: fromInboxId?.id,
     to: notification.mail.destination[0],
@@ -144,6 +156,11 @@ export async function handleInboundSESMessage({
     text: content.getVisibleText(),
     html: content.getVisibleText(),
     status: "received",
+  });
+
+  await addMessageToThread({
+    threadId,
+    messageId: message._id.toString(),
   });
 
   await sendWebhookEvent({

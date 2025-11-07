@@ -69,6 +69,23 @@ class SendookAPI {
         });
         return response.data;
       },
+      //reply
+      list: async (inboxId: string) => {
+        const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/messages`, {
+          headers: {
+            "Authorization": `Bearer ${this.apiSecret}`,
+          },
+        });
+        return response.data;
+      },
+      get: async (inboxId: string, messageId: string) => {
+        const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/messages/${messageId}`, {
+          headers: {
+            "Authorization": `Bearer ${this.apiSecret}`,
+          },
+        });
+        return response.data;
+      },
     }
   };
 }

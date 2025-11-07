@@ -23,4 +23,35 @@ describe("MessageAPI", function () {
       expect(message).toBeDefined();
     });
   });
+  describe("listMessages", function () {
+    it("should list messages", async function () {
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const name = faker.person.fullName();
+      const newInbox = await sendook.inbox.create({
+        name,
+      });
+      const messages = await sendook.inbox.message.list(newInbox.id);
+      expect(messages).toBeDefined();
+      expect(messages.length).toBeGreaterThan(0);
+    });
+  });
+  describe("getMessage", function () {
+    it("should get a message", async function () {
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const name = faker.person.fullName();
+      const newInbox = await sendook.inbox.create({
+        name,
+      });
+      const newMessage = await sendook.inbox.message.send({
+        inboxId: newInbox.id,
+        to: "marc@rupt.dev",
+        subject: "Test Subject",
+        text: "Test Text",
+        html: "<p>Test HTML</p>",
+      });
+      const message = await sendook.inbox.message.get(newInbox.id, newMessage.id);
+      expect(message).toBeDefined();
+      expect(message.id).toBe(newMessage.id);
+    });
+  });
 });

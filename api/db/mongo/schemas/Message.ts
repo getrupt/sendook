@@ -14,11 +14,11 @@ const messageSchema = new mongoose.Schema(
       ref: "Inbox",
       required: true,
     },
-    // threadId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Thread",
-    //   required: true,
-    // },
+    threadId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Thread",
+      required: true,
+    },
     fromInboxId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Inbox",
@@ -31,6 +31,10 @@ const messageSchema = new mongoose.Schema(
     toInboxId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Inbox",
+      required: false,
+    },
+    externalMessageId: {
+      type: String,
       required: false,
     },
     to: {

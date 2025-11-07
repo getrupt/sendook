@@ -8,6 +8,7 @@ import { register } from "../controllers/AuthController";
 import { createMessage } from "../controllers/MessageController";
 import { createInbox, getNewRandomInboxEmail } from "../controllers/InboxController";
 import { sendSESMessage } from "../controllers/SESController";
+import { createThread } from "../controllers/ThreadController";
 
 describe("MessageController", function () {
   beforeAll(async function () {
@@ -30,12 +31,17 @@ describe("MessageController", function () {
         organization_id: organization.id,
         name,
       });
+      const thread = await createThread({
+        organizationId: organization.id,
+        inboxId: inbox.id,
+      });
       const subject = faker.lorem.sentence();
       const text = faker.lorem.paragraph();
       const html = `<p>${text}</p>`;
       const message = await createMessage({
         organizationId: organization.id,
         inboxId: inbox.id,
+        threadId: thread.id,
         fromInboxId: inbox.id,
         from: inbox.email,
         to: toEmail,
