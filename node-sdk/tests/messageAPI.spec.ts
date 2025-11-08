@@ -30,7 +30,14 @@ describe("MessageAPI", function () {
       const newInbox = await sendook.inbox.create({
         name,
       });
-      const messages = await sendook.inbox.message.list(newInbox.id);
+      const newMessage = await sendook.inbox.message.send({
+        inboxId: newInbox._id,
+        to: "marc@rupt.dev",
+        subject: "Test Subject",
+        text: "Test Text",
+        html: "<p>Test HTML</p>",
+      });
+      const messages = await sendook.inbox.message.list(newInbox._id);
       expect(messages).toBeDefined();
       expect(messages.length).toBeGreaterThan(0);
     });
@@ -43,15 +50,15 @@ describe("MessageAPI", function () {
         name,
       });
       const newMessage = await sendook.inbox.message.send({
-        inboxId: newInbox.id,
+        inboxId: newInbox._id,
         to: "marc@rupt.dev",
         subject: "Test Subject",
         text: "Test Text",
         html: "<p>Test HTML</p>",
       });
-      const message = await sendook.inbox.message.get(newInbox.id, newMessage.id);
+      const message = await sendook.inbox.message.get(newInbox._id, newMessage._id);
       expect(message).toBeDefined();
-      expect(message.id).toBe(newMessage.id);
+      expect(message._id).toBe(newMessage._id);
     });
   });
 });

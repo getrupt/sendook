@@ -57,7 +57,7 @@ class SendookAPI {
         text: string;
         html: string;
       }) => {
-        const response = await axios.post(`${this.apiUrl}/v1/inboxes/${inboxId}/messages`, {
+        const response = await axios.post(`${this.apiUrl}/v1/inboxes/${inboxId}/messages/send`, {
           to,
           subject,
           text,
@@ -86,7 +86,25 @@ class SendookAPI {
         });
         return response.data;
       },
-    }
+    },
+    thread: {
+      list: async (inboxId: string) => {
+        const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/threads`, {
+          headers: {
+            "Authorization": `Bearer ${this.apiSecret}`,
+          },
+        });
+        return response.data;
+      },
+      get: async (inboxId: string, threadId: string) => {
+        const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/threads/${threadId}`, {
+          headers: {
+            "Authorization": `Bearer ${this.apiSecret}`,
+          },
+        });
+        return response.data;
+      },
+    },
   };
 }
 

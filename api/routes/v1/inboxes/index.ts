@@ -5,8 +5,10 @@ import { body } from "express-validator";
 import type { HydratedDocument } from "mongoose";
 import type Organization from "../../../models/Organization";
 import { expressValidatorMiddleware } from "../../../middlewares/expressValidatorMiddleware";
-import { createInbox, getInboxByOrganizationIdAndInboxId, getInboxesByOrganizationId, getNewRandomInboxEmail } from "../../../controllers/InboxController";
+import { createInbox, getInboxByOrganizationIdAndInboxId, getInboxesByOrganizationId } from "../../../controllers/InboxController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
+import messagesRouter from "./messages";
+import threadsRouter from "./threads";
 
 const router = Router({ mergeParams: true });
 
@@ -64,6 +66,7 @@ router.get(
   }
 );
 
-// router.use("/:inboxId/messages", messageRouter);
+router.use("/:inboxId/messages", messagesRouter);
+router.use("/:inboxId/threads", threadsRouter);
 
 export default router;
