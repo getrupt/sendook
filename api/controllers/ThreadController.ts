@@ -31,3 +31,13 @@ export async function addMessageToThread({
   await thread.save();
   return thread;
 }
+
+export async function getThreadsByInboxId(inboxId: string) {
+  const threads = await Thread.find({ inboxId: new mongoose.Types.ObjectId(inboxId) });
+  return threads;
+}
+
+export async function getThreadById(threadId: string) {
+  const thread = await Thread.findById(threadId).populate("messages");
+  return thread;
+}

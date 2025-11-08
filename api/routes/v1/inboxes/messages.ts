@@ -100,7 +100,6 @@ router.get(
     }
 
     const messages = await getMessagesByInboxId(req.params.inboxId);
-    console.log(messages);
     return res.json(messages);
   }
 );

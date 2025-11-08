@@ -6,7 +6,6 @@ const router = Router();
 router.post("/", async (req, res) => {
   const payload = JSON.parse(req.body);
   if (payload.Type !== "Notification") {
-    console.log("Received non-notification message from SES", payload);
     return res.status(200).send();
   }
   await handleDeliveryNotification(payload.Message);

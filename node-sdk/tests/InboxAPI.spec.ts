@@ -22,7 +22,6 @@ describe("InboxAPI", function () {
     it("should get inboxes", async function () {
       const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
       const inboxes = await sendook.inbox.list();
-      console.log("inboxes", inboxes);
       expect(inboxes).toBeDefined();
       expect(inboxes.length).toBeGreaterThan(0);
     });
