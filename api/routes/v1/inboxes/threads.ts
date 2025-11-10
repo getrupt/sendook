@@ -45,7 +45,8 @@ router.get(
     const thread = await getThreadById(req.params.threadId);
     if (
       !thread ||
-      thread.organizationId.toString() !== organization._id.toString()
+      thread.organizationId.toString() !== organization._id.toString() ||
+      thread.inboxId.toString() !== req.params.inboxId
     ) {
       return res.status(404).json({ error: "Thread not found" });
     }

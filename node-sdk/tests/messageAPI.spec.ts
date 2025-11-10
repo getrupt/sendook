@@ -61,4 +61,30 @@ describe("MessageAPI", function () {
       expect(message._id).toBe(newMessage._id);
     });
   });
+  describe("replyToMessage", function () {
+    it("should reply to a message", async function () {
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const name = faker.person.fullName();
+      const newInbox = await sendook.inbox.create({
+        name,
+      });
+      const newMessage = await sendook.inbox.message.send({
+        inboxId: newInbox._id,
+        to: "marc@rupt.dev",
+        subject: "Test Subject",
+        text: "Test Text",
+        html: "<p>Test HTML</p>",
+      });
+      const replyMessage = await sendook.inbox.message.reply({
+        inboxId: newInbox._id,
+        messageId: newMessage._id,
+        text: "Test Reply Text",
+        html: "<p>Test Reply HTML</p>",
+      });
+      expect(replyMessage).toBeDefined();
+      expect(replyMessage.subject).toBe(`Re: ${newMessage.subject}`);
+      expect(replyMessage.text).toBe("Test Reply Text");
+      expect(replyMessage.html).toBe("<p>Test Reply HTML</p>");
+    });
+  });
 });
