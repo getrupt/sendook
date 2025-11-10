@@ -184,7 +184,7 @@ router.post(
       messageId: message._id.toString(),
       from: inbox.email,
       fromName: inbox.name,
-      to: message.from,
+      to: message.to,
       subject: message.subject,
       text: message.text,
       html: message.html,
