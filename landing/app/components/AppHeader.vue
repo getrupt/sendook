@@ -31,6 +31,15 @@ const items = computed(() => [{
     />
 
     <template #right>
+      <UButton
+        icon="i-simple-icons-github"
+        color="neutral"
+        variant="ghost"
+        to="https://github.com/getrupt/sendook"
+        target="_blank"
+        aria-label="View on GitHub"
+      />
+
       <UColorModeButton />
 
       <UButton

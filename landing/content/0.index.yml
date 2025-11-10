@@ -1,5 +1,5 @@
 title: Email Infrastructure for [AI Agents]{class="text-primary"}
-description: Stop wrestling with Gmail APIs and AWS SES setup. Create inboxes instantly, receive webhooks for every email, and get pre-decoded JSON responses. Built for developers who want to move fast.
+description: Create inboxes and receive emails with webhooks. Get pre-decoded JSON responses. Built for developers who want to go fast.
 seo:
   title: Sendook - Email Infrastructure for AI Agents
   description: Simple, powerful email infrastructure for AI agents. Create inboxes via API, receive webhooks, send and reply to emails instantly. Open source and developer-friendly.
@@ -16,67 +16,66 @@ hero:
       size: xl
       color: neutral
       variant: subtle
-      to: https://github.com/sendook/sendook
+      to: https://github.com/getrupt/sendook
       target: _blank
 sections:
-  - title: Skip the Email Infrastructure Nightmare
-    description: Setting up email for AI agents shouldn't take days. No more domain configuration, no more Gmail API wrestling, no more AWS SES complexity. Just a simple API call to create an inbox and start sending.
+  - title: Core Features
     id: why-sendook
     orientation: horizontal
     features:
-      - name: Create Inboxes Instantly
-        description: One API call creates a fully functional inbox. No domain setup, no DNS records, no authentication flows. Just instant email capability.
+      - name: Create Inboxes
+        description: One API call creates a functional inbox. No DNS setup required.
         icon: i-lucide-inbox
-      - name: Real-time Webhooks
-        description: Get instant notifications when emails arrive. No polling, no delays. Your AI agent responds the moment an email lands.
+      - name: Webhooks
+        description: Get instant notifications when emails arrive. No polling required.
         icon: i-lucide-webhook
-      - name: JSON-Ready Emails
-        description: Forget parsing MIME. Every email arrives pre-decoded, formatted, and ready for consumption. Attachments included.
+      - name: Pre-decoded JSON
+        description: Every email arrives formatted as JSON. Attachments included.
         icon: i-lucide-file-json
-  - title: Built for Speed, Designed for AI Agents
-    description: Your AI agents need to communicate fast. We handle the email infrastructure complexity so you can focus on building intelligence, not debugging SMTP.
+  - title: Built for Speed
+    description: Simple APIs for sending, replying, and searching emails. Focus on building your product.
     orientation: horizontal
     reverse: true
     features:
-      - name: Send & Reply Instantly
-        description: Send emails and replies with a single API call. Threading handled automatically. Attachments supported out of the box.
+      - name: Send & Reply
+        description: Send emails and replies with one API call. Threading handled automatically.
         icon: i-lucide-send
-      - name: Search & Store Everything
-        description: Every email is indexed and searchable. Query by sender, subject, date, or content. Your agent's memory, ready to query.
+      - name: Search Everything
+        description: Every email is indexed and searchable. Query by sender, subject, date, or content.
         icon: i-lucide-search
-      - name: Production-Ready Infrastructure
-        description: Built on battle-tested email infrastructure. Spam filtering, deliverability optimization, and reliability baked in.
+      - name: Production Ready
+        description: Built on proven email infrastructure. Spam filtering and deliverability included.
         icon: i-lucide-shield-check
 features:
-  title: Everything AI Agents Need for Email
-  description: Stop wasting time on email infrastructure. We've built everything your AI agent needs to communicate via email, so you can focus on the intelligence that makes your agent unique.
+  title: Complete Email API
+  description: Everything you need to handle email in your application. Simple APIs, webhook events, and JSON responses.
   items:
-    - title: API-First Design
-      description: RESTful APIs for every operation. Create inboxes, send emails, search messages, manage domains. Complete programmatic control.
+    - title: RESTful APIs
+      description: Create inboxes, send emails, search messages, and manage domains. Full programmatic control.
       icon: i-lucide-code
     - title: Webhook Events
-      description: Real-time notifications for incoming emails, delivery status, bounces, and opens. Your agent stays informed instantly.
+      description: Get notified for incoming emails, delivery status, bounces, and opens.
       icon: i-lucide-bell
     - title: Thread Management
-      description: Automatic email threading and conversation tracking. Your agent maintains context across multi-email exchanges.
+      description: Automatic email threading and conversation tracking.
       icon: i-lucide-messages-square
     - title: Attachment Handling
-      description: Attachments automatically decoded and accessible via API. Images, PDFs, documents - all ready for processing.
+      description: Attachments decoded and accessible via API. Images, PDFs, and documents.
       icon: i-lucide-paperclip
     - title: Full-Text Search
-      description: Search across all emails by any field. Filter by sender, recipient, subject, body, date range, or custom metadata.
+      description: Search emails by sender, recipient, subject, body, date range, or metadata.
       icon: i-lucide-search-code
-    - title: Multi-Inbox Support
-      description: Create unlimited inboxes per organization. One for each customer, use case, or department. Complete isolation.
+    - title: Multiple Inboxes
+      description: Create unlimited inboxes per organization. Complete isolation between inboxes.
       icon: i-lucide-mail
     - title: Custom Domains
-      description: Use your own domains for professional emails. We handle SPF, DKIM, and DMARC configuration automatically.
+      description: Use your own domains. SPF, DKIM, and DMARC configuration handled automatically.
       icon: i-lucide-globe
     - title: SDKs & Libraries
-      description: Official SDKs for Node.js, Python, and more. Get started in minutes with idiomatic, type-safe libraries.
+      description: Official SDKs for Node.js, Python, and more. Type-safe and idiomatic.
       icon: i-lucide-package
     - title: Open Source
-      description: Fully open source under MIT license. Self-host or use our cloud. Complete transparency and control.
+      description: MIT licensed. Self-host or use our cloud.
       icon: i-lucide-git-fork
 testimonials:
   headline: Trusted by AI Developers
