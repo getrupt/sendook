@@ -1,74 +1,59 @@
-title: Transparent Pricing for AI Email Infrastructure
-description: Start free and scale as you grow. No hidden fees, no surprises. Pay for what you use or self-host for complete control.
+title: Simple, Transparent Pricing
+description: Pay only for what you use. No hidden fees, no surprises, no complicated tiers.
 seo:
   title: Pricing - Sendook
-  description: Simple, transparent pricing for AI agent email infrastructure. Free tier available, scale as you grow.
+  description: Simple, transparent pricing for AI agent email infrastructure. First 1,000 emails free every month.
 navigation.icon: i-lucide-credit-card
-plans:
-  - title: Free
-    description: Perfect for prototyping and small projects.
-    price:
-      month: $0
-      year: $0
-    button:
-      label: Get Started
-      color: neutral
-      variant: subtle
-    features:
-      - 5 Inboxes
-      - 1,000 Emails/month
-      - Webhook notifications
-      - Full API access
-      - Community support
-      - 30-day email retention
-      - Basic search
-  - title: Pro
-    description: For production AI agents and growing teams.
-    price:
-      month: $49
-      year: $470
-    highlight: true
-    scale: true
-    button:
-      label: Start Free Trial
-    features:
-      - 50 Inboxes
-      - 50,000 Emails/month
-      - Priority webhooks
-      - Full API access
-      - Email support
-      - 1-year email retention
-      - Advanced search & filters
-      - Custom domains
-      - Team collaboration
-  - title: Enterprise
-    description: For organizations with serious scale.
-    price:
-      month: Custom
-      year: Custom
-    button:
-      label: Contact Sales
-      color: neutral
-      variant: subtle
-    features:
-      - Unlimited inboxes
-      - Unlimited emails
-      - Dedicated infrastructure
-      - SLA guarantees
-      - Priority support
-      - Unlimited retention
-      - Advanced analytics
-      - Custom domains
-      - SSO & SAML
-      - Self-hosting option
-logos:
-  title: Built with Modern Infrastructure
-  icons:
-    - i-simple-icons-mongodb
-    - i-simple-icons-amazonaws
-    - i-simple-icons-typescript
-    - i-simple-icons-nodedotjs
-    - i-simple-icons-docker
+headline: Pricing that scales with you
+pricing:
+  tagline: Email infrastructure that grows with your needs
+  description: |
+    Start building immediately with our generous free tier. As your AI agents scale, 
+    our pricing scales linearly—no sudden jumps, no enterprise sales calls, just transparent 
+    per-email pricing.
+  benefits:
+    - title: No Surprises
+      description: Predictable pricing that scales linearly with your usage. No hidden fees or unexpected charges.
+      icon: i-lucide-shield-check
+    - title: Start Free
+      description: 1,000 free emails every month. Perfect for development, testing, and small projects.
+      icon: i-lucide-zap
+    - title: Open Source
+      description: Fully open source under MIT license. Self-host for complete control and zero cost.
+      icon: i-lucide-code
+plan:
+  title: Pay As You Grow
+  description: One simple plan. Unlimited everything except emails.
+  price:
+    base: $0
+    perEmail: $0.0015
+  features:
+    - Unlimited inboxes
+    - Unlimited domains
+    - 1,000 free emails/month
+    - $0.0015 per additional email
+    - Full webhook support
+    - Complete API access
+    - Community support
+  button:
+    label: Get Started Free
+    to: /signup
+calculator:
+  title: Calculate Your Monthly Cost
+  description: See how affordable email infrastructure can be
+  examples:
+    - emails: 1000
+      cost: $0
+      description: Perfect for development
+    - emails: 10000
+      cost: $13.50
+      description: Growing production apps
+    - emails: 100000
+      cost: $148.50
+      description: High-volume AI agents
+    - emails: 1000000
+      cost: $1498.50
+      description: Enterprise scale
 faq:
   title: Frequently Asked Questions
   description: Everything you need to know about Sendook's email infrastructure for AI agents.
