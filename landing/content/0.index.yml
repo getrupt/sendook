@@ -1,150 +1,156 @@
-title: Ship Your [Email Infrastructure]{class="text-primary"} at light speed
-description: sendook provides developers with powerful email infrastructure. Build and scale your email functionality with ease.
+title: Email Infrastructure for [AI Agents]{class="text-primary"}
+description: Stop wrestling with Gmail APIs and AWS SES setup. Create inboxes instantly, receive webhooks for every email, and get pre-decoded JSON responses. Built for developers who want to move fast.
 seo:
-  title: sendook - Email infrastructure for developers
-  description: sendook provides developers with powerful email infrastructure. Simple APIs, webhooks, and SDKs to build and scale your email functionality.
+  title: Sendook - Email Infrastructure for AI Agents
+  description: Simple, powerful email infrastructure for AI agents. Create inboxes via API, receive webhooks, send and reply to emails instantly. Open source and developer-friendly.
 navigation: false
 hero:
   links:
-    - label: Get started
+    - label: Get Started
       icon: i-lucide-arrow-right
       trailing: true
-      to: https://ui.nuxt.com/docs/getting-started/installation/nuxt
-      target: _blank
+      to: /docs/getting-started
       size: xl
-    - label: Use this template
+    - label: View on GitHub
       icon: i-simple-icons-github
       size: xl
       color: neutral
       variant: subtle
-      to: https://github.com/nuxt-ui-templates/saas
+      to: https://github.com/sendook/sendook
       target: _blank
 sections:
-  - title: Powered by Nuxt UI Components
-    description: Access the complete Nuxt UI component library with 100+ beautifully styled, accessible, and customizable Vue components. Everything you need to build professional SaaS applications.
-    id: features
+  - title: Skip the Email Infrastructure Nightmare
+    description: Setting up email for AI agents shouldn't take days. No more domain configuration, no more Gmail API wrestling, no more AWS SES complexity. Just a simple API call to create an inbox and start sending.
+    id: why-sendook
     orientation: horizontal
     features:
-      - name: 100+ UI Components
-        description: From buttons to modals, data tables to forms - all styled with Tailwind CSS and accessible out of the box.
-        icon: i-lucide-package
-      - name: Authentication Ready
-        description: Pre-built login, signup, and password reset flows. Just connect your backend and start onboarding users.
-        icon: i-lucide-shield
-      - name: TypeScript First
-        description: Full TypeScript support with auto-completion, type safety, and IntelliSense for every component and composable.
-        icon: i-lucide-code-2
-  - title: Built for Modern SaaS
-    description: Everything you need to launch and scale your SaaS. From beautiful marketing pages to complex dashboards, ship faster with production-ready patterns.
+      - name: Create Inboxes Instantly
+        description: One API call creates a fully functional inbox. No domain setup, no DNS records, no authentication flows. Just instant email capability.
+        icon: i-lucide-inbox
+      - name: Real-time Webhooks
+        description: Get instant notifications when emails arrive. No polling, no delays. Your AI agent responds the moment an email lands.
+        icon: i-lucide-webhook
+      - name: JSON-Ready Emails
+        description: Forget parsing MIME. Every email arrives pre-decoded, formatted, and ready for consumption. Attachments included.
+        icon: i-lucide-file-json
+  - title: Built for Speed, Designed for AI Agents
+    description: Your AI agents need to communicate fast. We handle the email infrastructure complexity so you can focus on building intelligence, not debugging SMTP.
     orientation: horizontal
     reverse: true
     features:
-      - name: Edge Performance
-        description: Optimized for Core Web Vitals with automatic code splitting, lazy loading, and SSR/SSG support.
-        icon: i-lucide-zap
-      - name: Dark Mode Ready
-        description: Automatic theme switching with smooth transitions. Respects system preferences and remembers user choice.
-        icon: i-lucide-moon
-      - name: Global Ready
-        description: Built-in i18n support for 50+ languages with RTL/LTR layouts and @nuxt/fonts integration.
-        icon: i-lucide-globe
+      - name: Send & Reply Instantly
+        description: Send emails and replies with a single API call. Threading handled automatically. Attachments supported out of the box.
+        icon: i-lucide-send
+      - name: Search & Store Everything
+        description: Every email is indexed and searchable. Query by sender, subject, date, or content. Your agent's memory, ready to query.
+        icon: i-lucide-search
+      - name: Production-Ready Infrastructure
+        description: Built on battle-tested email infrastructure. Spam filtering, deliverability optimization, and reliability baked in.
+        icon: i-lucide-shield-check
 features:
-  title: Everything You Need to Ship
-  description: Stop building from scratch. Focus on your unique features while Nuxt UI handles the foundations with battle-tested components and patterns.
+  title: Everything AI Agents Need for Email
+  description: Stop wasting time on email infrastructure. We've built everything your AI agent needs to communicate via email, so you can focus on the intelligence that makes your agent unique.
   items:
-    - title: Beautiful Design System
-      description: Semantic color aliases, comprehensive design tokens, and Tailwind Variants for consistent, customizable styling.
-      icon: i-lucide-palette
-    - title: Accessible by Default
-      description: Built on Reka UI for robust accessibility. WCAG compliant components that work for everyone, everywhere.
-      icon: i-lucide-accessibility
-    - title: Developer Experience
-      description: Auto-imports, hot module replacement, and comprehensive documentation. Build faster with less friction.
-      icon: i-lucide-terminal
-    - title: SEO Optimized
-      description: Server-side rendering, automatic meta tags, sitemap generation, and Open Graph images out of the box.
-      icon: i-lucide-search
-    - title: Production Ready
-      description: Error handling, loading states, form validation, and security best practices built into every component.
-      icon: i-lucide-check-circle
-    - title: Infinitely Customizable
-      description: Override any style with the ui prop, customize globally with AppConfig, or use Tailwind classes directly.
-      icon: i-lucide-settings
+    - title: API-First Design
+      description: RESTful APIs for every operation. Create inboxes, send emails, search messages, manage domains. Complete programmatic control.
+      icon: i-lucide-code
+    - title: Webhook Events
+      description: Real-time notifications for incoming emails, delivery status, bounces, and opens. Your agent stays informed instantly.
+      icon: i-lucide-bell
+    - title: Thread Management
+      description: Automatic email threading and conversation tracking. Your agent maintains context across multi-email exchanges.
+      icon: i-lucide-messages-square
+    - title: Attachment Handling
+      description: Attachments automatically decoded and accessible via API. Images, PDFs, documents - all ready for processing.
+      icon: i-lucide-paperclip
+    - title: Full-Text Search
+      description: Search across all emails by any field. Filter by sender, recipient, subject, body, date range, or custom metadata.
+      icon: i-lucide-search-code
+    - title: Multi-Inbox Support
+      description: Create unlimited inboxes per organization. One for each customer, use case, or department. Complete isolation.
+      icon: i-lucide-mail
+    - title: Custom Domains
+      description: Use your own domains for professional emails. We handle SPF, DKIM, and DMARC configuration automatically.
+      icon: i-lucide-globe
+    - title: SDKs & Libraries
+      description: Official SDKs for Node.js, Python, and more. Get started in minutes with idiomatic, type-safe libraries.
+      icon: i-lucide-package
+    - title: Open Source
+      description: Fully open source under MIT license. Self-host or use our cloud. Complete transparency and control.
+      icon: i-lucide-git-fork
 testimonials:
-  headline: Trusted by Developers
-  title: Join Thousands Building with Nuxt UI
-  description: See why developers choose Nuxt UI to ship their SaaS applications faster and with more confidence.
+  headline: Trusted by AI Developers
+  title: Built for Teams Building Intelligent Agents
+  description: See why developers choose Sendook to power their AI agents' email capabilities.
   items:
-    - quote: Nuxt UI transformed how we build. The component quality is exceptional - everything just works with perfect TypeScript support, accessibility, and dark mode built in.
+    - quote: We went from zero to functional email in our AI agent in under an hour. No DNS setup, no Gmail OAuth dance, just pure productivity. Game changer for prototyping.
       user:
-        name: Sarah Chen
-        description: CTO at TechScale Solutions
+        name: Alex Martinez
+        description: Founder at AgentFlow
         avatar:
           src: https://i.pravatar.cc/120?img=1
-    - quote: We shipped our MVP in 2 weeks instead of 2 months. The authentication flows and form components saved us countless hours of development time.
+    - quote: The webhook integration is perfect. Our agents respond to emails in real-time without any polling overhead. Clean, simple, and it just works.
       user:
-        name: Marcus Rodriguez
-        description: VP of Engineering at DataFlow
-        avatar:
-          src: https://i.pravatar.cc/120?img=7
-    - quote: The design system with AppConfig is brilliant. We maintain brand consistency across all our products while leveraging the full component library.
-      user:
-        name: David Kumar
-        description: Security Director at SecureStack
-        avatar:
-          src: https://i.pravatar.cc/120?img=3
-    - quote: Perfect Lighthouse scores out of the box. Our Core Web Vitals improved dramatically just by switching to Nuxt UI components.
-      user:
-        name: Emily Zhang
-        description: Lead Architect at ScaleForce
+        name: Sarah Kim
+        description: Engineering Lead at AutoMate AI
         avatar:
           src: https://i.pravatar.cc/120?img=5
-    - quote: The Tailwind Variants system makes customization so intuitive. We can override any component style while keeping the functionality intact.
+    - quote: After spending two days fighting with AWS SES, we switched to Sendook and had everything working in 30 minutes. The JSON responses are exactly what we needed.
       user:
-        name: James Wilson
-        description: DevOps Lead at CloudPro
+        name: David Chen
+        description: CTO at InboxGenius
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+    - quote: The search API is brilliant. Our agent can recall any email conversation instantly. It's like giving our AI a perfect memory for customer communications.
+      user:
+        name: Emily Rodriguez
+        description: Product Manager at ReplyBot
+        avatar:
+          src: https://i.pravatar.cc/120?img=7
+    - quote: Being open source was crucial for us. We needed to understand the entire stack, and Sendook's transparent codebase gave us that confidence.
+      user:
+        name: Michael Foster
+        description: Security Engineer at SecureAI
         avatar:
           src: https://i.pravatar.cc/120?img=8
-    - quote: From the SaaS template to production in days. The pre-built layouts, navigation, and content structure accelerated our launch.
+    - quote: The multi-inbox support is perfect for our use case. Each customer gets their own isolated inbox, and our agent manages them all seamlessly.
       user:
-        name: Lisa Patel
-        description: CEO at AutoScale
+        name: Jessica Wang
+        description: VP Engineering at CustomerFirst
         avatar:
           src: https://i.pravatar.cc/120?img=9
-    - quote: Reka UI foundation means accessibility is never an afterthought. We achieved WCAG compliance without any custom work.
+    - quote: We prototyped with the cloud version and moved to self-hosted in production. The flexibility to switch without code changes is incredible.
       user:
-        name: Michael Torres
-        description: Frontend Lead at AccessFirst
+        name: Ryan Thompson
+        description: DevOps Lead at PrivateAI
         avatar:
           src: https://i.pravatar.cc/120?img=11
-    - quote: The documentation is outstanding. Every component has clear examples, and the community on Discord is incredibly helpful.
+    - quote: The SDK made integration trivial. TypeScript support is excellent, and the API design is intuitive. Our team was productive immediately.
       user:
-        name: Rachel Kim
-        description: Performance Engineer at APIHub
+        name: Nina Patel
+        description: Staff Engineer at AgentCore
         avatar:
           src: https://i.pravatar.cc/120?img=10
-    - quote: We replaced three different UI libraries with Nuxt UI. The consistency and quality across all components is unmatched.
+    - quote: Finally, email infrastructure that doesn't slow us down. We ship features for our AI agent, not email plumbing. That's the win.
       user:
-        name: Thomas Weber
-        description: UI Architecture Lead at DesignScale
+        name: Carlos Mendez
+        description: Founder at FastAgent
         avatar:
           src: https://i.pravatar.cc/120?img=12
-    - quote: The integration with Nuxt modules is seamless. Color mode, fonts, icons - everything works together perfectly.
+    - quote: The thread management is exactly what we needed. Our agent maintains perfect context across long email conversations with customers.
       user:
-        name: Sophia Martinez
-        description: Integration Specialist at TechFlow
+        name: Lisa Johnson
+        description: AI Product Lead at ConversationAI
         avatar:
           src: https://i.pravatar.cc/120?img=14
 cta:
-  title: Ready to build an amazing SaaS?
-  description: Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today.
+  title: Ready to give your AI agent email superpowers?
+  description: Join developers building the next generation of AI agents. Start sending and receiving emails in minutes, not days.
   links:
-    - label: Start building
-      to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt'
-      target: _blank
+    - label: Get Started Free
+      to: '/signup'
       trailingIcon: i-lucide-arrow-right
-    - label: View on GitHub
-      to: 'https://github.com/nuxt-ui-templates/saas'
-      target: _blank
+    - label: View Documentation
+      to: '/docs'
       variant: subtle
-      icon: i-simple-icons-github
+      icon: i-lucide-book-open

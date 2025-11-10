@@ -1,7 +1,7 @@
 {
-  "name": "sendook",
-  "short_name": "sendook",
-  "description": "Email infrastructure for developers",
+  "name": "Sendook",
+  "short_name": "Sendook",
+  "description": "Email infrastructure for AI agents. Create inboxes, send emails, and receive webhooks instantly.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
