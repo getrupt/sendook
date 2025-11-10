@@ -9,6 +9,15 @@ export default defineNuxtConfig({
     'nuxt-og-image'
   ],
 
+  app: {
+    head: {
+      title: 'sendook',
+      meta: [
+        { name: 'description', content: 'sendook - Email infrastructure for developers' }
+      ]
+    }
+  },
+
   devtools: {
     enabled: true
   },

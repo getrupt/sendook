@@ -1,8 +1,8 @@
-title: Ship Your [SaaS]{class="text-primary"} at light speed
-description: Build production-ready SaaS applications with Nuxt UI's powerful components, authentication flows, and enterprise features. The same component library trusted by the entire Nuxt ecosystem.
+title: Ship Your [Email Infrastructure]{class="text-primary"} at light speed
+description: sendook provides developers with powerful email infrastructure. Build and scale your email functionality with ease.
 seo:
-  title: Nuxt UI SaaS Template
-  description: Create stunning, fast and production-ready SaaS applications with Nuxt UI. 100+ Vue components, authentication, dark mode, and enterprise features built on Tailwind CSS.
+  title: sendook - Email infrastructure for developers
+  description: sendook provides developers with powerful email infrastructure. Simple APIs, webhooks, and SDKs to build and scale your email functionality.
 navigation: false
 hero:
   links:

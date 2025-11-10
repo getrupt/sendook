@@ -51,7 +51,6 @@ function onSubmit() {
 
 <template>
   <USeparator
-    icon="i-simple-icons-nuxtdotjs"
     class="h-px"
   />
 
@@ -89,33 +88,26 @@ function onSubmit() {
     </template>
 
     <template #left>
-      <p class="text-muted text-sm">
-        Built with Nuxt UI • © {{ new Date().getFullYear() }}
-      </p>
+      <NuxtLink to="/" class="flex items-center gap-2">
+        <img src="/sendook-logomark.svg" alt="sendook" class="w-6 h-6" />
+        <span class="text-muted text-sm">© {{ new Date().getFullYear() }} sendook</span>
+      </NuxtLink>
     </template>
 
     <template #right>
       <UButton
-        to="https://go.nuxt.com/discord"
-        target="_blank"
-        icon="i-simple-icons-discord"
-        aria-label="Nuxt on Discord"
-        color="neutral"
-        variant="ghost"
-      />
-      <UButton
-        to="https://go.nuxt.com/x"
+        to="https://twitter.com/sendook"
         target="_blank"
         icon="i-simple-icons-x"
-        aria-label="Nuxt on X"
+        aria-label="sendook on X"
         color="neutral"
         variant="ghost"
       />
       <UButton
-        to="https://github.com/nuxt-ui-templates/saas"
+        to="https://github.com/sendook"
         target="_blank"
         icon="i-simple-icons-github"
-        aria-label="Nuxt UI on GitHub"
+        aria-label="sendook on GitHub"
         color="neutral"
         variant="ghost"
       />

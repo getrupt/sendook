@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const { data: rawPage } = await useAsyncData("index", async () => {
   const result = await queryCollection("index").first()
-  console.log('Raw page data:', result)
-  console.log('Page keys:', Object.keys(result || {}))
-  console.log('result.body:', result?.body)
   
   // Nuxt Content often stores YAML data in the body property
   // Merge body data into the root object
@@ -19,11 +16,6 @@ const page = rawPage
 const title = page.value?.seo?.title || page.value?.title || 'Default Title'
 const description = page.value?.seo?.description || page.value?.description || 'Default Description'
 
-console.log('Final page for template:', page.value)
-console.log('sections:', page.value?.sections)
-console.log('features:', page.value?.features)
-console.log('testimonials:', page.value?.testimonials)
-console.log('cta:', page.value?.cta)
 
 useSeoMeta({
   titleTemplate: "",
