@@ -30,6 +30,7 @@ router.get(
 
 router.post(
   "/",
+  passport.authenticate("api_key", { session: false }),
   body("name")
     .isString()
     .trim()
@@ -37,7 +38,6 @@ router.post(
     .matches(/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/)
     .withMessage("Invalid domain name format"),
   expressValidatorMiddleware,
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string }, {}, { name: string }>,
     res: Response
