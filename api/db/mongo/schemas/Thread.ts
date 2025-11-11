@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
-import type IMessage from "../../../models/Message";
+import type IThread from "../../../models/Thread";
 
-const messageSchema = new mongoose.Schema(
+const threadSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
@@ -28,4 +24,4 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model<IMessage>("Message", messageSchema);
+export default mongoose.model<IThread>("Thread", threadSchema);

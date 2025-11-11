@@ -99,4 +99,5 @@ export type SNSMessage = {
   reject?: any;
   failure?: any;
   deliveryDelay?: any;
+  content: string;
 };
