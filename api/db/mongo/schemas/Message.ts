@@ -38,8 +38,20 @@ const messageSchema = new mongoose.Schema(
       required: false,
     },
     to: {
-      type: String,
+      type: [String],
       required: true,
+    },
+    cc: {
+      type: [String],
+      required: false,
+    },
+    bcc: {
+      type: [String],
+      required: false,
+    },
+    labels: {
+      type: [String],
+      required: false,
     },
     subject: {
       type: String,
@@ -54,8 +66,11 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     attachments: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Attachment",
+      type: [{
+        content: String,
+        name: String,
+        contentType: String,
+      }],
       required: false,
     },
     status: {

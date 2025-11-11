@@ -43,22 +43,39 @@ class SendookAPI {
       });
       return response.data;
     },
+    delete: async (inboxId: string) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/inboxes/${inboxId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
     message: {
       send: async ({
         inboxId,
         to,
+        cc,
+        bcc,
+        labels,
         subject,
         text,
         html,
       }: {
         inboxId: string;
-        to: string;
+        to: string[];
+        cc?: string[];
+        bcc?: string[];
+        labels?: string[];
         subject: string;
         text: string;
         html: string;
       }) => {
         const response = await axios.post(`${this.apiUrl}/v1/inboxes/${inboxId}/messages/send`, {
           to,
+          cc,
+          bcc,
+          labels,
           subject,
           text,
           html,

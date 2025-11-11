@@ -26,10 +26,18 @@ router.post(
       { organizationId: string; inboxId: string },
       {},
       {
-        to: string;
+        to: string[];
+        cc?: string[];
+        bcc?: string[];
+        labels?: string[];
         subject: string;
         text: string;
         html: string;
+        attachments?: {
+          content: string;
+          name?: string;
+          contentType?: string;
+        }[];
       }
     >,
     res: Response
@@ -55,10 +63,14 @@ router.post(
       threadId: thread.id,
       fromInboxId: req.params.inboxId,
       from: inbox.email,
-      to: req.body.to,
+      to: req.body.to ?? [],
+      cc: req.body.cc ?? [],
+      bcc: req.body.bcc ?? [],
+      labels: req.body.labels ?? [],
       subject: req.body.subject,
       text: req.body.text,
       html: req.body.html,
+      attachments: req.body.attachments ?? [],
     });
 
     const sesMessage = await sendSESMessage({
@@ -66,9 +78,12 @@ router.post(
       from: inbox.email,
       fromName: inbox.name,
       to: req.body.to,
+      cc: req.body.cc ?? [],
+      bcc: req.body.bcc ?? [],
       subject: req.body.subject,
       text: req.body.text,
       html: req.body.html,
+      attachments: req.body.attachments ?? [],
     });
 
     if (sesMessage.MessageId) {
@@ -174,7 +189,7 @@ router.post(
       threadId: replyToMessage.threadId.toString(),
       fromInboxId: req.params.inboxId,
       from: inbox.email,
-      to: replyToMessage.from,
+      to: [replyToMessage.from],
       subject: `Re: ${replyToMessage.subject}`,
       text: req.body.text,
       html: req.body.html,

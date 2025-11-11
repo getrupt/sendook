@@ -5,10 +5,11 @@ import { body } from "express-validator";
 import type { HydratedDocument } from "mongoose";
 import type Organization from "../../../models/Organization";
 import { expressValidatorMiddleware } from "../../../middlewares/expressValidatorMiddleware";
-import { createInbox, getInboxByOrganizationIdAndInboxId, getInboxesByOrganizationId } from "../../../controllers/InboxController";
+import { createInbox, deleteInboxByOrganizationIdAndInboxId, getInboxByOrganizationIdAndInboxId, getInboxesByOrganizationId } from "../../../controllers/InboxController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 import messagesRouter from "./messages";
 import threadsRouter from "./threads";
+import { deleteMessagesByInboxId } from "../../../controllers/MessageController";
 
 const router = Router({ mergeParams: true });
 
@@ -63,6 +64,29 @@ router.get(
       return res.status(404).json({ error: "Inbox not found" });
     }
     return res.json(inbox);
+  }
+);
+
+router.delete(
+  "/:inboxId",
+  passport.authenticate("api_key", { session: false }),
+  async (req: Request<{ organizationId: string, inboxId: string }, {}, {}>, res: Response) => {
+    const organization = req.user as HydratedDocument<Organization>;
+    const deletedInbox = await deleteInboxByOrganizationIdAndInboxId({
+      organizationId: organization._id.toString(),
+      inboxId: req.params.inboxId,
+    });
+    if (!deletedInbox) {
+      return res.status(404).json({ error: "Inbox not found" });
+    }
+    await deleteMessagesByInboxId(req.params.inboxId);
+    await sendWebhookEvent({
+      organizationId: organization._id.toString(),
+      event: "inbox.deleted",
+      inboxId: deletedInbox._id.toString(),
+      payload: deletedInbox,
+    });
+    return res.json(deletedInbox);
   }
 );
 

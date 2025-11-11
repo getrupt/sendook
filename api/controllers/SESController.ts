@@ -1,9 +1,10 @@
 import {
   GetIdentityDkimAttributesCommand,
-  SendEmailCommand,
+  SendRawEmailCommand,
   SESClient,
   VerifyDomainDkimCommand,
 } from "@aws-sdk/client-ses";
+import MailComposer from "nodemailer/lib/mail-composer";
 import type { SNSMessage } from "../models/SES";
 import { createMessage, getMessageByExternalMessageId, getMessageById } from "./MessageController";
 import type { MessageStatus } from "../models/Message";
@@ -38,46 +39,68 @@ export async function sendSESMessage({
   from,
   fromName,
   to,
+  cc,
+  bcc,
   subject,
   text,
   html,
+  attachments,
 }: {
   messageId: string;
   from: string;
   fromName?: string;
-  to: string;
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
   subject: string;
   text: string;
   html: string;
+  attachments?: {
+    content: string;
+    name?: string;
+    contentType?: string;
+  }[];
 }) {
-  const command = new SendEmailCommand({
-    Source: fromName ? `${fromName} <${from}>` : from,
-    Destination: {
-      ToAddresses: [to],
+  // SES SendEmailCommand does NOT support attachments. To include attachments, you must use SendRawEmailCommand and manually build a MIME-encoded message.
+  // Here's one way to do it with attachments:
+
+  // Create the MIME message using nodemailer's MailComposer
+  const mailOptions: any = {
+    from: fromName ? `"${fromName}" <${from}>` : from,
+    to: (to ?? []).join(", "),
+    cc: (cc ?? []).join(", "),
+    bcc: (bcc ?? []).join(", "),
+    subject,
+    text,
+    html,
+    attachments: (attachments ?? []).map(att => ({
+      filename: att.name,
+      content: att.content,
+      contentType: att.contentType,
+      encoding: "base64",
+    })),
+    headers: {
+      "X-SES-CONFIGURATION-SET": "sendook-config-set",
+      "X-SES-MESSAGE-TAGS": `message=${messageId}`,
     },
-    Message: {
-      Subject: {
-        Data: subject,
-        Charset: "UTF-8",
-      },
-      Body: {
-        Html: {
-          Data: html,
-          Charset: "UTF-8",
-        },
-        Text: {
-          Data: text,
-          Charset: "UTF-8",
-        },
-      },
-    },
+  };
+
+  const composer = new MailComposer(mailOptions);
+  const mimeMessage = await new Promise<Buffer>((resolve, reject) => {
+    composer.compile().build((err, message) => {
+      if (err) return reject(err);
+      resolve(message);
+    });
+  });
+
+  const command = new SendRawEmailCommand({
+    RawMessage: { Data: mimeMessage },
     Tags: [
       {
         Name: "message",
         Value: messageId,
       },
     ],
-    ConfigurationSetName: "sendook-config-set",
   });
   return await ses.send(command);
 }
@@ -150,7 +173,7 @@ export async function handleInboundSESMessage({
     threadId,
     from: notification.mail.source,
     fromInboxId: fromInboxId?.id,
-    to: notification.mail.destination[0],
+    to: [notification.mail.destination[0]],
     toInboxId: inbox.id,
     subject: notification.mail.commonHeaders?.subject,
     text: content.getVisibleText(),

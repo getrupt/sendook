@@ -10,10 +10,14 @@ export async function createMessage({
   toInboxId,
   from,
   to,
+  cc,
+  bcc,
+  labels, 
   externalMessageId,
   subject,
   text,
   html,
+  attachments,
   status,
 }: {
   organizationId: string;
@@ -22,11 +26,19 @@ export async function createMessage({
   fromInboxId?: string;
   toInboxId?: string;
   from: string;
-  to: string;
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
+  labels?: string[];
   externalMessageId?: string;
   subject: string;
   text: string;
   html: string;
+  attachments?: {
+    content: string;
+    name?: string;
+    contentType?: string;
+  }[];
   status?: (typeof MessageStatus)[number];
 }) {
   const message = new Message();
@@ -36,11 +48,28 @@ export async function createMessage({
   message.fromInboxId = fromInboxId ? new mongoose.Types.ObjectId(fromInboxId) : undefined;
   message.toInboxId = toInboxId ? new mongoose.Types.ObjectId(toInboxId) : undefined;
   message.from = from;
-  message.to = to;
+  message.to = to ?? [];
+  message.cc = cc ?? [];
+  message.bcc = bcc ?? [];
+  message.labels = labels ?? [];
   message.externalMessageId = externalMessageId;
   message.subject = subject;
   message.text = text;
   message.html = html;
+  message.attachments = new mongoose.Types.Array<{
+    content: string;
+    name: string;
+    contentType: string;
+  }>();
+  if (attachments) {
+    for (const attachment of attachments) {
+      message.attachments.push({
+        content: attachment.content,
+        name: attachment.name,
+        contentType: attachment.contentType,
+      });
+    }
+  }
   message.status = status;
   await message.save();
   return message;
@@ -56,4 +85,12 @@ export async function getMessagesByInboxId(inboxId: string) {
 
 export async function getMessageByExternalMessageId(externalMessageId: string) {
   return await Message.findOne({ externalMessageId });
+}
+
+export async function deleteMessageById(messageId: string) {
+  return await Message.findByIdAndDelete(messageId);
+}
+
+export async function deleteMessagesByInboxId(inboxId: string) {
+  return await Message.deleteMany({ inboxId: new mongoose.Types.ObjectId(inboxId) });
 }

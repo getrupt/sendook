@@ -15,7 +15,7 @@ describe("ThreadAPI", function () {
       });
       const newMessage = await sendook.inbox.message.send({
         inboxId: newInbox._id,
-        to: "marc@rupt.dev",
+        to: ["marc@rupt.dev"],
         subject: "Test Subject",
         text: "Test Text",
         html: "<p>Test HTML</p>",
@@ -34,7 +34,7 @@ describe("ThreadAPI", function () {
       });
       const newMessage = await sendook.inbox.message.send({
         inboxId: newInbox._id,
-        to: "marc@rupt.dev",
+        to: ["marc@rupt.dev"],
         subject: "Test Subject",
         text: "Test Text",
         html: "<p>Test HTML</p>",
