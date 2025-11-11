@@ -89,7 +89,6 @@ router.get(
       organizationId: organization._id.toString(),
       inboxId: req.params.inboxId,
     });
-    console.log(inbox, req.params.inboxId);
     if (!inbox) {
       return res.status(404).json({ error: "Inbox not found" });
     }

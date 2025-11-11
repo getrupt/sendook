@@ -10,6 +10,7 @@ import {
   deleteDomainByOrganizationIdAndName,
   getDomainByOrganizationIdAndName,
   getDomainsByOrganizationId,
+  verifyDomainDNS,
 } from "../../../controllers/DomainController";
 import { getDNSMXRecords } from "../../../controllers/DNSController";
 
@@ -82,32 +83,9 @@ router.post(
       return res.status(404).json({ error: "Domain not found" });
     }
 
-    const mxRecords = await getDNSMXRecords({
-      domain: domain.name,
-    });
+    const { domain: verifiedDomain } = await verifyDomainDNS({ domain });
 
-    let mxRecordFound;
-    if (mxRecords && Array.isArray(mxRecords)) {
-      mxRecordFound = domain.records.find(
-        (domainRecord) =>
-          domainRecord.type === "MX" &&
-          mxRecords.find((dnsRecord: any) => {
-            return (
-              typeof dnsRecord.exchange === "string" &&
-              dnsRecord.exchange.toLowerCase() ===
-                domainRecord.value.toLowerCase()
-            );
-          })
-      );
-    }
-
-    if (mxRecordFound) {
-      mxRecordFound.status = "verified";
-    }
-    domain.verified = mxRecordFound ? true : false;
-    await domain.save();
-
-    return res.json(domain);
+    return res.json(verifiedDomain);
   }
 );
 

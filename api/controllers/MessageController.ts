@@ -12,7 +12,7 @@ export async function createMessage({
   to,
   cc,
   bcc,
-  labels, 
+  labels,
   externalMessageId,
   subject,
   text,
@@ -45,8 +45,12 @@ export async function createMessage({
   message.organizationId = new mongoose.Types.ObjectId(organizationId);
   message.inboxId = new mongoose.Types.ObjectId(inboxId);
   message.threadId = new mongoose.Types.ObjectId(threadId);
-  message.fromInboxId = fromInboxId ? new mongoose.Types.ObjectId(fromInboxId) : undefined;
-  message.toInboxId = toInboxId ? new mongoose.Types.ObjectId(toInboxId) : undefined;
+  message.fromInboxId = fromInboxId
+    ? new mongoose.Types.ObjectId(fromInboxId)
+    : undefined;
+  message.toInboxId = toInboxId
+    ? new mongoose.Types.ObjectId(toInboxId)
+    : undefined;
   message.from = from;
   message.to = to ?? [];
   message.cc = cc ?? [];
@@ -58,8 +62,8 @@ export async function createMessage({
   message.html = html;
   message.attachments = new mongoose.Types.Array<{
     content: string;
-    name: string;
-    contentType: string;
+    name?: string;
+    contentType?: string;
   }>();
   if (attachments) {
     for (const attachment of attachments) {
@@ -79,19 +83,30 @@ export async function getMessageById(messageId: string) {
   return await Message.findById(messageId);
 }
 
-export async function getMessages({ inboxId, query }: { inboxId: string, query?: string }) {
-  return await Message.find({
+export async function getMessages({
+  inboxId,
+  query,
+}: {
+  inboxId: string;
+  query?: string;
+}) {
+  const filter: any = {
     inboxId: new mongoose.Types.ObjectId(inboxId),
-    $or: [
-      { subject: { $regex: query, $options: 'i' } },
-      { text: { $regex: query, $options: 'i' } },
-      { html: { $regex: query, $options: 'i' } },
-      { to: { $regex: query, $options: 'i' } },
-      { cc: { $regex: query, $options: 'i' } },
-      { bcc: { $regex: query, $options: 'i' } },
-      { labels: { $regex: query, $options: 'i' } },
-    ]
-  });
+  };
+
+  if (query) {
+    filter.$or = [
+      { subject: { $regex: query, $options: "i" } },
+      { text: { $regex: query, $options: "i" } },
+      { html: { $regex: query, $options: "i" } },
+      { to: { $regex: query, $options: "i" } },
+      { cc: { $regex: query, $options: "i" } },
+      { bcc: { $regex: query, $options: "i" } },
+      { labels: { $regex: query, $options: "i" } },
+    ];
+  }
+
+  return await Message.find(filter);
 }
 
 export async function getMessageByExternalMessageId(externalMessageId: string) {
@@ -103,5 +118,7 @@ export async function deleteMessageById(messageId: string) {
 }
 
 export async function deleteMessagesByInboxId(inboxId: string) {
-  return await Message.deleteMany({ inboxId: new mongoose.Types.ObjectId(inboxId) });
+  return await Message.deleteMany({
+    inboxId: new mongoose.Types.ObjectId(inboxId),
+  });
 }

@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { type HydratedDocument } from "mongoose";
 import Domain from "../db/mongo/schemas/Domain";
+import { getDNSMXRecords } from "./DNSController";
+import type IDomain from "../models/Domain";
 
 export async function createDomain({
   organizationId,
@@ -63,4 +65,34 @@ export async function deleteDomainByOrganizationIdAndName({
     organizationId: new mongoose.Types.ObjectId(organizationId),
     name: name,
   });
+}
+
+export async function verifyDomainDNS({
+  domain,
+}: {
+  domain: HydratedDocument<IDomain>;
+}): Promise<{ verified: boolean; domain: HydratedDocument<IDomain> }> {
+  const mxRecords = await getDNSMXRecords({ domain: domain.name });
+  
+  let mxRecordFound;
+  if (mxRecords && Array.isArray(mxRecords)) {
+    mxRecordFound = domain.records.find(
+      (domainRecord) =>
+        domainRecord.type === "MX" &&
+        mxRecords.find((dnsRecord) => {
+          return (
+            typeof dnsRecord.exchange === "string" &&
+            dnsRecord.exchange.toLowerCase() === domainRecord.value.toLowerCase()
+          );
+        })
+    );
+  }
+
+  if (mxRecordFound) {
+    mxRecordFound.status = "verified";
+  }
+  domain.verified = mxRecordFound ? true : false;
+  await domain.save();
+  
+  return { verified: domain.verified, domain };
 }
