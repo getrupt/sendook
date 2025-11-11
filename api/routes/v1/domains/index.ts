@@ -30,7 +30,12 @@ router.get(
 
 router.post(
   "/",
-  body("name").isString().notEmpty().trim(),
+  body("name")
+    .isString()
+    .trim()
+    .notEmpty()
+    .matches(/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/)
+    .withMessage("Invalid domain name format"),
   expressValidatorMiddleware,
   passport.authenticate("api_key", { session: false }),
   async (
