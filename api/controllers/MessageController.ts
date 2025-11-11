@@ -10,9 +10,12 @@ export async function createMessage({
   toInboxId,
   from,
   to,
+<<<<<<< HEAD
   cc,
   bcc,
   labels, 
+=======
+>>>>>>> main
   externalMessageId,
   subject,
   text,
