@@ -79,8 +79,19 @@ export async function getMessageById(messageId: string) {
   return await Message.findById(messageId);
 }
 
-export async function getMessagesByInboxId(inboxId: string) {
-  return await Message.find({ inboxId: new mongoose.Types.ObjectId(inboxId) });
+export async function getMessages({ inboxId, query }: { inboxId: string, query?: string }) {
+  return await Message.find({
+    inboxId: new mongoose.Types.ObjectId(inboxId),
+    $or: [
+      { subject: { $regex: query, $options: 'i' } },
+      { text: { $regex: query, $options: 'i' } },
+      { html: { $regex: query, $options: 'i' } },
+      { to: { $regex: query, $options: 'i' } },
+      { cc: { $regex: query, $options: 'i' } },
+      { bcc: { $regex: query, $options: 'i' } },
+      { labels: { $regex: query, $options: 'i' } },
+    ]
+  });
 }
 
 export async function getMessageByExternalMessageId(externalMessageId: string) {

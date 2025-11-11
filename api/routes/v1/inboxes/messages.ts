@@ -5,7 +5,7 @@ import { getInboxByOrganizationIdAndInboxId } from "../../../controllers/InboxCo
 import {
   createMessage,
   getMessageById,
-  getMessagesByInboxId,
+  getMessages,
 } from "../../../controllers/MessageController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 import { sendSESMessage } from "../../../controllers/SESController";
@@ -111,7 +111,12 @@ router.get(
   "/",
   passport.authenticate("api_key", { session: false }),
   async (
-    req: Request<{ organizationId: string; inboxId: string }>,
+    req: Request<
+      { organizationId: string; inboxId: string },
+      {},
+      {},
+      { query?: string }
+    >,
     res: Response
   ) => {
     const organization = req.user as HydratedDocument<Organization>;
@@ -124,7 +129,10 @@ router.get(
       return res.status(404).json({ error: "Inbox not found" });
     }
 
-    const messages = await getMessagesByInboxId(req.params.inboxId);
+    const messages = await getMessages({
+      inboxId: req.params.inboxId,
+      query: req.query?.query,
+    });
     return res.json(messages);
   }
 );

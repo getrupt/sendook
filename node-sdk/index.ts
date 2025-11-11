@@ -107,8 +107,11 @@ class SendookAPI {
         });
         return response.data;
       },
-      list: async (inboxId: string) => {
+      list: async (inboxId: string, query?: string) => {
         const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/messages`, {
+          params: {
+            query,
+          },
           headers: {
             "Authorization": `Bearer ${this.apiSecret}`,
           },

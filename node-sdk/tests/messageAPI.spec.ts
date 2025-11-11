@@ -37,7 +37,7 @@ describe("MessageAPI", function () {
         text: "Test Text",
         html: "<p>Test HTML</p>",
       });
-      const messages = await sendook.inbox.message.list(newInbox._id);
+      const messages = await sendook.inbox.message.list(newInbox._id, "Test");
       expect(messages).toBeDefined();
       expect(messages.length).toBeGreaterThan(0);
     });
