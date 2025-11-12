@@ -1,9 +1,6 @@
 import { Router } from "express";
-import passport from "passport";
 import type { Request, Response } from "express";
 import { body } from "express-validator";
-import type { HydratedDocument } from "mongoose";
-import type Organization from "../../../models/Organization";
 import { expressValidatorMiddleware } from "../../../middlewares/expressValidatorMiddleware";
 import {
   createInbox,
@@ -21,11 +18,9 @@ const router = Router({ mergeParams: true });
 
 router.get(
   "/",
-  passport.authenticate("api_key", { session: false }),
   async (req: Request<{ organizationId: string }, {}, {}>, res: Response) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const inboxes = await getInboxesByOrganizationId(
-      organization._id.toString()
+      req.organization._id.toString()
     );
     return res.json(inboxes);
   }
@@ -36,7 +31,6 @@ router.post(
   body("name").isString().notEmpty().trim(),
   body("domain").optional().isString().notEmpty().trim(),
   expressValidatorMiddleware,
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<
       { organizationId: string },
@@ -45,12 +39,10 @@ router.post(
     >,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
-
     let domainId: string | undefined;
     if (req.body.domain) {
       const domain = await getVerifiedDomainByOrganizationIdAndName({
-        organizationId: organization._id.toString(),
+        organizationId: req.organization._id.toString(),
         name: req.body.domain,
       });
       if (!domain) {
@@ -61,13 +53,13 @@ router.post(
     }
 
     const inbox = await createInbox({
-      organization_id: organization._id.toString(),
+      organization_id: req.organization._id.toString(),
       name: req.body.name,
       domain_id: domainId,
     });
 
     await sendWebhookEvent({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       event: "inbox.created",
       inboxId: inbox.id,
       payload: inbox,
@@ -79,14 +71,12 @@ router.post(
 
 router.get(
   "/:inboxId",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string; inboxId: string }, {}, {}>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const inbox = await getInboxByOrganizationIdAndInboxId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId,
     });
     if (!inbox) {
@@ -98,14 +88,12 @@ router.get(
 
 router.delete(
   "/:inboxId",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string; inboxId: string }, {}, {}>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const deletedInbox = await deleteInboxByOrganizationIdAndInboxId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId,
     });
     if (!deletedInbox) {
@@ -113,7 +101,7 @@ router.delete(
     }
     await deleteMessagesByInboxId(req.params.inboxId);
     await sendWebhookEvent({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       event: "inbox.deleted",
       inboxId: deletedInbox._id.toString(),
       payload: deletedInbox,

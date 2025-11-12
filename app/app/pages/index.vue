@@ -1,14 +1,16 @@
 <template>
-  <div class="dashboard">
-    <section class="page-heading">
-      <div>
-        <h1>Emails</h1>
-        <p>Track sending performance, previews, and delivery diagnostics in real time.</p>
+  <DashboardShell>
+    <template #header>
+      <div class="page-heading">
+        <div>
+          <h1>Emails</h1>
+          <p>Track sending performance, previews, and delivery diagnostics in real time.</p>
+        </div>
+        <button class="primary-action" type="button">
+          <span>New email</span>
+        </button>
       </div>
-      <button class="primary-action" type="button">
-        <span>New email</span>
-      </button>
-    </section>
+    </template>
 
     <section class="toolbar">
       <div class="tab-group">
@@ -87,42 +89,18 @@
         </a>
       </div>
     </section>
-  </div>
+  </DashboardShell>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
 defineOptions({
   name: 'DashboardPage'
 });
 
-const router = useRouter();
-const token = ref<string | null>(null);
-
-const readCookie = (name: string) => {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1] ?? '') : null;
-};
-
-onMounted(() => {
-  token.value = readCookie('sendook_token');
-  if (!token.value) {
-    router.replace('/login');
-  }
-});
+useRequireAuth();
 </script>
 
 <style scoped>
-.dashboard {
-  display: grid;
-  gap: 2rem;
-}
-
 .page-heading {
   display: flex;
   align-items: center;
@@ -134,6 +112,7 @@ onMounted(() => {
   font-size: 2.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  margin-top: 0;
 }
 
 .page-heading p {

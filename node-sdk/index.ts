@@ -9,6 +9,55 @@ class SendookAPI {
     this.apiUrl = apiUrl || "https://api.sendook.com";
   }
 
+  public apiKey = {
+    create: async ({
+      name,
+    }: {
+      name: string;
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/api_keys`, {
+        name,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    list: async () => {
+      const response = await axios.get(`${this.apiUrl}/v1/api_keys`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    get: async ({
+      apiKeyId,
+    }: {
+      apiKeyId: string;
+    }) => {
+      const response = await axios.get(`${this.apiUrl}/v1/api_keys/${apiKeyId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    delete: async ({
+      apiKeyId,
+    }: {
+      apiKeyId: string;
+    }) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/api_keys/${apiKeyId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+  };
+
   public domain = {
     create: async ({
       name,

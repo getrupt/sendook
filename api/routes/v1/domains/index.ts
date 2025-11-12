@@ -1,9 +1,6 @@
 import { Router } from "express";
-import passport from "passport";
 import type { Request, Response } from "express";
 import { body } from "express-validator";
-import type { HydratedDocument } from "mongoose";
-import type Organization from "../../../models/Organization";
 import { expressValidatorMiddleware } from "../../../middlewares/expressValidatorMiddleware";
 import {
   createDomain,
@@ -12,17 +9,14 @@ import {
   getDomainsByOrganizationId,
   verifyDomainDNS,
 } from "../../../controllers/DomainController";
-import { getDNSMXRecords } from "../../../controllers/DNSController";
 
 const router = Router({ mergeParams: true });
 
 router.get(
   "/",
-  passport.authenticate("api_key", { session: false }),
   async (req: Request<{ organizationId: string }, {}, {}>, res: Response) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const domains = await getDomainsByOrganizationId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
     });
     return res.json(domains);
   }
@@ -30,7 +24,6 @@ router.get(
 
 router.post(
   "/",
-  passport.authenticate("api_key", { session: false }),
   body("name")
     .isString()
     .trim()
@@ -42,9 +35,8 @@ router.post(
     req: Request<{ organizationId: string }, {}, { name: string }>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const domain = await createDomain({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       name: req.body.name,
     });
 
@@ -54,14 +46,12 @@ router.post(
 
 router.get(
   "/:domainId",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string; domainId: string }, {}, {}>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const domain = await getDomainByOrganizationIdAndName({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       name: req.params.domainId,
     });
 
@@ -74,14 +64,12 @@ router.get(
 
 router.post(
   "/:domainId/verify",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string; domainId: string }, {}, {}>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const domain = await getDomainByOrganizationIdAndName({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       name: req.params.domainId,
     });
     if (!domain) {
@@ -96,14 +84,12 @@ router.post(
 
 router.delete(
   "/:domainId",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{ organizationId: string; domainId: string }, {}, {}>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
     const deletedDomain = await deleteDomainByOrganizationIdAndName({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       name: req.params.domainId,
     });
     if (!deletedDomain) {
