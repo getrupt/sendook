@@ -1,0 +1,155 @@
+title: Email Infrastructure for [AI Agents]{class="text-primary"}
+description: Create inboxes and receive emails with webhooks. Get pre-decoded JSON responses. Built for developers who want to go fast.
+seo:
+  title: Sendook - Email Infrastructure for AI Agents
+  description: Simple, powerful email infrastructure for AI agents. Create inboxes via API, receive webhooks, send and reply to emails instantly. Open source and developer-friendly.
+navigation: false
+hero:
+  links:
+    - label: Get Started
+      icon: i-lucide-arrow-right
+      trailing: true
+      to: /docs/getting-started
+      size: xl
+    - label: View on GitHub
+      icon: i-simple-icons-github
+      size: xl
+      color: neutral
+      variant: subtle
+      to: https://github.com/getrupt/sendook
+      target: _blank
+sections:
+  - title: Core Features
+    id: why-sendook
+    orientation: horizontal
+    features:
+      - name: Create Inboxes
+        description: One API call creates a functional inbox. No DNS setup required.
+        icon: i-lucide-inbox
+      - name: Webhooks
+        description: Get instant notifications when emails arrive. No polling required.
+        icon: i-lucide-webhook
+      - name: Pre-decoded JSON
+        description: Every email arrives formatted as JSON. Attachments included.
+        icon: i-lucide-file-json
+  - title: Built for Speed
+    description: Simple APIs for sending, replying, and searching emails. Focus on building your product.
+    orientation: horizontal
+    reverse: true
+    features:
+      - name: Send & Reply
+        description: Send emails and replies with one API call. Threading handled automatically.
+        icon: i-lucide-send
+      - name: Search Everything
+        description: Every email is indexed and searchable. Query by sender, subject, date, or content.
+        icon: i-lucide-search
+      - name: Production Ready
+        description: Built on proven email infrastructure. Spam filtering and deliverability included.
+        icon: i-lucide-shield-check
+features:
+  title: Complete Email API
+  description: Everything you need to handle email in your application. Simple APIs, webhook events, and JSON responses.
+  items:
+    - title: RESTful APIs
+      description: Create inboxes, send emails, search messages, and manage domains. Full programmatic control.
+      icon: i-lucide-code
+    - title: Webhook Events
+      description: Get notified for incoming emails, delivery status, bounces, and opens.
+      icon: i-lucide-bell
+    - title: Thread Management
+      description: Automatic email threading and conversation tracking.
+      icon: i-lucide-messages-square
+    - title: Attachment Handling
+      description: Attachments decoded and accessible via API. Images, PDFs, and documents.
+      icon: i-lucide-paperclip
+    - title: Full-Text Search
+      description: Search emails by sender, recipient, subject, body, date range, or metadata.
+      icon: i-lucide-search-code
+    - title: Multiple Inboxes
+      description: Create unlimited inboxes per organization. Complete isolation between inboxes.
+      icon: i-lucide-mail
+    - title: Custom Domains
+      description: Use your own domains. SPF, DKIM, and DMARC configuration handled automatically.
+      icon: i-lucide-globe
+    - title: SDKs & Libraries
+      description: Official SDKs for Node.js, Python, and more. Type-safe and idiomatic.
+      icon: i-lucide-package
+    - title: Open Source
+      description: MIT licensed. Self-host or use our cloud.
+      icon: i-lucide-git-fork
+testimonials:
+  headline: Trusted by AI Developers
+  title: Built for Teams Building Intelligent Agents
+  description: See why developers choose Sendook to power their AI agents' email capabilities.
+  items:
+    - quote: We went from zero to functional email in our AI agent in under an hour. No DNS setup, no Gmail OAuth dance, just pure productivity. Game changer for prototyping.
+      user:
+        name: Alex Martinez
+        description: Founder at AgentFlow
+        avatar:
+          src: https://i.pravatar.cc/120?img=1
+    - quote: The webhook integration is perfect. Our agents respond to emails in real-time without any polling overhead. Clean, simple, and it just works.
+      user:
+        name: Sarah Kim
+        description: Engineering Lead at AutoMate AI
+        avatar:
+          src: https://i.pravatar.cc/120?img=5
+    - quote: After spending two days fighting with AWS SES, we switched to Sendook and had everything working in 30 minutes. The JSON responses are exactly what we needed.
+      user:
+        name: David Chen
+        description: CTO at InboxGenius
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+    - quote: The search API is brilliant. Our agent can recall any email conversation instantly. It's like giving our AI a perfect memory for customer communications.
+      user:
+        name: Emily Rodriguez
+        description: Product Manager at ReplyBot
+        avatar:
+          src: https://i.pravatar.cc/120?img=7
+    - quote: Being open source was crucial for us. We needed to understand the entire stack, and Sendook's transparent codebase gave us that confidence.
+      user:
+        name: Michael Foster
+        description: Security Engineer at SecureAI
+        avatar:
+          src: https://i.pravatar.cc/120?img=8
+    - quote: The multi-inbox support is perfect for our use case. Each customer gets their own isolated inbox, and our agent manages them all seamlessly.
+      user:
+        name: Jessica Wang
+        description: VP Engineering at CustomerFirst
+        avatar:
+          src: https://i.pravatar.cc/120?img=9
+    - quote: We prototyped with the cloud version and moved to self-hosted in production. The flexibility to switch without code changes is incredible.
+      user:
+        name: Ryan Thompson
+        description: DevOps Lead at PrivateAI
+        avatar:
+          src: https://i.pravatar.cc/120?img=11
+    - quote: The SDK made integration trivial. TypeScript support is excellent, and the API design is intuitive. Our team was productive immediately.
+      user:
+        name: Nina Patel
+        description: Staff Engineer at AgentCore
+        avatar:
+          src: https://i.pravatar.cc/120?img=10
+    - quote: Finally, email infrastructure that doesn't slow us down. We ship features for our AI agent, not email plumbing. That's the win.
+      user:
+        name: Carlos Mendez
+        description: Founder at FastAgent
+        avatar:
+          src: https://i.pravatar.cc/120?img=12
+    - quote: The thread management is exactly what we needed. Our agent maintains perfect context across long email conversations with customers.
+      user:
+        name: Lisa Johnson
+        description: AI Product Lead at ConversationAI
+        avatar:
+          src: https://i.pravatar.cc/120?img=14
+cta:
+  title: Ready to give your AI agent email superpowers?
+  description: Join developers building the next generation of AI agents. Start sending and receiving emails in minutes, not days.
+  links:
+    - label: Get Started Free
+      to: '/signup'
+      trailingIcon: i-lucide-arrow-right
+    - label: View Documentation
+      to: '/docs'
+      variant: subtle
+      icon: i-lucide-book-open
