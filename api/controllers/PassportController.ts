@@ -17,7 +17,7 @@ export const passportBearerStrategy = new BearerStrategy(
       }
       const organizations = await getOrganizationsByUserId(user?.id);
       return done(null, {
-        ...user,
+        ...(user.toJSON()),
         organizations,
       });
     } catch (err) {
