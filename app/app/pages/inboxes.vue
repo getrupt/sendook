@@ -48,6 +48,9 @@
           <span v-if="inbox.status" class="status">
             {{ inbox.status }}
           </span>
+          <NuxtLink :to="`/inbox/${inbox._id ?? inbox.name}`" class="button-secondary">
+            View
+          </NuxtLink>
         </footer>
       </article>
     </section>
@@ -438,6 +441,7 @@ watch(
   justify-content: space-between;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.85rem;
+  gap: 1rem;
 }
 
 .status {

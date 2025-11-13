@@ -48,7 +48,6 @@ interface NavLink {
 
 const links: NavLink[] = [
   { label: 'Dashboard', to: '/' },
-  { label: 'Messages', to: '/messages' },
   { label: 'Inboxes', to: '/inboxes' },
   { label: 'API Keys', to: '/api-keys' },
   { label: 'Domains', to: '/domains' }
