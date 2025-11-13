@@ -43,6 +43,12 @@ export async function getApiKeyByKey(key: string) {
   return await ApiKey.findOne({ key });
 }
 
-export async function deleteApiKey(apiKeyId: string) {
-  return await ApiKey.findByIdAndDelete(apiKeyId);
+export async function deleteApiKey({
+  apiKeyId,
+  organizationId,
+}: {
+  apiKeyId: string;
+  organizationId: string;
+}) {
+  return await ApiKey.findOneAndDelete({ _id: apiKeyId, organizationId });
 }

@@ -44,7 +44,7 @@ router.get(
 router.delete(
   "/:apiKeyId",
   async (req: Request<{ apiKeyId: string }>, res: Response) => {
-    const apiKey = await deleteApiKey(req.params.apiKeyId);
+    const apiKey = await deleteApiKey({ apiKeyId: req.params.apiKeyId, organizationId: req.organization._id.toString() });
     res.json(apiKey);
   }
 );
