@@ -122,13 +122,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
+import { onBeforeUnmount, reactive, ref, watch } from 'vue';
 
 defineOptions({
   name: 'ApiKeysPage'
 });
 
-const { public: publicConfig } = useRuntimeConfig();
+const config = useRuntimeConfig();
 const session = useRequireAuth();
 
 interface ApiKey {
@@ -152,8 +152,6 @@ const form = reactive({
 });
 const copiedKeyId = ref<string | null>(null);
 let copyTimeout: ReturnType<typeof setTimeout> | null = null;
-
-const apiBase = computed(() => publicConfig.apiUrl ?? 'http://localhost:8006');
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -181,7 +179,7 @@ const loadKeys = async () => {
   loading.value = true;
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/api_keys`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/api_keys`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -263,7 +261,7 @@ const handleCreateKey = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/api_keys`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/api_keys`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -306,7 +304,7 @@ const handleDeleteKey = async () => {
   deleteError.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/api_keys/${keyId}`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/api_keys/${keyId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`

@@ -144,14 +144,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 
 defineOptions({
   name: 'DomainsPage'
 });
 
-const { public: publicConfig } = useRuntimeConfig();
 const session = useRequireAuth();
+const config = useRuntimeConfig();
 
 interface Domain {
   _id?: string;
@@ -175,8 +175,6 @@ const pendingDelete = ref<Domain | null>(null);
 const form = reactive({
   name: ''
 });
-
-const apiBase = computed(() => publicConfig.apiUrl ?? 'http://localhost:8006');
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -204,7 +202,7 @@ const loadDomains = async () => {
   loading.value = true;
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/domains`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/domains`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -263,7 +261,7 @@ const handleVerifyDomain = async (domain: Domain) => {
 
   try {
     const response = await fetch(
-      `${apiBase.value}/organizations/${organizationId}/domains/${domainId}/verify`,
+      `${config.public.apiUrl}/organizations/${organizationId}/domains/${domainId}/verify`,
       {
         method: 'POST',
         headers: {
@@ -303,7 +301,7 @@ const handleCreateDomain = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/domains`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/domains`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -346,7 +344,7 @@ const handleDeleteDomain = async () => {
   deleteError.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/domains/${domainId}`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/domains/${domainId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
