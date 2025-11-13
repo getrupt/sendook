@@ -89,7 +89,7 @@ const handleSubmit = async () => {
     });
 
     tokenCookie.value = response.token;
-    await navigateTo('/');
+    await navigateTo('/inboxes');
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'data' in error) {
       const fetchError = error as { data?: { message?: string } };
