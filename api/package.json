@@ -28,11 +28,13 @@
     "email-reply-parser": "^2.1.0",
     "express": "^5.1.0",
     "express-validator": "^7.3.0",
+    "ioredis": "^5.8.2",
     "mailparser": "^3.9.0",
     "mongoose": "^8.19.2",
     "nodemailer": "^7.0.10",
     "passport": "^0.7.0",
-    "passport-http-bearer": "^1.0.1"
+    "passport-http-bearer": "^1.0.1",
+    "rate-limit-redis": "^4.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

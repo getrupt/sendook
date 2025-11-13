@@ -17,47 +17,64 @@
       <p>We are fetching your verified and pending sending domains.</p>
     </section>
 
-    <section v-else-if="domains.length === 0" class="placeholder-card">
-      <h2>Connect your sending domain</h2>
-      <p>
-        Domains will appear here once they are verified. Add DNS records provided by Sendook to unlock
-        DKIM, SPF, and custom tracking support.
-      </p>
-    </section>
+    <template v-else>
+      <div v-if="verificationMessage" class="banner banner-success">
+        {{ verificationMessage }}
+      </div>
+      <div v-if="verificationError" class="banner banner-error" role="alert">
+        {{ verificationError }}
+      </div>
 
-    <section v-else class="domains-grid">
-      <article v-for="domain in domains" :key="domain._id ?? domain.name" class="domain-card">
-        <header>
-          <div class="domain-heading flex items-center gap-2 w-full">
-            <h3 class="flex-1">{{ domain.name }}</h3>
+      <section v-if="domains.length === 0" class="placeholder-card">
+        <h2>Connect your sending domain</h2>
+        <p>
+          Domains will appear here once they are verified. Add DNS records provided by Sendook to unlock
+          DKIM, SPF, and custom tracking support.
+        </p>
+      </section>
+
+      <section v-else class="domains-grid">
+        <article v-for="domain in domains" :key="domain._id ?? domain.name" class="domain-card">
+          <header>
+            <div class="domain-heading flex items-center gap-2 w-full">
+              <h3 class="flex-1">{{ domain.name }}</h3>
+              <button
+                type="button"
+                class="icon-delete"
+                aria-label="Delete domain"
+                @click="openDeleteDialog(domain)"
+              >
+                ×
+              </button>
+            </div>
+          </header>
+          <ul class="meta">
+            <li>
+              <span class="meta-label">Created</span>
+              <span>{{ formatDate(domain.createdAt) }}</span>
+            </li>
+            <li>
+              <span class="meta-label">Status</span>
+              <span :class="['status-pill', domain.verified ? 'verified' : 'pending']">
+                {{ (domain.verified ? 'verified' : 'pending').toUpperCase() }}
+              </span>
+            </li>
+          </ul>
+          <footer v-if="!domain.verified">
+            <span>{{ domain.verified ? 'Verified' : 'DNS pending verification' }}</span>
             <button
               type="button"
-              class="icon-delete"
-              aria-label="Delete domain"
-              @click="openDeleteDialog(domain)"
+              class="button-verify"
+              :disabled="verifyingId === (domain.name ?? domain._id ?? '')"
+              @click="handleVerifyDomain(domain)"
             >
-              ×
+              <span v-if="verifyingId === (domain.name ?? domain._id ?? '')">Verifying…</span>
+              <span v-else>Verify DNS</span>
             </button>
-          </div>
-        </header>
-        <ul class="meta">
-          <li>
-            <span class="meta-label">Created</span>
-            <span>{{ formatDate(domain.createdAt) }}</span>
-          </li>
-          <li>
-            <span class="meta-label">Status</span>
-            <span :class="['status-pill', domain.status ?? 'pending']">
-              {{ (domain.status ?? 'pending').toUpperCase() }}
-            </span>
-          </li>
-        </ul>
-        <footer>
-          <span v-if="domain.status">{{ domain.status }}</span>
-          <span v-else class="muted">DNS pending verification</span>
-        </footer>
-      </article>
-    </section>
+          </footer>
+        </article>
+      </section>
+    </template>
 
     <Transition name="fade">
       <div v-if="showDialog" class="dialog-backdrop" role="dialog" aria-modal="true">
@@ -139,7 +156,7 @@ const session = useRequireAuth();
 interface Domain {
   _id?: string;
   name?: string;
-  status?: string;
+  verified?: boolean;
   createdAt?: string;
 }
 
@@ -147,8 +164,11 @@ const domains = ref<Domain[]>([]);
 const loading = ref(true);
 const saving = ref(false);
 const deleting = ref(false);
+const verifyingId = ref<string | null>(null);
 const errorMessage = ref('');
 const deleteError = ref('');
+const verificationMessage = ref('');
+const verificationError = ref('');
 const showDialog = ref(false);
 const showDeleteDialog = ref(false);
 const pendingDelete = ref<Domain | null>(null);
@@ -225,6 +245,49 @@ const closeDeleteDialog = () => {
   showDeleteDialog.value = false;
   pendingDelete.value = null;
   deleteError.value = '';
+};
+
+const handleVerifyDomain = async (domain: Domain) => {
+  const organizationId = session.organizationId.value;
+  const token = session.token.value;
+  const domainId = domain.name ?? domain._id;
+
+  if (!organizationId || !token || !domainId) {
+    verificationError.value = 'Missing domain information. Please refresh and try again.';
+    return;
+  }
+
+  verifyingId.value = domainId;
+  verificationMessage.value = '';
+  verificationError.value = '';
+
+  try {
+    const response = await fetch(
+      `${apiBase.value}/organizations/${organizationId}/domains/${domainId}/verify`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { message?: string };
+      throw new Error(payload.message ?? 'Unable to verify domain.');
+    }
+
+    verificationMessage.value = `Verification triggered for ${domainId}.`;
+    await loadDomains();
+  } catch (error) {
+    if (error instanceof Error) {
+      verificationError.value = error.message;
+    } else {
+      verificationError.value = 'Unable to verify domain. Please try again.';
+    }
+  } finally {
+    verifyingId.value = null;
+  }
 };
 
 const handleCreateDomain = async () => {
@@ -460,6 +523,10 @@ watch(
 .domain-card footer {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .dialog-body {
@@ -473,6 +540,52 @@ watch(
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
+}
+
+.button-verify {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(99, 102, 241, 0.16);
+  color: #c7d2fe;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.button-verify:hover {
+  background: rgba(99, 102, 241, 0.28);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.button-verify:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.banner {
+  padding: 1rem 1.25rem;
+  border-radius: 0.85rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.banner-success {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+.banner-error {
+  background: rgba(248, 113, 113, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  color: #fecaca;
 }
 
 .muted {

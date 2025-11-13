@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import { rateLimit } from "express-rate-limit";
 import type { Request, Response } from "express";
 import { getInboxByOrganizationIdAndInboxId } from "../../../controllers/InboxController";
 import {
@@ -13,11 +14,30 @@ import {
   addMessageToThread,
   createThread,
 } from "../../../controllers/ThreadController";
+import { redis } from "../../../db/redis";
+import { RedisStore, type RedisReply } from "rate-limit-redis";
+
+const connection = redis.duplicate({
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+});
+
+const rateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 1000,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: (command: string, ...args: string[]) =>
+			connection.call(command, ...args) as Promise<RedisReply>,
+  }),
+});
 
 const router = Router({ mergeParams: true });
 
 router.post(
   "/send",
+  rateLimiter,
   async (
     req: Request<
       { organizationId: string; inboxId: string },
@@ -153,6 +173,7 @@ router.get(
 
 router.post(
   "/:messageId/reply",
+  rateLimiter,
   async (
     req: Request<
       { organizationId: string; inboxId: string; messageId: string },

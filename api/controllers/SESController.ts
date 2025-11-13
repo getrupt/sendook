@@ -61,15 +61,10 @@ export async function sendSESMessage({
     contentType?: string;
   }[];
 }) {
-  // SES SendEmailCommand does NOT support attachments. To include attachments, you must use SendRawEmailCommand and manually build a MIME-encoded message.
-  // Here's one way to do it with attachments:
-
-  // Create the MIME message using nodemailer's MailComposer
   const mailOptions: any = {
     from: fromName ? `"${fromName}" <${from}>` : from,
     to: (to ?? []).join(", "),
     cc: (cc ?? []).join(", "),
-    bcc: (bcc ?? []).join(", "),
     subject,
     text,
     html,
