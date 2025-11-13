@@ -1,0 +1,80 @@
+title: Simple, Transparent Pricing
+description: Pay only for what you use. No hidden fees, no surprises, no complicated tiers.
+seo:
+  title: Pricing - Sendook
+  description: Simple, transparent pricing for AI agent email infrastructure. First 1,000 emails free every month.
+navigation.icon: i-lucide-credit-card
+headline: Pricing that scales with you
+pricing:
+  tagline: Email infrastructure that grows with your needs
+  description: |
+    Start building immediately with our generous free tier. As your AI agents scale, 
+    our pricing scales linearly—no sudden jumps, no enterprise sales calls, just transparent 
+    per-email pricing.
+  benefits:
+    - title: No Surprises
+      description: Predictable pricing that scales linearly with your usage. No hidden fees or unexpected charges.
+      icon: i-lucide-shield-check
+    - title: Start Free
+      description: 1,000 free emails every month. Perfect for development, testing, and small projects.
+      icon: i-lucide-zap
+    - title: Open Source
+      description: Fully open source under MIT license. Self-host for complete control and zero cost.
+      icon: i-lucide-code
+plan:
+  title: Pay As You Grow
+  description: One simple plan. Unlimited everything except emails.
+  price:
+    base: $0
+    perEmail: $0.0015
+  features:
+    - Unlimited inboxes
+    - Unlimited domains
+    - 1,000 free emails/month
+    - $0.0015 per additional email
+    - Full webhook support
+    - Complete API access
+    - Community support
+  button:
+    label: Get Started Free
+    to: /signup
+calculator:
+  title: Calculate Your Monthly Cost
+  description: See how affordable email infrastructure can be
+  examples:
+    - emails: 1000
+      cost: $0
+      description: Perfect for development
+    - emails: 10000
+      cost: $13.50
+      description: Growing production apps
+    - emails: 100000
+      cost: $148.50
+      description: High-volume AI agents
+    - emails: 1000000
+      cost: $1498.50
+      description: Enterprise scale
+faq:
+  title: Frequently Asked Questions
+  description: Everything you need to know about Sendook's email infrastructure for AI agents.
+  items:
+    - label: Can I self-host Sendook?
+      content: Yes! Sendook is fully open source under the MIT license. You can self-host the entire platform on your own infrastructure. We provide Docker containers and deployment guides to make self-hosting straightforward.
+    - label: How do webhooks work?
+      content: When an email arrives at any of your inboxes, we immediately POST a JSON payload to your configured webhook URL. The payload includes the decoded email content, sender, subject, attachments, and metadata. No polling required - you get instant notifications.
+    - label: What happens if I exceed my plan limits?
+      content: We'll notify you as you approach your limits. You can upgrade your plan anytime. We won't stop your service - instead, we'll work with you to find the right plan. For occasional overages, we charge a small per-email fee rather than cutting you off.
+    - label: How long are emails stored?
+      content: The Free plan stores emails for 30 days, Pro for 1 year, and Enterprise has unlimited retention. You can also export emails anytime via API or configure automatic archival to your own storage.
+    - label: Can I use my own domain?
+      content: Yes! On Pro and Enterprise plans, you can use custom domains for sending emails. We handle all the DNS configuration (SPF, DKIM, DMARC) automatically. Your emails will come from your domain, not ours.
+    - label: Is there a free trial?
+      content: The Free plan is available immediately with no credit card required. Pro plans include a 14-day free trial so you can test all features before committing. Enterprise plans include a custom proof-of-concept period.
+    - label: What kind of support do you offer?
+      content: Free plans get community support via Discord and GitHub. Pro plans include email support with 24-hour response time. Enterprise plans get dedicated support with SLA guarantees, Slack integration, and direct engineering access.
+    - label: How secure is my email data?
+      content: All emails are encrypted at rest and in transit. We use industry-standard encryption (AES-256). Webhook payloads are signed for verification. For maximum security, self-host on your own infrastructure. We never train AI models on your data.
+    - label: Can multiple team members access the same organization?
+      content: Yes! Pro and Enterprise plans include team collaboration features. You can invite team members, assign role-based permissions, and manage inboxes collaboratively. Each member gets their own API keys with granular access control.
+    - label: What's your uptime guarantee?
+      content: Our cloud service targets 99.9% uptime. Enterprise plans include SLA guarantees with financial credits for downtime. All services have comprehensive monitoring, automatic failover, and redundant infrastructure across multiple availability zones.
