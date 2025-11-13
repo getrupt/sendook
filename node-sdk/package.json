@@ -1,8 +1,12 @@
 {
-  "name": "node-sdk",
+  "name": "@sendook/node",
+  "version": "0.1.0",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
