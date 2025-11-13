@@ -128,14 +128,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 
 defineOptions({
   name: 'InboxesPage'
 });
 
-const { public: publicConfig } = useRuntimeConfig();
 const session = useRequireAuth();
+const config = useRuntimeConfig();
 
 interface Inbox {
   _id?: string;
@@ -160,8 +160,6 @@ const form = reactive({
   displayName: '',
   email: ''
 });
-
-const apiBase = computed(() => publicConfig.apiUrl ?? 'http://localhost:8006');
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -189,7 +187,7 @@ const loadInboxes = async () => {
   loading.value = true;
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/inboxes`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/inboxes`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -246,7 +244,7 @@ const handleCreateInbox = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/inboxes`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/inboxes`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -290,7 +288,7 @@ const handleDeleteInbox = async () => {
   deleteError.value = '';
 
   try {
-    const response = await fetch(`${apiBase.value}/organizations/${organizationId}/inboxes/${inboxId}`, {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/inboxes/${inboxId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`
