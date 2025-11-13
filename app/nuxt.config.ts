@@ -24,6 +24,12 @@ export default defineNuxtConfig({
     }
   },
 
+  nitro: {
+    externals: {
+      inline: ['tailwindcss']
+    }
+  },
+
   runtimeConfig: {
     public: {
       apiUrl
