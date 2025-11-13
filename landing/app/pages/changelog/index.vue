@@ -2,7 +2,10 @@
 const route = useRoute()
 
 const { data: page } = await useAsyncData('changelog', () => queryCollection('changelog').first())
-const { data: versions } = await useAsyncData(route.path, () => queryCollection('versions').order('date', 'DESC').all())
+const { data: versions } = await useAsyncData(route.path, async () => {
+  const allVersions = await queryCollection('versions').all()
+  return allVersions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+})
 
 const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
