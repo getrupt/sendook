@@ -1,16 +1,3 @@
-# PROJECT_ID="$(gcloud config get-value project -q)"
-
-# while IFS='=' read -r key value; do
-#   # Skip blank lines or comments
-#   [[ -z "$key" || "$key" =~ ^# ]] && continue
-#   echo "→ creating $key"
-#   echo -n "$value" | gcloud secrets create "$key" \
-#     --project="$PROJECT_ID" \
-#     --data-file=- 2>/dev/null \
-#     || echo "secret $key already exists — adding new version" \
-#     && echo -n "$value" | gcloud secrets versions add "$key" --project="$PROJECT_ID" --data-file=-
-# done < .env.production
-
 #!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
