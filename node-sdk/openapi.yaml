@@ -1,0 +1,643 @@
+openapi: 3.0.3
+info:
+  title: Sendook API
+  version: "1.0.0"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  description: |
+    OpenAPI specification generated from the Node SDK in `index.ts`. This document
+    captures the REST endpoints invoked by the SDK to help consumers understand
+    request and response shapes when integrating directly with the Sendook API.
+servers:
+  - url: https://api.sendook.com
+    description: Default production server
+security:
+  - bearerAuth: []
+paths:
+  /v1/api_keys:
+    post:
+      tags:
+        - API Keys
+      summary: Create an API key
+      operationId: createApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyCreateRequest'
+      responses:
+        "201":
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - API Keys
+      summary: List API keys
+      operationId: listApiKeys
+      responses:
+        "200":
+          description: A collection of API keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiKey'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/api_keys/{apiKeyId}:
+    parameters:
+      - $ref: '#/components/parameters/ApiKeyId'
+    get:
+      tags:
+        - API Keys
+      summary: Retrieve an API key
+      operationId: getApiKey
+      responses:
+        "200":
+          description: API key details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - API Keys
+      summary: Delete an API key
+      operationId: deleteApiKey
+      responses:
+        "204":
+          description: API key deleted
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/domains:
+    post:
+      tags:
+        - Domains
+      summary: Create a domain
+      operationId: createDomain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainCreateRequest'
+      responses:
+        "201":
+          description: Domain created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/domains/{domainId}:
+    parameters:
+      - $ref: '#/components/parameters/DomainId'
+    get:
+      tags:
+        - Domains
+      summary: Retrieve domain details
+      operationId: getDomain
+      responses:
+        "200":
+          description: Domain details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Domains
+      summary: Delete a domain
+      operationId: deleteDomain
+      responses:
+        "204":
+          description: Domain deleted
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/domains/{domainId}/verify:
+    parameters:
+      - $ref: '#/components/parameters/DomainId'
+    post:
+      tags:
+        - Domains
+      summary: Trigger domain verification
+      operationId: verifyDomain
+      responses:
+        "202":
+          description: Verification initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes:
+    post:
+      tags:
+        - Inboxes
+      summary: Create an inbox
+      operationId: createInbox
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxCreateRequest'
+      responses:
+        "201":
+          description: Inbox created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - Inboxes
+      summary: List inboxes
+      operationId: listInboxes
+      responses:
+        "200":
+          description: A collection of inboxes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Inbox'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+    get:
+      tags:
+        - Inboxes
+      summary: Retrieve inbox details
+      operationId: getInbox
+      responses:
+        "200":
+          description: Inbox details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Inboxes
+      summary: Delete an inbox
+      operationId: deleteInbox
+      responses:
+        "204":
+          description: Inbox deleted
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/messages/send:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+    post:
+      tags:
+        - Messages
+      summary: Send a message from an inbox
+      operationId: sendInboxMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageSendRequest'
+      responses:
+        "202":
+          description: Message accepted for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/messages/{messageId}/reply:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+      - $ref: '#/components/parameters/MessageId'
+    post:
+      tags:
+        - Messages
+      summary: Reply to a message
+      operationId: replyToMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageReplyRequest'
+      responses:
+        "202":
+          description: Reply accepted for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/messages:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+    get:
+      tags:
+        - Messages
+      summary: List messages in an inbox
+      operationId: listInboxMessages
+      parameters:
+        - $ref: '#/components/parameters/MessageSearchQuery'
+      responses:
+        "200":
+          description: A collection of messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/messages/{messageId}:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+      - $ref: '#/components/parameters/MessageId'
+    get:
+      tags:
+        - Messages
+      summary: Retrieve message details
+      operationId: getMessage
+      responses:
+        "200":
+          description: Message details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/threads:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+    get:
+      tags:
+        - Threads
+      summary: List threads in an inbox
+      operationId: listInboxThreads
+      responses:
+        "200":
+          description: A collection of threads
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/inboxes/{inboxId}/threads/{threadId}:
+    parameters:
+      - $ref: '#/components/parameters/InboxId'
+      - $ref: '#/components/parameters/ThreadId'
+    get:
+      tags:
+        - Threads
+      summary: Retrieve thread details
+      operationId: getThread
+      responses:
+        "200":
+          description: Thread details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ApiKeyId:
+      name: apiKeyId
+      in: path
+      required: true
+      description: Unique identifier of the API key.
+      schema:
+        type: string
+    DomainId:
+      name: domainId
+      in: path
+      required: true
+      description: Unique identifier of the domain.
+      schema:
+        type: string
+    InboxId:
+      name: inboxId
+      in: path
+      required: true
+      description: Unique identifier of the inbox.
+      schema:
+        type: string
+    MessageId:
+      name: messageId
+      in: path
+      required: true
+      description: Unique identifier of the message.
+      schema:
+        type: string
+    ThreadId:
+      name: threadId
+      in: path
+      required: true
+      description: Unique identifier of the thread.
+      schema:
+        type: string
+    MessageSearchQuery:
+      name: query
+      in: query
+      required: false
+      description: Optional search query used to filter messages.
+      schema:
+        type: string
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ApiKeyCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the API key.
+    ApiKey:
+      type: object
+      description: Representation of an API key.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: true
+    DomainCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Domain name to register with Sendook.
+    Domain:
+      type: object
+      description: Representation of a domain.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    InboxCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Label for the inbox.
+        email:
+          type: string
+          format: email
+          description: Optional email address for the inbox.
+    Inbox:
+      type: object
+      description: Representation of an inbox.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        createdAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    MessageSendRequest:
+      type: object
+      required:
+        - to
+        - subject
+        - text
+        - html
+      properties:
+        to:
+          type: array
+          items:
+            type: string
+            format: email
+          description: Primary recipients.
+        cc:
+          type: array
+          items:
+            type: string
+            format: email
+        bcc:
+          type: array
+          items:
+            type: string
+            format: email
+        labels:
+          type: array
+          items:
+            type: string
+        subject:
+          type: string
+        text:
+          type: string
+        html:
+          type: string
+    MessageReplyRequest:
+      type: object
+      required:
+        - text
+        - html
+      properties:
+        text:
+          type: string
+        html:
+          type: string
+    Message:
+      type: object
+      description: Representation of a message.
+      properties:
+        id:
+          type: string
+        subject:
+          type: string
+        text:
+          type: string
+        html:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Thread:
+      type: object
+      description: Representation of a thread.
+      properties:
+        id:
+          type: string
+        subject:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+

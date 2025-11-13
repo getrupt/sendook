@@ -73,6 +73,7 @@ router.post(
     {
       email: { isEmail: true, normalizeEmail: true },
       first_name: { isString: true },
+      last_name: { isString: true },
       password: { isString: true },
       invite: { optional: true, isMongoId: true },
       fingerprint: { optional: true, isArray: true },

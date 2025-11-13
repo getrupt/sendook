@@ -9,6 +9,108 @@ class SendookAPI {
     this.apiUrl = apiUrl || "https://api.sendook.com";
   }
 
+  public apiKey = {
+    create: async ({
+      name,
+    }: {
+      name: string;
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/api_keys`, {
+        name,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    list: async () => {
+      const response = await axios.get(`${this.apiUrl}/v1/api_keys`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    get: async ({
+      apiKeyId,
+    }: {
+      apiKeyId: string;
+    }) => {
+      const response = await axios.get(`${this.apiUrl}/v1/api_keys/${apiKeyId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    delete: async ({
+      apiKeyId,
+    }: {
+      apiKeyId: string;
+    }) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/api_keys/${apiKeyId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+  };
+
+  public domain = {
+    create: async ({
+      name,
+    }: {
+      name: string;
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/domains`, {
+        name,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    get: async ({
+      domainId,
+    }: {
+      domainId: string;
+    }) => {
+      const response = await axios.get(`${this.apiUrl}/v1/domains/${domainId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    verify: async ({
+      domainId,
+    }: {
+      domainId: string;
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/domains/${domainId}/verify`, {}, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    delete: async ({
+      domainId,
+    }: {
+      domainId: string;
+    }) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/domains/${domainId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+  };
+
   public inbox = {
     create: async ({
       name,
@@ -43,22 +145,39 @@ class SendookAPI {
       });
       return response.data;
     },
+    delete: async (inboxId: string) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/inboxes/${inboxId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
     message: {
       send: async ({
         inboxId,
         to,
+        cc,
+        bcc,
+        labels,
         subject,
         text,
         html,
       }: {
         inboxId: string;
-        to: string;
+        to: string[];
+        cc?: string[];
+        bcc?: string[];
+        labels?: string[];
         subject: string;
         text: string;
         html: string;
       }) => {
         const response = await axios.post(`${this.apiUrl}/v1/inboxes/${inboxId}/messages/send`, {
           to,
+          cc,
+          bcc,
+          labels,
           subject,
           text,
           html,
@@ -90,8 +209,11 @@ class SendookAPI {
         });
         return response.data;
       },
-      list: async (inboxId: string) => {
+      list: async (inboxId: string, query?: string) => {
         const response = await axios.get(`${this.apiUrl}/v1/inboxes/${inboxId}/messages`, {
+          params: {
+            query,
+          },
           headers: {
             "Authorization": `Bearer ${this.apiSecret}`,
           },

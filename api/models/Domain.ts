@@ -5,6 +5,11 @@ export default interface Domain {
   organizationId: mongoose.Types.ObjectId;
   name: string;
   verified: boolean;
+  records: {
+    type: string;
+    value: string;
+    status: string;
+  }[],
   createdAt: Date | null;
   updatedAt: Date | null;
 }

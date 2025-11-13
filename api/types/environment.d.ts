@@ -15,6 +15,9 @@ declare global {
     interface User {
       id: string;
     }
+    interface Request {
+      organization: HydratedDocument<Organization>;
+    }
   }
 }
 

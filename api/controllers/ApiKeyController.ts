@@ -25,10 +25,13 @@ export async function getApiKeyById(apiKeyId: string) {
   return await ApiKey.findById(apiKeyId);
 }
 
-export async function getApiKeyByIdAndOrganizationId(
-  apiKeyId: string,
-  organizationId: string
-) {
+export async function getApiKeyByIdAndOrganizationId({
+  apiKeyId,
+  organizationId,
+}: {
+  apiKeyId: string;
+  organizationId: string;
+}) {
   return await ApiKey.findOne({ _id: apiKeyId, organizationId });
 }
 
@@ -38,4 +41,14 @@ export async function activateApiKey(apiKeyId: string, active: boolean) {
 
 export async function getApiKeyByKey(key: string) {
   return await ApiKey.findOne({ key });
+}
+
+export async function deleteApiKey({
+  apiKeyId,
+  organizationId,
+}: {
+  apiKeyId: string;
+  organizationId: string;
+}) {
+  return await ApiKey.findOneAndDelete({ _id: apiKeyId, organizationId });
 }

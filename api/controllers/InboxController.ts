@@ -42,6 +42,19 @@ export async function getInboxByOrganizationIdAndInboxId({
   });
 }
 
+export async function deleteInboxByOrganizationIdAndInboxId({
+  organizationId,
+  inboxId,
+}: {
+  organizationId: string;
+  inboxId: string;
+}) {
+  return await Inbox.findOneAndDelete({
+    organizationId: new mongoose.Types.ObjectId(organizationId),
+    _id: new mongoose.Types.ObjectId(inboxId),
+  });
+}
+
 export async function getInboxByEmail(email: string) {
   return await Inbox.findOne({ email });
 }

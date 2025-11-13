@@ -1,43 +1,66 @@
 import { Router } from "express";
 import passport from "passport";
+import { rateLimit } from "express-rate-limit";
 import type { Request, Response } from "express";
 import { getInboxByOrganizationIdAndInboxId } from "../../../controllers/InboxController";
 import {
   createMessage,
   getMessageById,
-  getMessagesByInboxId,
+  getMessages,
 } from "../../../controllers/MessageController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 import { sendSESMessage } from "../../../controllers/SESController";
-import type { HydratedDocument } from "mongoose";
-import type Organization from "../../../models/Organization";
 import {
   addMessageToThread,
   createThread,
 } from "../../../controllers/ThreadController";
+import { redis } from "../../../db/redis";
+import { RedisStore, type RedisReply } from "rate-limit-redis";
+
+const connection = redis.duplicate({
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+});
+
+const rateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 1000,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: (command: string, ...args: string[]) =>
+			connection.call(command, ...args) as Promise<RedisReply>,
+  }),
+});
 
 const router = Router({ mergeParams: true });
 
 router.post(
   "/send",
-  passport.authenticate("api_key", { session: false }),
+  rateLimiter,
   async (
     req: Request<
       { organizationId: string; inboxId: string },
       {},
       {
-        to: string;
+        to: string[];
+        cc?: string[];
+        bcc?: string[];
+        labels?: string[];
         subject: string;
         text: string;
         html: string;
+        attachments?: {
+          content: string;
+          name?: string;
+          contentType?: string;
+        }[];
       }
     >,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
-
     const inbox = await getInboxByOrganizationIdAndInboxId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId!,
     });
     if (!inbox) {
@@ -45,20 +68,24 @@ router.post(
     }
 
     const thread = await createThread({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId,
     });
 
     const message = await createMessage({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId,
       threadId: thread.id,
       fromInboxId: req.params.inboxId,
       from: inbox.email,
-      to: req.body.to,
+      to: req.body.to ?? [],
+      cc: req.body.cc ?? [],
+      bcc: req.body.bcc ?? [],
+      labels: req.body.labels ?? [],
       subject: req.body.subject,
       text: req.body.text,
       html: req.body.html,
+      attachments: req.body.attachments ?? [],
     });
 
     const sesMessage = await sendSESMessage({
@@ -66,9 +93,12 @@ router.post(
       from: inbox.email,
       fromName: inbox.name,
       to: req.body.to,
+      cc: req.body.cc ?? [],
+      bcc: req.body.bcc ?? [],
       subject: req.body.subject,
       text: req.body.text,
       html: req.body.html,
+      attachments: req.body.attachments ?? [],
     });
 
     if (sesMessage.MessageId) {
@@ -82,7 +112,7 @@ router.post(
     });
 
     await sendWebhookEvent({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       event: "message.sent",
       messageId: message.id,
       payload: message,
@@ -94,29 +124,33 @@ router.post(
 
 router.get(
   "/",
-  passport.authenticate("api_key", { session: false }),
   async (
-    req: Request<{ organizationId: string; inboxId: string }>,
+    req: Request<
+      { organizationId: string; inboxId: string },
+      {},
+      {},
+      { query?: string }
+    >,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
-
     const inbox = await getInboxByOrganizationIdAndInboxId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId!,
     });
     if (!inbox) {
       return res.status(404).json({ error: "Inbox not found" });
     }
 
-    const messages = await getMessagesByInboxId(req.params.inboxId);
+    const messages = await getMessages({
+      inboxId: req.params.inboxId,
+      query: req.query?.query,
+    });
     return res.json(messages);
   }
 );
 
 router.get(
   "/:messageId",
-  passport.authenticate("api_key", { session: false }),
   async (
     req: Request<{
       organizationId: string;
@@ -125,12 +159,10 @@ router.get(
     }>,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
-
     const message = await getMessageById(req.params.messageId);
     if (
       !message ||
-      message.organizationId.toString() !== organization._id.toString()
+      message.organizationId.toString() !== req.organization._id.toString()
     ) {
       return res.status(404).json({ error: "Message not found" });
     }
@@ -141,7 +173,7 @@ router.get(
 
 router.post(
   "/:messageId/reply",
-  passport.authenticate("api_key", { session: false }),
+  rateLimiter,
   async (
     req: Request<
       { organizationId: string; inboxId: string; messageId: string },
@@ -150,10 +182,8 @@ router.post(
     >,
     res: Response
   ) => {
-    const organization = req.user as HydratedDocument<Organization>;
-
     const inbox = await getInboxByOrganizationIdAndInboxId({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId!,
     });
     if (!inbox) {
@@ -163,18 +193,18 @@ router.post(
     const replyToMessage = await getMessageById(req.params.messageId);
     if (
       !replyToMessage ||
-      replyToMessage.organizationId.toString() !== organization._id.toString()
+      replyToMessage.organizationId.toString() !== req.organization._id.toString()
     ) {
       return res.status(404).json({ error: "Message not found" });
     }
 
     const message = await createMessage({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       inboxId: req.params.inboxId,
       threadId: replyToMessage.threadId.toString(),
       fromInboxId: req.params.inboxId,
       from: inbox.email,
-      to: replyToMessage.from,
+      to: [replyToMessage.from],
       subject: `Re: ${replyToMessage.subject}`,
       text: req.body.text,
       html: req.body.html,
@@ -201,7 +231,7 @@ router.post(
     });
 
     await sendWebhookEvent({
-      organizationId: organization._id.toString(),
+      organizationId: req.organization._id.toString(),
       event: "message.sent",
       messageId: message.id,
       payload: message,
