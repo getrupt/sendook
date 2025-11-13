@@ -1,209 +1,189 @@
 # Sendook
 
-> Email infrastructure for AI agents
+**[sendook.com](https://sendook.com)** | **[npm package](https://www.npmjs.com/package/@sendook/node)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![npm](https://img.shields.io/npm/v/@sendook/node.svg)](https://www.npmjs.com/package/@sendook/node)
 
-Stop wrestling with Gmail APIs and AWS SES setup. Sendook provides simple, powerful email infrastructure designed specifically for AI agents.
+## What is this?
 
-## 🚀 Quick Start
+The easiest way to start sending AND **receiving** emails at scale.
 
-```bash
-# Install the SDK
-npm install @sendook/node-sdk
+## Why this?
 
-# Create an inbox and start sending emails
+- Setting up email sending at scale is still cumbersome—we had to do it at [Rupt](https://www.rupt.dev){:target="_blank"}
+- The ability to configure and check custom domains is still harder than it should be
+- We use this extensively at [Rupt](https://www.rupt.dev){:target="_blank"} to have our internal agents handle inbound emails, payments, prioritizations, etc.
+
+## Quick Start
+
+### Using the API
+
+```typescript
 import { Sendook } from '@sendook/node-sdk';
 
-const client = new Sendook({ apiKey: process.env.SENDOOK_API_KEY });
+// Initialize client with API key
+const client = new Sendook({ apiKey: 'your_api_key' });
 
 // Create an inbox
 const inbox = await client.inboxes.create({
-  name: 'My AI Agent'
+  name: 'support',
+  email: 'support@sendook.com' // or use your custom domain
 });
 
 // Send an email
 await client.messages.send({
   inboxId: inbox.id,
-  to: 'customer@example.com',
-  subject: 'Hello from my AI agent',
-  body: 'This is easy!'
+  from: 'support@sendook.com',
+  to: ['customer@example.com'],
+  subject: 'Welcome!',
+  body: 'Thanks for signing up.'
 });
+
+// Receive emails via webhook
+// Configure webhook endpoint to receive parsed emails as JSON
 ```
 
-## ✨ Why Sendook?
+**Steps:**
 
-Traditional email setup for AI agents is painful:
-- ❌ Days of DNS configuration (SPF, DKIM, DMARC)
-- ❌ Complex Gmail OAuth flows or AWS SES setup
-- ❌ Manual MIME parsing and attachment handling
-- ❌ Polling for new emails
-- ❌ Managing threads and conversations
+1. Get client keys
+2. Create inbox
+   - If using `xxxxx@sendook.com`, no verification needed
+   - If using a custom domain, DNS verifications required:
+     - MX records (SES)
+     - CNAME records (DKIM)
+     - [Optional] SPF, DMARC
+3. Start sending & receiving
 
-Sendook eliminates all of this:
-- ✅ Create inboxes via API in seconds
-- ✅ Receive real-time webhooks for incoming emails
-- ✅ Pre-decoded JSON responses, ready for consumption
-- ✅ Automatic thread management
-- ✅ Built-in search and storage
-- ✅ Open source (MIT license)
+### Self-hosting & Running Locally
 
-## 🏗️ Repository Structure
+#### API
+
+```bash
+# Using Docker
+docker build -t sendook-api ./api
+docker run -p 8006:8006 \
+  -e MONGO_URI="your_mongodb_uri" \
+  -e RUPT_SECRET_KEY="your_secret_key" \
+  -e DEFAULT_EMAIL_DOMAIN="sendook.com" \
+  -e AWS_ACCESS_KEY_ID="your_aws_key" \
+  -e AWS_SECRET_ACCESS_KEY="your_aws_secret" \
+  sendook-api
+```
+
+**Required environment variables:**
+- `MONGO_URI`
+- `RUPT_SECRET_KEY`
+- `DEFAULT_EMAIL_DOMAIN`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+
+**Development:**
+
+```bash
+cd api
+bun install
+bun dev
+```
+
+**Production:**
+
+```bash
+bun install
+bun start
+```
+
+#### App
+
+```bash
+cd app
+bun install
+bun dev  # Development
+bun build && bun start  # Production
+```
+
+**Environment variable:**
+- `API_URL` (default: `http://localhost:8006`)
+
+#### Landing
+
+```bash
+cd landing
+bun install
+bun dev  # Development
+bun run build && bun start  # Production
+```
+
+No environment variables required.
+
+## Repository Structure
 
 This monorepo contains:
 
 - **`api/`** - Backend API server (Node.js + MongoDB)
-- **`landing/`** - Marketing website (Nuxt 3 + Nuxt UI)
+- **`app/`** - Dashboard application
+- **`landing/`** - Landing website (Nuxt 3 + Nuxt UI)
 - **`node-sdk/`** - Official Node.js SDK
 
-## 🛠️ Development Setup
+## Features
 
-### Prerequisites
+### Inboxes (`/inbox`)
 
-- Node.js 18+
-- Bun or npm
-- MongoDB 5.0+
-- Docker (optional, for containerized development)
+- [x] Create inbox
+  - [x] sendook.com domain
+  - [x] Custom domain
+- [x] List inboxes
+- [x] Retrieve inbox
+- [x] Delete inbox
+  - [x] Deletes inbox and all messages
 
-### Local Development
+### Messages (`/messages`)
 
-1. **Clone the repository**
+- [x] Send message
+  - [x] To[], From, CC
+    - [x] Labels
+    - [x] Attachments
+    - [ ] BCC
+  - [x] Threads
+  - [x] Replies
+  - [ ] Rate-limit respecting (~1000/min & 50K/day)
+- [x] Retrieve messages
+  - [x] Attachments
+- [x] Search (find messages within inbox)
+  - [x] Query
+    - [x] Regex
+      - [x] To, From, CC, subject, body
+    - [ ] Semantic search Vector DB (Chroma)
 
-```bash
-git clone https://github.com/sendook/sendook.git
-cd sendook
-```
+### Webhooks (`/webhooks`)
 
-2. **Install dependencies**
+- [x] Create webhook
+- [x] Execution
+  - [x] Receive
+    - [x] Parsed emails
+  - [x] delivered, bounced, rejected, sent
 
-```bash
-# Install dependencies for all packages
-npm install
-```
+### Threads (`/threads`)
 
-3. **Set up environment variables**
+- [x] Messages auto-create or use a thread
+- [x] Retrieve threads
 
-```bash
-# API
-cd api
-cp .env.example .env
-# Edit .env with your MongoDB connection string and other settings
+### Tests
 
-# Landing page
-cd ../landing
-cp .env.example .env
-# Edit .env with your configuration
-```
+- [x] Full API coverage
 
-4. **Start MongoDB**
+## SDKs
 
-```bash
-# Using Docker
-docker run -d -p 27017:27017 --name sendook-mongo mongo:5.0
+- [x] Node
+- [ ] Python
+- [ ] **Contributions welcome for additional SDKs**
 
-# Or use your local MongoDB installation
-```
-
-5. **Start the API server**
-
-```bash
-cd api
-bun dev
-# API runs on http://localhost:3000
-```
-
-6. **Start the landing page**
-
-```bash
-cd landing
-bun dev
-# Landing page runs on http://localhost:3001
-```
-
-## 🐳 Docker Setup
-
-Run the entire stack with Docker Compose:
-
-```bash
-docker-compose up -d
-```
-
-This starts:
-- API server on port 3000
-- Landing page on port 3001
-- MongoDB on port 27017
-
-## 📖 Documentation
-
-- **[Getting Started](./landing/content/1.docs/1.getting-started/1.index.md)** - Introduction and setup
-- **[Installation](./landing/content/1.docs/1.getting-started/2.installation.md)** - Detailed installation guide
-- **[Usage Guide](./landing/content/1.docs/1.getting-started/3.usage.md)** - Core workflows and examples
-- **[API Documentation](./api/README.md)** - Complete API reference
-- **[SDK Documentation](./node-sdk/README.md)** - Node.js SDK reference
-
-## 🧪 Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run API tests
-cd api && bun test
-
-# Run SDK tests
-cd node-sdk && bun test
-```
-
-## 🚢 Deployment
-
-### Cloud Hosting (Recommended for Production)
-
-Deploy to your preferred platform:
-
-- **Vercel/Netlify** - Landing page
-- **Railway/Render/Fly.io** - API server
-- **MongoDB Atlas** - Database
-
-### Self-Hosting
-
-See the [Installation Guide](./landing/content/1.docs/1.getting-started/2.installation.md#self-hosted-setup) for complete self-hosting instructions.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
+## License
 
 Sendook is open source software licensed under the [MIT license](./LICENSE).
 
-## 🌟 Support
-
-- 📚 [Documentation](https://sendook.com/docs)
-- 💬 [Discord Community](https://discord.gg/sendook)
-- 🐛 [Issue Tracker](https://github.com/sendook/sendook/issues)
-- 📧 [Email Support](mailto:support@sendook.com)
-
-## 🗺️ Roadmap
-
-- [x] Core email infrastructure
-- [x] Webhook notifications
-- [x] Multi-inbox support
-- [x] Node.js SDK
-- [ ] Python SDK
-- [ ] Go SDK
-- [ ] Advanced analytics
-- [ ] Email templates
-- [ ] A/B testing
-- [ ] Email tracking (opens, clicks)
-
 ---
 
-Built with ❤️ for AI agents that need to communicate
+Built with ❤️, maintained by the [Rupt](https://www.rupt.dev){:target="_blank"} team.
