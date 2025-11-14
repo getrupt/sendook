@@ -26,32 +26,38 @@
       <p>Fetching the conversation history for this inbox.</p>
     </section>
 
-    <section v-else-if="messages.length === 0" class="placeholder-card">
-      <h2>No messages yet</h2>
-      <p>Send a test email to this inbox or wait for new activity to appear here.</p>
-    </section>
+    <template v-else>
+      <div v-if="error" class="banner banner-error" role="alert">
+        {{ error }}
+      </div>
 
-    <section v-else class="messages-list">
-      <article v-for="message in filteredMessages" :key="message._id" class="message-card">
-        <header>
-          <div>
-            <h3>{{ message.subject ?? '(no subject)' }}</h3>
-            <p class="meta">
-              From <span>{{ message.from }}</span> · {{ formatDate(message.createdAt) }}
-            </p>
-          </div>
-          <span class="status-pill">{{ message.status ?? 'sent' }}</span>
-        </header>
-        <p class="preview">
-          {{ message.preview ?? message.body?.slice(0, 200) ?? 'No preview available.' }}
-        </p>
-        <footer>
-          <button type="button" class="button-secondary" @click="openMessage(message)">
-            View message
-          </button>
-        </footer>
-      </article>
-    </section>
+      <section v-if="filteredMessages.length === 0" class="placeholder-card">
+        <h2>No messages yet</h2>
+        <p>Send a test email to this inbox or wait for new activity to appear here.</p>
+      </section>
+
+      <section v-else class="messages-list">
+        <article v-for="message in filteredMessages" :key="message._id" class="message-card">
+          <header>
+            <div>
+              <h3>{{ message.subject ?? '(no subject)' }}</h3>
+              <p class="meta">
+                From <span>{{ message.from }}</span> · {{ formatDate(message.createdAt) }}
+              </p>
+            </div>
+            <span class="status-pill">{{ message.status ?? 'sent' }}</span>
+          </header>
+          <p class="preview">
+            {{ message.text?.slice(0, 200) ?? 'No preview available.' }}
+          </p>
+          <footer>
+            <button type="button" class="button-secondary" @click="openMessage(message)">
+              View message
+            </button>
+          </footer>
+        </article>
+      </section>
+    </template>
 
     <Transition name="fade">
       <div v-if="activeMessage" class="dialog-backdrop" role="dialog" aria-modal="true">
@@ -59,7 +65,7 @@
           <header class="dialog-header">
             <div>
               <h2>{{ activeMessage.subject ?? '(no subject)' }}</h2>
-              <p class="meta">
+              <p class="meta mt-1">
                 From <span>{{ activeMessage.from }}</span> · {{ formatDate(activeMessage.createdAt) }}
               </p>
             </div>
@@ -68,7 +74,9 @@
             </button>
           </header>
           <div class="message-body">
-            <pre>{{ activeMessage.body ?? 'No content available.' }}</pre>
+            <div v-if="modalLoading" class="loading-state">Loading message…</div>
+            <div v-else-if="modalError" class="modal-error" role="alert">{{ modalError }}</div>
+            <pre v-else>{{ activeMessage.text ?? 'No content available.' }}</pre>
           </div>
         </div>
       </div>
@@ -77,14 +85,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 defineOptions({
   name: 'InboxDetailPage'
 });
 
 const route = useRoute();
-// const router = useRouter();
 const session = useRequireAuth();
 const config = useRuntimeConfig();
 
@@ -92,8 +99,7 @@ interface InboxMessage {
   _id: string;
   subject?: string;
   from?: string;
-  body?: string;
-  preview?: string;
+  text?: string;
   status?: string;
   createdAt?: string;
 }
@@ -108,6 +114,8 @@ const loading = ref(true);
 const messages = ref<InboxMessage[]>([]);
 const inboxSummary = ref<InboxSummary | null>(null);
 const activeMessage = ref<InboxMessage | null>(null);
+const modalLoading = ref(false);
+const modalError = ref('');
 const error = ref('');
 const search = ref('');
 
@@ -123,7 +131,7 @@ const filteredMessages = computed(() => {
   }
   const needle = search.value.toLowerCase();
   return messages.value.filter((message) =>
-    [message.subject, message.from, message.preview, message.body]
+    [message.subject, message.from, message.text]
       .filter(Boolean)
       .some((field) => field!.toLowerCase().includes(needle))
   );
@@ -145,12 +153,44 @@ const formatDate = (value?: string) => {
   });
 };
 
-const openMessage = (message: InboxMessage) => {
+const openMessage = async (message: InboxMessage) => {
+  modalError.value = '';
+  modalLoading.value = true;
   activeMessage.value = message;
+
+  const orgId = organizationId.value;
+  const inbox = inboxId.value;
+  const token = session.token.value;
+
+  if (!orgId || !inbox || !token) {
+    modalError.value = 'Missing inbox context.';
+    modalLoading.value = false;
+    return;
+  }
+
+  try {
+    const fullMessage = await $fetch<InboxMessage>(
+      `${config.public.apiUrl}/organizations/${orgId}/inboxes/${inbox}/messages/${message._id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    activeMessage.value = fullMessage;
+  } catch (err) {
+    console.error('Failed to load message', err);
+    modalError.value =
+      err instanceof Error ? err.message : 'Unable to load message details. Please try again.';
+  } finally {
+    modalLoading.value = false;
+  }
 };
 
 const closeMessage = () => {
   activeMessage.value = null;
+  modalError.value = '';
+  modalLoading.value = false;
 };
 
 const fetchInboxMessages = async () => {
@@ -166,7 +206,7 @@ const fetchInboxMessages = async () => {
   error.value = '';
 
   try {
-    const response = await fetch(
+    const data = await $fetch<InboxMessage[] | { inbox?: InboxSummary; messages?: InboxMessage[] }>(
       `${config.public.apiUrl}/organizations/${orgId}/inboxes/${inbox}/messages`,
       {
         headers: {
@@ -175,17 +215,13 @@ const fetchInboxMessages = async () => {
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`Unable to load messages: ${response.status}`);
+    if (Array.isArray(data)) {
+      messages.value = data;
+      inboxSummary.value = inboxSummary.value ?? { _id: inbox };
+    } else {
+      inboxSummary.value = data.inbox ?? inboxSummary.value ?? { _id: inbox };
+      messages.value = Array.isArray(data.messages) ? data.messages : [];
     }
-
-    const data = (await response.json()) as {
-      inbox?: InboxSummary;
-      messages?: InboxMessage[];
-    };
-
-    inboxSummary.value = data.inbox ?? inboxSummary.value;
-    messages.value = Array.isArray(data.messages) ? data.messages : [];
   } catch (err) {
     console.error('Failed to load inbox messages', err);
     error.value = err instanceof Error ? err.message : 'Unable to load inbox messages.';
@@ -330,6 +366,22 @@ watch(
   color: #fff;
 }
 
+.banner {
+  padding: 1rem 1.25rem;
+  border-radius: 0.85rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.banner-error {
+  background: rgba(248, 113, 113, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  color: #fecaca;
+}
+
 .dialog-large {
   width: min(720px, 100%);
 }
@@ -341,6 +393,21 @@ watch(
   padding: 1.5rem;
   overflow: auto;
   max-height: 60vh;
+}
+
+.loading-state {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.modal-error {
+  color: #fecaca;
+  background: rgba(248, 113, 113, 0.14);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  padding: 1rem;
+  border-radius: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .message-body pre {
@@ -361,6 +428,96 @@ watch(
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 3, 7, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 30;
+}
+
+.dialog-card {
+  width: min(420px, 100%);
+  background: rgba(10, 10, 16, 0.92);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  padding: 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.icon-close {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dialog-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.dialog-form label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.dialog-form input,
+.dialog-form select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.85rem;
+  padding: 0.85rem 1rem;
+  color: #fff;
+}
+
+.dialog-form input:focus,
+.dialog-form select:focus {
+  outline: none;
+  border-color: rgba(99, 102, 241, 0.55);
+}
+
+.dialog-form small {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dialog-error {
+  border-radius: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(248, 113, 113, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  color: #fecaca;
+  font-size: 0.9rem;
+}
+
+.dialog-form footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 @media (max-width: 900px) {
