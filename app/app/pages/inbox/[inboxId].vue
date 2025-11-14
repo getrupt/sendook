@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 defineOptions({
   name: 'InboxDetailPage'
@@ -86,7 +86,7 @@ defineOptions({
 const route = useRoute();
 // const router = useRouter();
 const session = useRequireAuth();
-const { public: publicConfig } = useRuntimeConfig();
+const config = useRuntimeConfig();
 
 interface InboxMessage {
   _id: string;
@@ -111,7 +111,6 @@ const activeMessage = ref<InboxMessage | null>(null);
 const error = ref('');
 const search = ref('');
 
-const apiBase = computed(() => publicConfig.apiUrl ?? 'http://localhost:8006');
 const organizationId = computed(() => session.organizationId.value);
 const inboxId = computed(() => route.params.inboxId as string);
 
@@ -168,7 +167,7 @@ const fetchInboxMessages = async () => {
 
   try {
     const response = await fetch(
-      `${apiBase.value}/organizations/${orgId}/inboxes/${inbox}/messages`,
+      `${config.public.apiUrl}/organizations/${orgId}/inboxes/${inbox}/messages`,
       {
         headers: {
           Authorization: `Bearer ${token}`
