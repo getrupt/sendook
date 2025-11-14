@@ -31,11 +31,9 @@ const readCookie = (name: string) => {
 };
 
 const getApiUrl = () => {
-  const globalNuxt = (globalThis as {
-    __NUXT__?: { config?: { public?: { apiUrl?: string } } };
-  }).__NUXT__;
+  const config = useRuntimeConfig();
 
-  return globalNuxt?.config?.public?.apiUrl ?? 'http://localhost:8006';
+  return config.public.apiUrl;
 };
 
 const clearSessionAndRedirect = (router: ReturnType<typeof useRouter>) => {
