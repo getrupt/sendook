@@ -61,7 +61,9 @@ useSeoMeta({
       :features="section.features"
       class="animate-section"
     >
-      <ImagePlaceholder />
+      <CoreFeaturesIllustration v-if="section.title === 'Core Features'" />
+      <SpeedIllustration v-else-if="section.title === 'Built for Speed'" />
+      <ImagePlaceholder v-else />
     </UPageSection>
 
     <UPageSection
