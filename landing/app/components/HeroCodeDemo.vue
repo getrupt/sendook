@@ -100,7 +100,13 @@ await client.messages.send({
   }
 }
 
-const currentExample = computed(() => codeExamples[activeTab.value])
+const currentExample = computed(() => codeExamples[activeTab.value as keyof typeof codeExamples])
+
+function copyToClipboard() {
+  if (typeof window !== 'undefined' && window.navigator.clipboard) {
+    window.navigator.clipboard.writeText(currentExample.value.rawCode)
+  }
+}
 </script>
 
 <template>
@@ -110,7 +116,7 @@ const currentExample = computed(() => codeExamples[activeTab.value])
       class="rounded-2xl overflow-hidden"
     >
       <!-- Tab Navigation -->
-      <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 px-4 py-3 bg-white dark:bg-gray-900">
+      <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-3 bg-white">
         <button
           v-for="tab in tabs"
           :key="tab.id"
@@ -119,7 +125,7 @@ const currentExample = computed(() => codeExamples[activeTab.value])
           :class="[
             activeTab === tab.id
               ? 'bg-primary-500 text-white shadow-sm'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              : 'text-gray-600 hover:bg-gray-100'
           ]"
         >
           <UIcon :name="tab.icon" class="w-4 h-4" />
@@ -136,26 +142,26 @@ const currentExample = computed(() => codeExamples[activeTab.value])
             size="xs"
             color="neutral"
             variant="subtle"
-            @click="() => navigator.clipboard.writeText(currentExample.rawCode)"
+            @click="copyToClipboard"
           />
         </div>
 
-        <div class="p-6 bg-gray-50 dark:bg-gray-950">
+        <div class="p-6 bg-gray-50">
           <div class="mb-3">
-            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p class="text-sm font-medium text-gray-700">
               {{ currentExample.title }}
             </p>
           </div>
 
-          <div class="code-wrapper rounded-lg overflow-hidden">
+          <div class="code-wrapper bg-white rounded-lg border border-gray-200 overflow-hidden">
             <MDC :value="currentExample.code" tag="div" class="code-block" />
           </div>
         </div>
       </div>
 
       <!-- Visual Indicator -->
-      <div class="px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-        <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+      <div class="px-6 py-4 bg-white border-t border-gray-200">
+        <div class="flex items-center gap-2 text-xs text-gray-500">
           <UIcon name="i-lucide-sparkles" class="w-3.5 h-3.5 text-primary-500" />
           <span>That's it! Email infrastructure in minutes, not days.</span>
         </div>

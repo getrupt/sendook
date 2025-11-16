@@ -123,14 +123,6 @@ body {
   background-color: #F7F8F6;
 }
 
-/* Dark mode overrides */
-.dark {
-  --ui-bg: var(--ui-color-neutral-950);
-  --ui-bg-muted: var(--ui-color-neutral-900);
-  --ui-bg-elevated: var(--ui-color-neutral-900);
-  --ui-bg-accented: var(--ui-color-neutral-800);
-}
-
 /* Typography styles from design.json */
 h1 {
   font-size: var(--font-size-h1);
