@@ -48,7 +48,7 @@ useSeoMeta({
         <MDC :value="page.title" unwrap="p" />
       </template>
 
-      <PromotionalVideo />
+      <HeroCodeDemo />
     </UPageHero>
 
     <UPageSection
