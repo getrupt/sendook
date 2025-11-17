@@ -1,97 +1,23 @@
-<script setup lang="ts">
-const columns = [{
-  label: 'Resources',
-  children: [{
-    label: 'Help center'
-  }, {
-    label: 'Docs'
-  }, {
-    label: 'Roadmap'
-  }, {
-    label: 'Changelog'
-  }]
-}, {
-  label: 'Features',
-  children: [{
-    label: 'Affiliates'
-  }, {
-    label: 'Portal'
-  }, {
-    label: 'Jobs'
-  }, {
-    label: 'Sponsors'
-  }]
-}, {
-  label: 'Company',
-  children: [{
-    label: 'About'
-  }, {
-    label: 'Pricing'
-  }, {
-    label: 'Careers'
-  }, {
-    label: 'Blog'
-  }]
-}]
-
-const toast = useToast()
-
-const email = ref('')
-const loading = ref(false)
-
-function onSubmit() {
-  loading.value = true
-
-  toast.add({
-    title: 'Subscribed!',
-    description: 'You\'ve been subscribed to our newsletter.'
-  })
-}
-</script>
-
 <template>
-  <USeparator
-    class="h-px"
-  />
+  <USeparator class="h-px" />
 
-  <UFooter :ui="{ top: 'border-b border-default' }">
-    <template #top>
-      <UContainer>
-        <UFooterColumns :columns="columns">
-          <template #right>
-            <form @submit.prevent="onSubmit">
-              <UFormField
-                name="email"
-                label="Subscribe to our newsletter"
-                size="lg"
-              >
-                <UInput
-                  v-model="email"
-                  type="email"
-                  class="w-full"
-                  placeholder="Enter your email"
-                >
-                  <template #trailing>
-                    <UButton
-                      type="submit"
-                      size="xs"
-                      color="neutral"
-                      label="Subscribe"
-                    />
-                  </template>
-                </UInput>
-              </UFormField>
-            </form>
-          </template>
-        </UFooterColumns>
-      </UContainer>
-    </template>
-
+  <UFooter>
     <template #left>
-      <NuxtLink to="/" class="flex items-center gap-2">
-        <img src="/sendook-logomark.svg" alt="sendook" class="w-6 h-6" />
-        <span class="text-muted text-sm">© {{ new Date().getFullYear() }} sendook</span>
-      </NuxtLink>
+      <div class="flex items-center gap-4">
+        <NuxtLink to="/" class="flex items-center gap-2">
+          <img src="/sendook-logomark.svg" alt="sendook" class="w-6 h-6" />
+          <span class="text-muted text-sm">© {{ new Date().getFullYear() }} sendook</span>
+        </NuxtLink>
+        <span class="text-muted text-sm">•</span>
+        <a 
+          href="https://rupt.dev" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted text-sm hover:text-primary-500 transition-colors flex items-center gap-1"
+        >
+          Built with <span class="text-red-500">♥</span> by Rupt
+        </a>
+      </div>
     </template>
 
     <template #right>
@@ -104,7 +30,7 @@ function onSubmit() {
         variant="ghost"
       />
       <UButton
-        to="https://github.com/sendook"
+        to="https://github.com/getrupt/sendook"
         target="_blank"
         icon="i-simple-icons-github"
         aria-label="sendook on GitHub"

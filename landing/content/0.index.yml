@@ -1,4 +1,4 @@
-title: Email Infrastructure for [AI Agents]{class="text-primary"}
+title: Free Email Infrastructure for [AI Agents]{class="text-primary"}
 description: Create inboxes and receive emails with webhooks. Get pre-decoded JSON responses. Built for developers who want to go fast.
 seo:
   title: Sendook - Email Infrastructure for AI Agents
@@ -77,79 +77,15 @@ features:
     - title: Open Source
       description: MIT licensed. Self-host or use our cloud.
       icon: i-lucide-git-fork
-testimonials:
-  headline: Trusted by AI Developers
-  title: Built for Teams Building Intelligent Agents
-  description: See why developers choose Sendook to power their AI agents' email capabilities.
-  items:
-    - quote: We went from zero to functional email in our AI agent in under an hour. No DNS setup, no Gmail OAuth dance, just pure productivity. Game changer for prototyping.
-      user:
-        name: Alex Martinez
-        description: Founder at AgentFlow
-        avatar:
-          src: https://i.pravatar.cc/120?img=1
-    - quote: The webhook integration is perfect. Our agents respond to emails in real-time without any polling overhead. Clean, simple, and it just works.
-      user:
-        name: Sarah Kim
-        description: Engineering Lead at AutoMate AI
-        avatar:
-          src: https://i.pravatar.cc/120?img=5
-    - quote: After spending two days fighting with AWS SES, we switched to Sendook and had everything working in 30 minutes. The JSON responses are exactly what we needed.
-      user:
-        name: David Chen
-        description: CTO at InboxGenius
-        avatar:
-          src: https://i.pravatar.cc/120?img=3
-    - quote: The search API is brilliant. Our agent can recall any email conversation instantly. It's like giving our AI a perfect memory for customer communications.
-      user:
-        name: Emily Rodriguez
-        description: Product Manager at ReplyBot
-        avatar:
-          src: https://i.pravatar.cc/120?img=7
-    - quote: Being open source was crucial for us. We needed to understand the entire stack, and Sendook's transparent codebase gave us that confidence.
-      user:
-        name: Michael Foster
-        description: Security Engineer at SecureAI
-        avatar:
-          src: https://i.pravatar.cc/120?img=8
-    - quote: The multi-inbox support is perfect for our use case. Each customer gets their own isolated inbox, and our agent manages them all seamlessly.
-      user:
-        name: Jessica Wang
-        description: VP Engineering at CustomerFirst
-        avatar:
-          src: https://i.pravatar.cc/120?img=9
-    - quote: We prototyped with the cloud version and moved to self-hosted in production. The flexibility to switch without code changes is incredible.
-      user:
-        name: Ryan Thompson
-        description: DevOps Lead at PrivateAI
-        avatar:
-          src: https://i.pravatar.cc/120?img=11
-    - quote: The SDK made integration trivial. TypeScript support is excellent, and the API design is intuitive. Our team was productive immediately.
-      user:
-        name: Nina Patel
-        description: Staff Engineer at AgentCore
-        avatar:
-          src: https://i.pravatar.cc/120?img=10
-    - quote: Finally, email infrastructure that doesn't slow us down. We ship features for our AI agent, not email plumbing. That's the win.
-      user:
-        name: Carlos Mendez
-        description: Founder at FastAgent
-        avatar:
-          src: https://i.pravatar.cc/120?img=12
-    - quote: The thread management is exactly what we needed. Our agent maintains perfect context across long email conversations with customers.
-      user:
-        name: Lisa Johnson
-        description: AI Product Lead at ConversationAI
-        avatar:
-          src: https://i.pravatar.cc/120?img=14
 cta:
   title: Ready to give your AI agent email superpowers?
   description: Join developers building the next generation of AI agents. Start sending and receiving emails in minutes, not days.
   links:
-    - label: Get Started Free
-      to: '/signup'
+    - label: Get Started
+      to: '/docs/getting-started'
       trailingIcon: i-lucide-arrow-right
-    - label: View Documentation
-      to: '/docs'
+    - label: View on GitHub
+      to: 'https://github.com/getrupt/sendook'
+      target: _blank
       variant: subtle
-      icon: i-lucide-book-open
+      icon: i-simple-icons-github
