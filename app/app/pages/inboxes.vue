@@ -43,6 +43,14 @@
         <p class="inbox-address">
           {{ inbox.email ?? inbox.address ?? 'Generated on first reply' }}
         </p>
+        <div class="key-secret">
+          <span class="secret-label">ID</span>
+          <span class="secret-value">{{ inbox._id ?? '••••••••••••••••' }}</span>
+          <button type="button" class="button-copy" aria-label="Copy API key" @click="copyInboxId(inbox)">
+            <span v-if="copiedInboxId === (inbox._id ?? inbox.email)">Copied</span>
+            <span v-else>Copy</span>
+          </button>
+        </div>
         <footer>
           <span>Created {{ formatDate(inbox.createdAt) }}</span>
           <span v-if="inbox.status" class="status">
@@ -160,6 +168,8 @@ const form = reactive({
   displayName: '',
   email: ''
 });
+const copiedInboxId = ref<string | null>(null);
+let copyTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -175,6 +185,32 @@ const formatDate = (value?: string) => {
     year: 'numeric'
   });
 };
+
+const copyInboxId = async (inbox: Inbox) => {
+  if (!inbox._id || typeof navigator === 'undefined' || !navigator.clipboard) {
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(inbox._id);
+    copiedInboxId.value = inbox._id ?? null;
+    if (copyTimeout) {
+      clearTimeout(copyTimeout);
+    }
+    copyTimeout = setTimeout(() => {
+      copiedInboxId.value = null;
+      copyTimeout = null;
+    }, 2000);
+  } catch (error) {
+    console.error('Failed to copy API key', error);
+  }
+};
+
+onBeforeUnmount(() => {
+  if (copyTimeout) {
+    clearTimeout(copyTimeout);
+  }
+});
 
 const loadInboxes = async () => {
   const organizationId = session.organizationId.value;
@@ -367,6 +403,18 @@ watch(
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.5rem;
+  max-width: calc(3 * 1fr + 3 * 1.5rem);
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 1100px) {
+  .inboxes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .inboxes-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .inbox-card {
@@ -595,6 +643,51 @@ watch(
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.key-secret {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 15, 25, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.9rem;
+  padding: 0.75rem 1rem;
+  max-width: 300px;
+}
+
+.secret-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.secret-value {
+  flex: 1;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button-copy {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 0.75rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.button-copy:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 
 @media (max-width: 780px) {
