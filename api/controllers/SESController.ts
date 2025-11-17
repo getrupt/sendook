@@ -63,6 +63,7 @@ export async function sendSESMessage({
 }) {
   const mailOptions: any = {
     from: fromName ? `"${fromName}" <${from}>` : from,
+    replyTo: fromName ? `"${fromName}" <${from}>` : from,
     to: (to ?? []).join(", "),
     cc: (cc ?? []).join(", "),
     subject,

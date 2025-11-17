@@ -93,8 +93,7 @@ export async function verifyDomainDNS({
     mxRecordFound.status = "verified";
   }
 
-  const dmarcRecord = await getDNSTXTRecords({ domain: domain.name });
-  console.log(dmarcRecord);
+  const dmarcRecord = await getDNSTXTRecords({ domain: `_dmarc.${domain.name}` });
   let dmarcRecordFound;
   if (dmarcRecord && Array.isArray(dmarcRecord)) {
     dmarcRecordFound = domain.records.find(
@@ -105,6 +104,19 @@ export async function verifyDomainDNS({
   }
   if (dmarcRecordFound) {
     dmarcRecordFound.status = "verified";
+  }
+
+  const spfRecord = await getDNSTXTRecords({ domain: domain.name });
+  let spfRecordFound;
+  if (spfRecord && Array.isArray(spfRecord)) {
+    spfRecordFound = domain.records.find(
+      (domainRecord) =>
+        domainRecord.type === "TXT" &&
+        spfRecord.find((dnsRecord) => dnsRecord === domainRecord.value)
+    );
+  }
+  if (spfRecordFound) {
+    spfRecordFound.status = "verified";
   }
 
   const verifiedDomainStatus = await getDomainVerificationStatus({ domain: domain.name });

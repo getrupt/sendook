@@ -84,8 +84,6 @@ router.post(
 
     const { domain: verifiedDomain } = await verifyDomainDNS({ domain });
 
-    // const verifiedDomainStatus = await getDomainVerificationStatus({ domain: domain.name });
-
     return res.json(verifiedDomain);
   }
 );
@@ -116,6 +114,11 @@ router.get(
         type: "MX",
         name: "@",
         value: "inbound-smtp.us-east-2.amazonaws.com",
+      },
+      {
+        type: "TXT",
+        name: "@",
+        value: "v=spf1 include:amazonses.com ~all",
       },
       {
         type: "TXT",
