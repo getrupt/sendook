@@ -1,4 +1,19 @@
 import axios from "axios";
+import type {
+  ApiKeyMethods,
+  DomainMethods,
+  InboxMethods,
+  CreateApiKeyParams,
+  GetApiKeyParams,
+  DeleteApiKeyParams,
+  CreateDomainParams,
+  GetDomainParams,
+  VerifyDomainParams,
+  DeleteDomainParams,
+  CreateInboxParams,
+  SendMessageParams,
+  ReplyMessageParams,
+} from "./types/sendook-api";
 
 class SendookAPI {
   private apiSecret: string;
@@ -9,7 +24,7 @@ class SendookAPI {
     this.apiUrl = apiUrl || "https://api.sendook.com";
   }
 
-  public apiKey = {
+  public apiKey: ApiKeyMethods = {
     create: async ({
       name,
     }: {
@@ -58,7 +73,7 @@ class SendookAPI {
     },
   };
 
-  public domain = {
+  public domain: DomainMethods = {
     create: async ({
       name,
     }: {
@@ -111,7 +126,7 @@ class SendookAPI {
     },
   };
 
-  public inbox = {
+  public inbox: InboxMethods = {
     create: async ({
       name,
       email,
