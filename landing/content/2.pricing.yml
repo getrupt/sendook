@@ -8,8 +8,8 @@ headline: Pricing that scales with you
 pricing:
   tagline: Email infrastructure that grows with your needs
   description: |
-    Start building immediately with our generous free tier. As your AI agents scale, 
-    our pricing scales linearly—no sudden jumps, no enterprise sales calls, just transparent 
+    Start building immediately with our generous free tier. As your AI agents scale,
+    our pricing scales linearly—no sudden jumps, no enterprise sales calls, just transparent
     per-email pricing.
   benefits:
     - title: No Surprises
@@ -37,7 +37,7 @@ plan:
     - Community support
   button:
     label: Get Started Free
-    to: /signup
+    to: https://app.sendook.com/signup
 calculator:
   title: Calculate Your Monthly Cost
   description: See how affordable email infrastructure can be

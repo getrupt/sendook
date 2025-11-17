@@ -35,7 +35,7 @@ const items = computed(() => [{
         icon="i-lucide-log-in"
         color="neutral"
         variant="ghost"
-        to="https://app.sanduk.com/login"
+        to="https://app.sendook.com/login"
         target="_blank"
         class="lg:hidden"
       />
@@ -44,7 +44,7 @@ const items = computed(() => [{
         label="Sign in"
         color="neutral"
         variant="outline"
-        to="https://app.sanduk.com/login"
+        to="https://app.sendook.com/login"
         target="_blank"
         class="hidden lg:inline-flex"
       />
@@ -54,7 +54,7 @@ const items = computed(() => [{
         color="primary"
         trailing-icon="i-lucide-arrow-right"
         class="hidden lg:inline-flex"
-        to="https://app.sanduk.com/signup"
+        to="https://app.sendook.com/signup"
         target="_blank"
       />
     </template>
@@ -72,7 +72,7 @@ const items = computed(() => [{
         label="Sign in"
         color="neutral"
         variant="subtle"
-        to="https://app.sanduk.com/login"
+        to="https://app.sendook.com/login"
         target="_blank"
         block
         class="mb-3"
@@ -80,7 +80,7 @@ const items = computed(() => [{
       <UButton
         label="Sign up"
         color="primary"
-        to="https://app.sanduk.com/signup"
+        to="https://app.sendook.com/signup"
         target="_blank"
         block
       />

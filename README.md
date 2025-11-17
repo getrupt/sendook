@@ -1,5 +1,7 @@
 # Sendook
 
+![Sendook](https://www.sendook.com/sendook-logo.svg)
+
 **[sendook.com](https://sendook.com)** | **[npm package](https://www.npmjs.com/package/@sendook/node)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -13,33 +15,47 @@ The easiest way to start sending AND **receiving** emails at scale.
 
 ## Why this?
 
-- Setting up email sending at scale is still cumbersome—we had to do it at [Rupt](https://www.rupt.dev){:target="_blank"}
+- Setting up email sending at scale is still cumbersome—we had to do it at <a href="https://www.rupt.dev" target="_blank">Rupt</a>
 - The ability to configure and check custom domains is still harder than it should be
-- We use this extensively at [Rupt](https://www.rupt.dev){:target="_blank"} to have our internal agents handle inbound emails, payments, prioritizations, etc.
+- We use this extensively at <a href="https://www.rupt.dev" target="_blank">Rupt</a> to have our internal agents handle inbound emails, payments, prioritizations, etc.
 
 ## Quick Start
 
 ### Using the API
 
+#### Using the API endpoints
+
+```curl
+curl -X POST https://api.sendook.com/v1/inboxes \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "rupt",
+    "email": "rupt@sendook.com"
+  }'
+```
+
+#### Using the TypeScript SDK
+
 ```typescript
-import { Sendook } from '@sendook/node-sdk';
+import { Sendook } from "@sendook/node-sdk";
 
 // Initialize client with API key
-const client = new Sendook({ apiKey: 'your_api_key' });
+const client = new Sendook({ apiKey: "your_api_key" });
 
 // Create an inbox
 const inbox = await client.inboxes.create({
-  name: 'support',
-  email: 'support@sendook.com' // or use your custom domain
+  name: "rupt",
+  email: "rupt@sendook.com", // or use your custom domain
 });
 
 // Send an email
 await client.messages.send({
   inboxId: inbox.id,
-  from: 'support@sendook.com',
-  to: ['customer@example.com'],
-  subject: 'Welcome!',
-  body: 'Thanks for signing up.'
+  from: "rupt@sendook.com",
+  to: ["rupt@sendook.com"],
+  subject: "Welcome!",
+  body: "Thanks for signing up.",
 });
 
 // Receive emails via webhook
@@ -55,7 +71,7 @@ await client.messages.send({
      - MX records (SES)
      - CNAME records (DKIM)
      - [Optional] SPF, DMARC
-3. Start sending & receiving
+3. Start sending **& receiving** emails
 
 ### Self-hosting & Running Locally
 
@@ -66,6 +82,7 @@ await client.messages.send({
 docker build -t sendook-api ./api
 docker run -p 8006:8006 \
   -e MONGO_URI="your_mongodb_uri" \
+  # optional Rupt secret key for fake accounts & account takeover
   -e RUPT_SECRET_KEY="your_secret_key" \
   -e DEFAULT_EMAIL_DOMAIN="sendook.com" \
   -e AWS_ACCESS_KEY_ID="your_aws_key" \
@@ -73,9 +90,10 @@ docker run -p 8006:8006 \
   sendook-api
 ```
 
-**Required environment variables:**
+**Environment variables:**
+
 - `MONGO_URI`
-- `RUPT_SECRET_KEY`
+- `RUPT_SECRET_KEY` (optional for fake accounts & account takeover)
 - `DEFAULT_EMAIL_DOMAIN`
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
@@ -105,6 +123,7 @@ bun build && bun start  # Production
 ```
 
 **Environment variable:**
+
 - `API_URL` (default: `http://localhost:8006`)
 
 #### Landing
@@ -186,4 +205,4 @@ Sendook is open source software licensed under the [MIT license](./LICENSE).
 
 ---
 
-Built with ❤️, maintained by the [Rupt](https://www.rupt.dev){:target="_blank"} team.
+Built with ❤️, maintained by the <a href="https://www.rupt.dev" target="_blank">Rupt</a> team.
