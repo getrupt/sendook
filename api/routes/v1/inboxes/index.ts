@@ -29,21 +29,25 @@ router.get(
 router.post(
   "/",
   body("name").isString().notEmpty().trim(),
-  body("domain").optional().isString().notEmpty().trim(),
+  body("email").optional().isString().notEmpty().trim(),
   expressValidatorMiddleware,
   async (
     req: Request<
       { organizationId: string },
       {},
-      { name: string; domain?: string }
+      { name: string; email?: string }
     >,
     res: Response
   ) => {
     let domainId: string | undefined;
-    if (req.body.domain) {
+    if (req.body.email) {
+      const domainName = req.body.email?.split("@")[1];
+      if (!domainName) {
+        return res.status(400).json({ error: "Invalid email address" });
+      }
       const domain = await getVerifiedDomainByOrganizationIdAndName({
         organizationId: req.organization._id.toString(),
-        name: req.body.domain,
+        name: domainName,
       });
       if (!domain) {
         return res.status(404).json({ error: "Domain not found" });
@@ -56,6 +60,7 @@ router.post(
       organization_id: req.organization._id.toString(),
       name: req.body.name,
       domain_id: domainId,
+      email: domainId && req.body.email,
     });
 
     await sendWebhookEvent({
