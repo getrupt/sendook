@@ -23,12 +23,12 @@ export const ses = new SESClient({
   },
 });
 
-export async function verifyEmailDomain({ domain }: { domain: string }) {
+export async function getDomainVerificationDkimAttributes({ domain }: { domain: string }) {
   const command = new VerifyDomainDkimCommand({ Domain: domain });
   return await ses.send(command);
 }
 
-export async function domainVerificationStatus({ domain }: { domain: string }) {
+export async function getDomainVerificationStatus({ domain }: { domain: string }) {
   return await ses.send(
     new GetIdentityDkimAttributesCommand({ Identities: [domain] })
   );

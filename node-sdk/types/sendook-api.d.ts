@@ -26,6 +26,10 @@ export interface VerifyDomainParams {
   domainId: string;
 }
 
+export interface GetDomainDNSParams {
+  domainId: string;
+}
+
 export interface DeleteDomainParams {
   domainId: string;
 }
@@ -64,6 +68,7 @@ export interface DomainMethods {
   create: (params: CreateDomainParams) => Promise<any>;
   get: (params: GetDomainParams) => Promise<any>;
   verify: (params: VerifyDomainParams) => Promise<any>;
+  dns: (params: GetDomainDNSParams) => Promise<any>;
   delete: (params: DeleteDomainParams) => Promise<any>;
 }
 

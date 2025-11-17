@@ -60,16 +60,14 @@
               </span>
             </li>
           </ul>
-          <footer v-if="!domain.verified">
+          <footer>
             <span>{{ domain.verified ? 'Verified' : 'DNS pending verification' }}</span>
             <button
               type="button"
               class="button-verify"
-              :disabled="verifyingId === (domain.name ?? domain._id ?? '')"
-              @click="handleVerifyDomain(domain)"
+              @click="openDetailsDialog(domain)"
             >
-              <span v-if="verifyingId === (domain.name ?? domain._id ?? '')">Verifying…</span>
-              <span v-else>Verify DNS</span>
+              View Details
             </button>
           </footer>
         </article>
@@ -140,6 +138,61 @@
         </div>
       </div>
     </Transition>
+
+    <Transition name="fade">
+      <div v-if="showDetailsDialog" class="dialog-backdrop" role="dialog" aria-modal="true">
+        <div class="dialog-card dialog-card-large">
+          <header class="dialog-header">
+            <h2>DNS Records for {{ pendingDetails?.name ?? 'Domain' }}</h2>
+            <button type="button" class="icon-close" aria-label="Close" @click="closeDetailsDialog">
+              ×
+            </button>
+          </header>
+          <div class="dialog-body">
+            <div v-if="loadingDNS" class="dns-loading">
+              <p>Loading DNS records…</p>
+            </div>
+            <div v-else-if="dnsError" class="dialog-error" role="alert">
+              {{ dnsError }}
+            </div>
+            <div v-else-if="dnsRecords.length === 0" class="dns-empty">
+              <p>No DNS records found.</p>
+            </div>
+            <table v-else class="dns-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(record, index) in dnsRecords" :key="index">
+                  <td><span class="dns-type">{{ record.type }}</span></td>
+                  <td><code class="dns-name">{{ record.name || '@' }}</code></td>
+                  <td><code class="dns-value">{{ record.value }}</code></td>
+                </tr>
+              </tbody>
+            </table>
+            <p v-if="detailsError" class="dialog-error" role="alert">{{ detailsError }}</p>
+          </div>
+          <footer class="dialog-footer">
+            <button
+              type="button"
+              class="button-secondary"
+              :disabled="verifyingId === (pendingDetails?.name ?? pendingDetails?._id ?? '')"
+              @click="handleVerifyDomain(pendingDetails!)"
+            >
+              <span v-if="verifyingId === (pendingDetails?.name ?? pendingDetails?._id ?? '')">Verifying…</span>
+              <span v-else>Verify DNS</span>
+            </button>
+            <button type="button" class="button-primary" @click="closeDetailsDialog">
+              Close
+            </button>
+          </footer>
+        </div>
+      </div>
+    </Transition>
   </DashboardShell>
 </template>
 
@@ -160,6 +213,12 @@ interface Domain {
   createdAt?: string;
 }
 
+interface DNSRecord {
+  type: string;
+  name: string;
+  value: string;
+}
+
 const domains = ref<Domain[]>([]);
 const loading = ref(true);
 const saving = ref(false);
@@ -171,7 +230,13 @@ const verificationMessage = ref('');
 const verificationError = ref('');
 const showDialog = ref(false);
 const showDeleteDialog = ref(false);
+const showDetailsDialog = ref(false);
 const pendingDelete = ref<Domain | null>(null);
+const pendingDetails = ref<Domain | null>(null);
+const dnsRecords = ref<DNSRecord[]>([]);
+const loadingDNS = ref(false);
+const dnsError = ref('');
+const detailsError = ref('');
 const form = reactive({
   name: ''
 });
@@ -245,19 +310,77 @@ const closeDeleteDialog = () => {
   deleteError.value = '';
 };
 
+const openDetailsDialog = async (domain: Domain) => {
+  pendingDetails.value = domain;
+  dnsError.value = '';
+  detailsError.value = '';
+  dnsRecords.value = [];
+  showDetailsDialog.value = true;
+  await loadDNSRecords(domain);
+};
+
+const closeDetailsDialog = () => {
+  showDetailsDialog.value = false;
+  pendingDetails.value = null;
+  dnsRecords.value = [];
+  dnsError.value = '';
+  detailsError.value = '';
+};
+
+const loadDNSRecords = async (domain: Domain) => {
+  const organizationId = session.organizationId.value;
+  const token = session.token.value;
+  const domainId = domain.name ?? domain._id;
+
+  if (!organizationId || !token || !domainId) {
+    dnsError.value = 'Missing domain information. Please refresh and try again.';
+    return;
+  }
+
+  loadingDNS.value = true;
+  dnsError.value = '';
+
+  try {
+    const response = await fetch(
+      `${config.public.apiUrl}/organizations/${organizationId}/domains/${domainId}/dns`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { message?: string; error?: string };
+      throw new Error(payload.message ?? payload.error ?? 'Unable to load DNS records.');
+    }
+
+    const data = (await response.json()) as DNSRecord[];
+    dnsRecords.value = Array.isArray(data) ? data : [];
+  } catch (error) {
+    if (error instanceof Error) {
+      dnsError.value = error.message;
+    } else {
+      dnsError.value = 'Unable to load DNS records. Please try again.';
+    }
+  } finally {
+    loadingDNS.value = false;
+  }
+};
+
 const handleVerifyDomain = async (domain: Domain) => {
   const organizationId = session.organizationId.value;
   const token = session.token.value;
   const domainId = domain.name ?? domain._id;
 
   if (!organizationId || !token || !domainId) {
-    verificationError.value = 'Missing domain information. Please refresh and try again.';
+    detailsError.value = 'Missing domain information. Please refresh and try again.';
     return;
   }
 
   verifyingId.value = domainId;
-  verificationMessage.value = '';
-  verificationError.value = '';
+  detailsError.value = '';
 
   try {
     const response = await fetch(
@@ -277,11 +400,15 @@ const handleVerifyDomain = async (domain: Domain) => {
 
     verificationMessage.value = `Verification triggered for ${domainId}.`;
     await loadDomains();
+    // Reload DNS records after verification
+    if (pendingDetails.value) {
+      await loadDNSRecords(pendingDetails.value);
+    }
   } catch (error) {
     if (error instanceof Error) {
-      verificationError.value = error.message;
+      detailsError.value = error.message;
     } else {
-      verificationError.value = 'Unable to verify domain. Please try again.';
+      detailsError.value = 'Unable to verify domain. Please try again.';
     }
   } finally {
     verifyingId.value = null;
@@ -632,6 +759,10 @@ watch(
   gap: 1.5rem;
 }
 
+.dialog-card-large {
+  width: min(800px, 100%);
+}
+
 .dialog-header {
   display: flex;
   align-items: center;
@@ -728,10 +859,95 @@ watch(
   opacity: 0;
 }
 
+.dns-loading,
+.dns-empty {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dns-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.dns-table thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dns-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dns-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dns-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dns-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dns-type {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.dns-name,
+.dns-value {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.4rem;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-all;
+}
+
+.dns-value {
+  max-width: 400px;
+  display: inline-block;
+}
+
 @media (max-width: 780px) {
   .page-heading {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .dialog-card-large {
+    width: min(95vw, 100%);
+  }
+
+  .dns-table {
+    font-size: 0.8rem;
+  }
+
+  .dns-table th,
+  .dns-table td {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .dns-value {
+    max-width: 200px;
   }
 }
 </style>

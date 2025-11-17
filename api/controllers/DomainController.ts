@@ -1,7 +1,8 @@
 import mongoose, { type HydratedDocument } from "mongoose";
 import Domain from "../db/mongo/schemas/Domain";
-import { getDNSMXRecords } from "./DNSController";
+import { getDNSMXRecords, getDNSTXTRecords } from "./DNSController";
 import type IDomain from "../models/Domain";
+import { getDomainVerificationStatus } from "./SESController";
 
 export async function createDomain({
   organizationId,
@@ -91,7 +92,24 @@ export async function verifyDomainDNS({
   if (mxRecordFound) {
     mxRecordFound.status = "verified";
   }
-  domain.verified = mxRecordFound ? true : false;
+
+  const dmarcRecord = await getDNSTXTRecords({ domain: domain.name });
+  console.log(dmarcRecord);
+  let dmarcRecordFound;
+  if (dmarcRecord && Array.isArray(dmarcRecord)) {
+    dmarcRecordFound = domain.records.find(
+      (domainRecord) =>
+        domainRecord.type === "TXT" &&
+        dmarcRecord.find((dnsRecord) => dnsRecord === domainRecord.value)
+    );
+  }
+  if (dmarcRecordFound) {
+    dmarcRecordFound.status = "verified";
+  }
+
+  const verifiedDomainStatus = await getDomainVerificationStatus({ domain: domain.name });
+
+  domain.verified = verifiedDomainStatus.DkimAttributes?.[domain.name]?.DkimVerificationStatus === "Success" ? true : false;
   await domain.save();
   
   return { verified: domain.verified, domain };
