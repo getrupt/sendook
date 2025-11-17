@@ -5,15 +5,6 @@ const items = computed(() => [{
   label: 'Docs',
   to: '/docs',
   active: route.path.startsWith('/docs')
-}, {
-  label: 'Pricing',
-  to: '/pricing'
-}, {
-  label: 'Blog',
-  to: '/blog'
-}, {
-  label: 'Changelog',
-  to: '/changelog'
 }])
 </script>
 
@@ -40,13 +31,12 @@ const items = computed(() => [{
         aria-label="View on GitHub"
       />
 
-      <UColorModeButton />
-
       <UButton
         icon="i-lucide-log-in"
         color="neutral"
         variant="ghost"
-        to="/login"
+        to="https://app.sendook.com/login"
+        target="_blank"
         class="lg:hidden"
       />
 
@@ -54,16 +44,18 @@ const items = computed(() => [{
         label="Sign in"
         color="neutral"
         variant="outline"
-        to="/login"
+        to="https://app.sendook.com/login"
+        target="_blank"
         class="hidden lg:inline-flex"
       />
 
       <UButton
         label="Sign up"
-        color="neutral"
+        color="primary"
         trailing-icon="i-lucide-arrow-right"
         class="hidden lg:inline-flex"
-        to="/signup"
+        to="https://app.sendook.com/signup"
+        target="_blank"
       />
     </template>
 
@@ -80,14 +72,16 @@ const items = computed(() => [{
         label="Sign in"
         color="neutral"
         variant="subtle"
-        to="/login"
+        to="https://app.sendook.com/login"
+        target="_blank"
         block
         class="mb-3"
       />
       <UButton
         label="Sign up"
-        color="neutral"
-        to="/signup"
+        color="primary"
+        to="https://app.sendook.com/signup"
+        target="_blank"
         block
       />
     </template>
