@@ -4,6 +4,7 @@ import inboxesRouter from "./v1/inboxes";
 import domainsRouter from "./v1/domains";
 import { getOrganizationById } from "../controllers/OrganizationController";
 import passport from "passport";
+import webhooksRouter from "./v1/webhooks";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/:organizationId", async (req, res, next) => {
 router.use("/:organizationId/api_keys", apiKeyRouter);
 router.use("/:organizationId/inboxes", inboxesRouter);
 router.use("/:organizationId/domains", domainsRouter);
+router.use("/:organizationId/webhooks", webhooksRouter);
 
 export default router;

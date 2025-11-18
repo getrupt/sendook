@@ -2,6 +2,19 @@
  * Type definitions for SendookAPI
  */
 
+export interface CreateWebhookParams {
+  url: string;
+  events: string[];
+}
+
+export interface GetWebhookParams {
+  webhookId: string;
+}
+
+export interface DeleteWebhookParams {
+  webhookId: string;
+}
+
 export interface CreateApiKeyParams {
   name: string;
 }
@@ -93,3 +106,10 @@ export interface InboxMethods {
   thread: ThreadMethods;
 }
 
+export interface WebhookMethods {
+  list: () => Promise<any>;
+  create: (params: CreateWebhookParams) => Promise<any>;
+  test: (webhookId: string) => Promise<any>;
+  get: (webhookId: string) => Promise<any>;
+  delete: (webhookId: string) => Promise<any>;
+}

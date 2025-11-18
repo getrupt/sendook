@@ -5,6 +5,7 @@ import passport from "passport";
 import type { HydratedDocument } from "mongoose";
 import type Organization from "../../models/Organization";
 import apiKeyRouter from "./api_keys";
+import webhooksRouter from "./webhooks";
 
 const router = Router({ mergeParams: true });
 
@@ -19,5 +20,6 @@ router.use(
 router.use("/api_keys", apiKeyRouter);
 router.use("/inboxes", inboxesRouter);
 router.use("/domains", domainsRouter);
+router.use("/webhooks", webhooksRouter);
 
 export default router;

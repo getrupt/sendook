@@ -49,7 +49,8 @@ interface NavLink {
 const links: NavLink[] = [
   { label: 'Inboxes', to: '/inboxes' },
   { label: 'API Keys', to: '/api-keys' },
-  { label: 'Domains', to: '/domains' }
+  { label: 'Domains', to: '/domains' },
+  { label: 'Webhooks', to: '/webhooks' }
 ];
 
 const route = useRoute();

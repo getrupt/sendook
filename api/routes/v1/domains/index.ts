@@ -112,17 +112,23 @@ router.get(
     return res.json([
       {
         type: "MX",
-        name: "@",
+        name: domain.name.includes('.') && domain.name.split('.').length > 2
+          ? domain.name.replace(/\.[^.]+\.[^.]+$/, '')
+          : "@",
         value: "inbound-smtp.us-east-2.amazonaws.com",
       },
       {
         type: "TXT",
-        name: "@",
+        name: domain.name.includes('.') && domain.name.split('.').length > 2
+          ? domain.name.replace(/\.[^.]+\.[^.]+$/, '')
+          : "@",
         value: "v=spf1 include:amazonses.com ~all",
       },
       {
         type: "TXT",
-        name: "_dmarc",
+        name: `${domain.name.includes('.') && domain.name.split('.').length > 2
+        ? `_dmarc.${domain.name.replace(/\.[^.]+\.[^.]+$/, '')}`
+        : "_dmarc"}`,
         value: "v=DMARC1; p=reject;",
       },
       ...verifiedDomainDkimAttributes.DkimTokens.map((token) => ({

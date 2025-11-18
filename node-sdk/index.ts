@@ -13,6 +13,7 @@ import type {
   CreateInboxParams,
   SendMessageParams,
   ReplyMessageParams,
+  WebhookMethods,
 } from "./types/sendook-api";
 
 class SendookAPI {
@@ -275,6 +276,59 @@ class SendookAPI {
       },
     },
   };
+
+  public webhook: WebhookMethods = {
+    list: async () => {
+      const response = await axios.get(`${this.apiUrl}/v1/webhooks`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    create: async ({
+      url,
+      events,
+    }: {
+      url: string;
+      events: string[];
+    }) => {
+      const response = await axios.post(`${this.apiUrl}/v1/webhooks`, {
+        url,
+        events,
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    test: async (webhookId: string) => {
+      const response = await axios.post(`${this.apiUrl}/v1/webhooks/${webhookId}/test`, {}, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    get: async (webhookId: string) => {
+      const response = await axios.get(`${this.apiUrl}/v1/webhooks/${webhookId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+    delete: async (webhookId: string) => {
+      const response = await axios.delete(`${this.apiUrl}/v1/webhooks/${webhookId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
+  };
+
 }
 
 export default SendookAPI;

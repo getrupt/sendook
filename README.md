@@ -25,6 +25,8 @@ The easiest way to start sending AND **receiving** emails at scale.
 
 #### Using the API endpoints
 
+How to create an inbox:
+
 ```curl
 curl -X POST https://api.sendook.com/v1/inboxes \
   -H "Authorization: Bearer your_api_key" \
@@ -35,10 +37,36 @@ curl -X POST https://api.sendook.com/v1/inboxes \
   }'
 ```
 
+How to send a message:
+
+```curl
+curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": ["rupt@sendook.com"],
+    "subject": "Welcome!",
+    "text": "Thanks for signing up.",
+    "html": "<p>Thanks for signing up.</p>"
+  }'
+```
+
+How to create a webhook:
+
+```curl
+curl -X POST https://api.sendook.com/v1/webhooks \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-app.com/webhooks/email",
+    "events": ["message.received"]
+  }'
+```
+
 #### Using the TypeScript SDK
 
 ```typescript
-import { Sendook } from "@sendook/node-sdk";
+import { Sendook } from "@sendook/node";
 
 // Initialize client with API key
 const client = new Sendook({ apiKey: "your_api_key" });
@@ -55,11 +83,15 @@ await client.messages.send({
   from: "rupt@sendook.com",
   to: ["rupt@sendook.com"],
   subject: "Welcome!",
-  body: "Thanks for signing up.",
+  text: "Thanks for signing up.",
+  html: "<p>Thanks for signing up.</p>",
 });
 
 // Receive emails via webhook
-// Configure webhook endpoint to receive parsed emails as JSON
+await client.webhook.create({
+  url: "https://your-app.com/webhooks/email",
+  events: ["message.received"],
+});
 ```
 
 **Steps:**
