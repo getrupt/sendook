@@ -42,4 +42,15 @@ describe("DomainAPI", function () {
       expect(verifiedDomain.verified).toBe(true);
     });
   });
+  describe("getDomainDNS", function () {
+    it("should get the DNS records for a domain", async function () {
+      const domainName = "marcwhitbread.com";
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const dnsRecords = await sendook.domain.dns({
+        domainId: domainName,
+      });
+      expect(dnsRecords).toBeDefined();
+      expect(dnsRecords.length).toBeGreaterThan(0);
+    });
+  });
 });

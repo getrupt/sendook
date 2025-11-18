@@ -189,6 +189,15 @@ This monorepo contains:
 - [x] Messages auto-create or use a thread
 - [x] Retrieve threads
 
+### Domains (`/domains`)
+
+- [x] Create domain
+- [x] List domains
+- [x] Retrieve domain
+- [x] Delete domain
+- [x] Verify domain
+- [x] Get domain DNS records
+
 ### Tests
 
 - [x] Full API coverage

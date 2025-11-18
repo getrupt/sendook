@@ -25,6 +25,18 @@ const domainSchema = new mongoose.Schema(
           value: "inbound-smtp.us-east-2.amazonaws.com",
           status: "pending",
         },
+        {
+          type: "TXT",
+          name: "_dmarc",
+          value: "v=DMARC1; p=reject;",
+          status: "pending",
+        },
+        {
+          type: "TXT",
+          name: "@",
+          value: "v=spf1 include:amazonses.com ~all",
+          status: "pending",
+        },
       ],
     },
   },

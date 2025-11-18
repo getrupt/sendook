@@ -112,6 +112,18 @@ class SendookAPI {
       });
       return response.data;
     },
+    dns: async ({
+      domainId,
+    }: {
+      domainId: string;
+    }) => {
+      const response = await axios.get(`${this.apiUrl}/v1/domains/${domainId}/dns`, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
     delete: async ({
       domainId,
     }: {
