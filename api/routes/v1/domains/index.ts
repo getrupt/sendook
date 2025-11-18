@@ -133,7 +133,7 @@ router.get(
       },
       ...verifiedDomainDkimAttributes.DkimTokens.map((token) => ({
         type: "CNAME",
-        name: `${token}_domainkey.${domain.name}`,
+        name: `${token}._domainkey.${domain.name}`,
         value: `${token}.dkim.amazonses.com`,
       }))
     ]);
