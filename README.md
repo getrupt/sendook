@@ -9,11 +9,11 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![npm](https://img.shields.io/npm/v/@sendook/node.svg)](https://www.npmjs.com/package/@sendook/node)
 
-## What is this?
+## What is Sendook?
 
-The easiest way to start sending AND **receiving** emails at scale.
+Sendook (Arabic for "box" - صندوق) is the easiest way to start sending AND **receiving** emails at scale.
 
-## Why this?
+## Why is Sendook?
 
 - Setting up email sending at scale is still cumbersome—we had to do it at <a href="https://www.rupt.dev" target="_blank">Rupt</a>
 - The ability to configure and check custom domains is still harder than it should be
@@ -21,11 +21,19 @@ The easiest way to start sending AND **receiving** emails at scale.
 
 ## Quick Start
 
-### Using the API
+- [Using the API Endpoints](#using-the-api-endpoints)
+- [Using the TypeScript SDK](#using-the-typescript-sdk)
+- [Self-hosting & Running Locally](#self-hosting--running-locally)
+- [Repository Structure](#repository-structure)
+- [Features](#features)
+- [SDKs](#sdks)
+- [License](#license)
+
+### Quick Start
 
 #### Using the API endpoints
 
-How to create an inbox:
+**Create an inbox:**
 
 ```curl
 curl -X POST https://api.sendook.com/v1/inboxes \
@@ -37,7 +45,7 @@ curl -X POST https://api.sendook.com/v1/inboxes \
   }'
 ```
 
-How to send a message:
+**Send a message:**
 
 ```curl
 curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
@@ -51,7 +59,7 @@ curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
   }'
 ```
 
-How to create a webhook:
+**Create a webhook for receiving emails:**
 
 ```curl
 curl -X POST https://api.sendook.com/v1/webhooks \
