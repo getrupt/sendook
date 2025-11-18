@@ -303,6 +303,14 @@ class SendookAPI {
       });
       return response.data;
     },
+    test: async (webhookId: string) => {
+      const response = await axios.post(`${this.apiUrl}/v1/webhooks/${webhookId}/test`, {}, {
+        headers: {
+          "Authorization": `Bearer ${this.apiSecret}`,
+        },
+      });
+      return response.data;
+    },
     get: async (webhookId: string) => {
       const response = await axios.get(`${this.apiUrl}/v1/webhooks/${webhookId}`, {
         headers: {

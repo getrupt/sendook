@@ -33,6 +33,19 @@ export async function getWebhooksByOrganizationId({
   });
 }
 
+export async function getWebhookByOrganizationIdAndId({
+  organizationId,
+  id,
+}: {
+  organizationId: string;
+  id: string;
+}) {
+  return await Webhook.findOne({
+    organizationId: new mongoose.Types.ObjectId(organizationId),
+    _id: new mongoose.Types.ObjectId(id.toString()),
+  });
+}
+
 export async function getWebhooksByOrganizationIdAndEvent({
   organizationId,
   event,

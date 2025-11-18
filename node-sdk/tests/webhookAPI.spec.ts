@@ -32,6 +32,17 @@ describe("WebhookAPI", function () {
       expect(webhook._id).toBe(newWebhook._id);
     });
   });
+  describe("testWebhook", function () {
+    it("should test a webhook", async function () {
+      const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
+      const newWebhook = await sendook.webhook.create({
+        url: "http://localhost:8006/webhooks/test",
+        events: ["message.received"],
+      });
+      const testWebhook = await sendook.webhook.test(newWebhook._id);
+      expect(testWebhook).toBeDefined();
+    });
+  });
   describe("deleteWebhook", function () {
     it("should delete a webhook", async function () {
       const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);

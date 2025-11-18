@@ -6,9 +6,11 @@ import {
   createWebhook,
   deleteWebhookByOrganizationIdAndId,
   getWebhookById,
+  getWebhookByOrganizationIdAndId,
   getWebhooksByOrganizationId,
 } from "../../../controllers/WebhookController";
 import { WebhookEvents } from "../../../models/Webhook";
+import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 
 const router = Router({ mergeParams: true });
 
@@ -24,7 +26,7 @@ router.get(
 
 router.post(
   "/",
-  body("url").isString().trim().notEmpty().isURL().withMessage("Invalid URL"),
+  body("url").isString().trim(),
   body("events").isArray().notEmpty(),
   expressValidatorMiddleware,
   async (
@@ -50,15 +52,38 @@ router.get(
     req: Request<{ organizationId: string; webhookId: string }, {}, {}>,
     res: Response
   ) => {
-    const webhook = await getWebhookById(req.params.webhookId);
-
-    if (
-      !webhook ||
-      webhook.organizationId.toString() !== req.organization._id.toString()
-    ) {
+    const webhook = await getWebhookByOrganizationIdAndId({
+      organizationId: req.organization._id.toString(),
+      id: req.params.webhookId,
+    });
+    if (!webhook) {
       return res.status(404).json({ error: "Webhook not found" });
     }
     return res.json(webhook);
+  }
+);
+
+router.post(
+  "/:webhookId/test",
+  async (
+    req: Request<{ organizationId: string; webhookId: string }, {}, {}>,
+    res: Response
+  ) => {
+    const webhook = await getWebhookByOrganizationIdAndId({
+      organizationId: req.organization._id.toString(),
+      id: req.params.webhookId,
+    });
+    if (!webhook) {
+      return res.status(404).json({ error: "Webhook not found" });
+    }
+    await sendWebhookEvent({
+      organizationId: req.organization._id.toString(),
+      event: "message.received",
+      payload: {
+        test: "test",
+      }
+    });
+    return res.json({ message: "Webhook tested" });
   }
 );
 
@@ -68,14 +93,18 @@ router.delete(
     req: Request<{ organizationId: string; webhookId: string }, {}, {}>,
     res: Response
   ) => {
-    const deletedWebhook = await deleteWebhookByOrganizationIdAndId({
+    const webhook = await getWebhookByOrganizationIdAndId({
       organizationId: req.organization._id.toString(),
       id: req.params.webhookId,
     });
-    if (!deletedWebhook) {
+    if (!webhook) {
       return res.status(404).json({ error: "Webhook not found" });
     }
-    return res.json(deletedWebhook);
+    await deleteWebhookByOrganizationIdAndId({
+      organizationId: req.organization._id.toString(),
+      id: req.params.webhookId,
+    });
+    return res.json(webhook);
   }
 );
 

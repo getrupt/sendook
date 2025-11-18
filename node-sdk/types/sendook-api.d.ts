@@ -109,6 +109,7 @@ export interface InboxMethods {
 export interface WebhookMethods {
   list: () => Promise<any>;
   create: (params: CreateWebhookParams) => Promise<any>;
+  test: (webhookId: string) => Promise<any>;
   get: (webhookId: string) => Promise<any>;
   delete: (webhookId: string) => Promise<any>;
 }
