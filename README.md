@@ -13,7 +13,7 @@
 
 Sendook (Arabic for "box" - صندوق) is the easiest way to start sending AND **receiving** emails at scale.
 
-## Why is Sendook?
+## Why Sendook?
 
 - Setting up email sending at scale is still cumbersome—we had to do it at <a href="https://www.rupt.dev" target="_blank">Rupt</a>
 - The ability to configure and check custom domains is still harder than it should be
