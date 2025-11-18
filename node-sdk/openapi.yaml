@@ -15,6 +15,113 @@ servers:
 security:
   - bearerAuth: []
 paths:
+  /v1/webhooks:
+    post:
+      tags:
+        - Webhooks
+      summary: Create a webhook
+      operationId: createWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateRequest'
+      responses:
+        "201":
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - Webhooks
+      summary: List webhooks
+      operationId: listWebhooks
+      responses:
+        "200":
+          description: A collection of webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/webhooks/{webhookId}:
+    parameters:
+      - $ref: '#/components/parameters/WebhookId'
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve a webhook
+      operationId: getWebhook
+      responses:
+        "200":
+          description: Webhook details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete a webhook
+      operationId: deleteWebhook
+      responses:
+        "204":
+          description: Webhook deleted
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/webhooks/{webhookId}/test:
+    parameters:
+      - $ref: '#/components/parameters/WebhookId'
+    post:
+      tags:
+        - Webhooks
+      summary: Test a webhook
+      operationId: testWebhook
+      responses:
+        "200":
+          description: Webhook tested
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
   /v1/api_keys:
     post:
       tags:
