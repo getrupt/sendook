@@ -83,7 +83,7 @@ router.post(
         test: "test",
       }
     });
-    return res.json({ message: "Webhook tested" });
+    return res.json({ success: true });
   }
 );
 
