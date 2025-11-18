@@ -11,6 +11,7 @@ import {
 } from "../../../controllers/WebhookController";
 import { WebhookEvents } from "../../../models/Webhook";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
+import attemptsRouter from "./attempts";
 
 const router = Router({ mergeParams: true });
 
@@ -107,5 +108,7 @@ router.delete(
     return res.json(webhook);
   }
 );
+
+router.use("/:webhookId/attempts", attemptsRouter);
 
 export default router;

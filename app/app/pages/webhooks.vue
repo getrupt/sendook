@@ -167,14 +167,6 @@
                 <code class="detail-value">{{ pendingDetails.url }}</code>
               </div>
               <div class="detail-row">
-                <span class="detail-label">Created</span>
-                <span class="detail-value">{{ formatDate(pendingDetails.createdAt) }}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Updated</span>
-                <span class="detail-value">{{ formatDate(pendingDetails.updatedAt) }}</span>
-              </div>
-              <div class="detail-row">
                 <span class="detail-label">Events</span>
                 <div class="events-list">
                   <span
@@ -188,6 +180,45 @@
                     No events
                   </span>
                 </div>
+              </div>
+            </div>
+            <div v-if="pendingDetails" class="attempts-section">
+              <h3 class="attempts-heading">Recent Attempts</h3>
+              <div v-if="loadingAttempts" class="attempts-loading">
+                <p>Loading attempts…</p>
+              </div>
+              <div v-else-if="attemptsError" class="dialog-error" role="alert">
+                {{ attemptsError }}
+              </div>
+              <div v-else-if="attempts.length === 0" class="attempts-empty">
+                <p>No attempts found.</p>
+              </div>
+              <div v-else class="attempts-table-container">
+                <table class="attempts-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Event</th>
+                      <th>Status</th>
+                      <th>Error</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="attempt in attempts" :key="attempt._id">
+                      <td>{{ formatDateTime(attempt.timestamp) }}</td>
+                      <td><span class="attempt-event">{{ attempt.payload?.event || 'N/A' }}</span></td>
+                      <td>
+                        <span :class="['attempt-status', getStatusClass(attempt.status)]">
+                          {{ attempt.status }}
+                        </span>
+                      </td>
+                      <td>
+                        <span v-if="attempt.error" class="attempt-error">{{ attempt.error }}</span>
+                        <span v-else class="attempt-success">Success</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
             <p v-if="detailsError" class="dialog-error" role="alert">{{ detailsError }}</p>
@@ -234,6 +265,18 @@ interface Webhook {
   updatedAt?: string;
 }
 
+interface WebhookAttempt {
+  _id?: string;
+  timestamp?: string;
+  status?: number;
+  error?: string;
+  payload?: {
+    event?: string;
+    payload?: unknown;
+  };
+  response?: unknown;
+}
+
 const availableEvents = [
   'inbox.created',
   'inbox.deleted',
@@ -263,6 +306,9 @@ const detailsError = ref('');
 const testing = ref(false);
 const testMessage = ref('');
 const testError = ref('');
+const attempts = ref<WebhookAttempt[]>([]);
+const loadingAttempts = ref(false);
+const attemptsError = ref('');
 const form = reactive({
   url: '',
   events: [] as string[]
@@ -281,6 +327,39 @@ const formatDate = (value?: string) => {
     day: 'numeric',
     year: 'numeric'
   });
+};
+
+const formatDateTime = (value?: string) => {
+  if (!value) {
+    return 'N/A';
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return 'N/A';
+  }
+  return date.toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const getStatusClass = (status?: number) => {
+  if (!status) {
+    return 'unknown';
+  }
+  if (status >= 200 && status < 300) {
+    return 'success';
+  }
+  if (status >= 400 && status < 500) {
+    return 'client-error';
+  }
+  if (status >= 500) {
+    return 'server-error';
+  }
+  return 'unknown';
 };
 
 const loadWebhooks = async () => {
@@ -338,12 +417,15 @@ const closeDeleteDialog = () => {
   deleteError.value = '';
 };
 
-const openDetailsDialog = (webhook: Webhook) => {
+const openDetailsDialog = async (webhook: Webhook) => {
   pendingDetails.value = webhook;
   detailsError.value = '';
   testMessage.value = '';
   testError.value = '';
+  attempts.value = [];
+  attemptsError.value = '';
   showDetailsDialog.value = true;
+  await loadAttempts(webhook);
 };
 
 const closeDetailsDialog = () => {
@@ -352,6 +434,8 @@ const closeDetailsDialog = () => {
   detailsError.value = '';
   testMessage.value = '';
   testError.value = '';
+  attempts.value = [];
+  attemptsError.value = '';
 };
 
 const handleCreateWebhook = async () => {
@@ -441,6 +525,49 @@ const handleDeleteWebhook = async () => {
   }
 };
 
+const loadAttempts = async (webhook: Webhook) => {
+  const organizationId = session.organizationId.value;
+  const token = session.token.value;
+  const webhookId = webhook._id;
+
+  if (!organizationId || !token || !webhookId) {
+    attemptsError.value = 'Missing webhook information. Please refresh and try again.';
+    return;
+  }
+
+  loadingAttempts.value = true;
+  attemptsError.value = '';
+
+  try {
+    const response = await fetch(
+      `${config.public.apiUrl}/organizations/${organizationId}/webhooks/${webhookId}/attempts`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { message?: string; error?: string };
+      throw new Error(payload.message ?? payload.error ?? 'Unable to load attempts.');
+    }
+
+    const data = (await response.json()) as WebhookAttempt[];
+    attempts.value = Array.isArray(data) ? data : [];
+  } catch (error) {
+    if (error instanceof Error) {
+      attemptsError.value = error.message;
+    } else {
+      attemptsError.value = 'Unable to load attempts. Please try again.';
+    }
+    attempts.value = [];
+  } finally {
+    loadingAttempts.value = false;
+  }
+};
+
 const handleTestWebhook = async () => {
   const organizationId = session.organizationId.value;
   const token = session.token.value;
@@ -469,8 +596,12 @@ const handleTestWebhook = async () => {
       throw new Error(payload.message ?? payload.error ?? 'Unable to test webhook.');
     }
 
-    const data = (await response.json()) as { message?: string };
-    testMessage.value = data.message ?? 'Webhook test sent successfully.';
+    const data = (await response.json()) as { success?: boolean; message?: string };
+    testMessage.value = data.message ?? (data.success ? 'Webhook test sent successfully.' : 'Webhook test completed.');
+    // Reload attempts after testing
+    if (pendingDetails.value) {
+      await loadAttempts(pendingDetails.value);
+    }
   } catch (error) {
     if (error instanceof Error) {
       testError.value = error.message;
@@ -961,6 +1092,115 @@ watch(
   color: rgba(255, 255, 255, 0.5);
 }
 
+.attempts-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attempts-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.attempts-loading,
+.attempts-empty {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.attempts-table-container {
+  position: relative;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.attempts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.attempts-table thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attempts-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.attempts-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.attempts-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.attempts-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.attempt-event {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.4rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.attempt-status {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.attempt-status.success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #bbf7d0;
+}
+
+.attempt-status.client-error {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fde68a;
+}
+
+.attempt-status.server-error {
+  background: rgba(248, 113, 113, 0.2);
+  color: #fecaca;
+}
+
+.attempt-status.unknown {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.attempt-error {
+  color: #fecaca;
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.attempt-success {
+  color: #bbf7d0;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 780px) {
   .page-heading {
     flex-direction: column;
@@ -974,6 +1214,15 @@ watch(
   .domain-card footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .attempts-table {
+    font-size: 0.8rem;
+  }
+
+  .attempts-table th,
+  .attempts-table td {
+    padding: 0.6rem 0.75rem;
   }
 }
 </style>

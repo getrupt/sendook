@@ -29,16 +29,21 @@ export async function sendWebhookEvent({
     return;
   }
 
-  const webhooksWithoutDuplicates = webhooks.filter((webhook, index, self) =>
-    index === self.findIndex((t) => t.url === webhook.url)
+  const webhooksWithoutDuplicates = webhooks.filter(
+    (webhook, index, self) =>
+      index === self.findIndex((t) => t.url === webhook.url)
   );
 
   for (const webhook of webhooksWithoutDuplicates) {
     const webhookAttempt = new WebhookAttempt();
     webhookAttempt.organizationId = new mongoose.Types.ObjectId(organizationId);
     webhookAttempt.webhookId = webhook._id;
-    webhookAttempt.inboxId = inboxId ? new mongoose.Types.ObjectId(inboxId) : undefined;
-    webhookAttempt.messageId = messageId ? new mongoose.Types.ObjectId(messageId) : undefined;
+    webhookAttempt.inboxId = inboxId
+      ? new mongoose.Types.ObjectId(inboxId)
+      : undefined;
+    webhookAttempt.messageId = messageId
+      ? new mongoose.Types.ObjectId(messageId)
+      : undefined;
     webhookAttempt.payload = {
       event,
       payload,
@@ -56,9 +61,25 @@ export async function sendWebhookEvent({
       webhookAttempt.response = response.data;
     } catch (error) {
       webhookAttempt.status = 500;
-      webhookAttempt.error = error instanceof Error ? error.message : "Unknown error";
+      webhookAttempt.error =
+        error instanceof Error ? error.message : "Unknown error";
     }
 
     await webhookAttempt.save();
   }
+}
+
+export async function getWebhookAttemptsByOrganizationIdAndWebhookId({
+  organizationId,
+  webhookId,
+}: {
+  organizationId: string;
+  webhookId: string;
+}) {
+  return await WebhookAttempt.find({
+    organizationId: new mongoose.Types.ObjectId(organizationId),
+    webhookId: new mongoose.Types.ObjectId(webhookId),
+  })
+    .sort({ timestamp: -1 })
+    .limit(10);
 }
