@@ -34,14 +34,14 @@ curl -X POST https://api.sendook.com/v1/inboxes \
     "email": "rupt@sendook.com"
   }'
 
-curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/send \
+curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
   -H "Authorization: Bearer your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
     "to": ["rupt@sendook.com"],
     "subject": "Welcome!",
     "text": "Thanks for signing up.",
-    "html": "<p>Thanks for signing up.</p>",
+    "html": "<p>Thanks for signing up.</p>"
   }'
 
 curl -X POST https://api.sendook.com/v1/webhooks \
@@ -49,7 +49,7 @@ curl -X POST https://api.sendook.com/v1/webhooks \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://your-app.com/webhooks/email",
-    "events": ["message.received"],
+    "events": ["message.received"]
   }'
 ```
 

@@ -105,8 +105,6 @@ router.get(
     const verifiedDomainDkimAttributes =
       await getDomainVerificationDkimAttributes({ domain: domain.name });
 
-    console.log("verifiedDomainDkimAttributes", verifiedDomainDkimAttributes);
-
     if (!verifiedDomainDkimAttributes.DkimTokens) {
       return res.status(400).json({ error: "Failed to get DKIM attributes" });
     }
