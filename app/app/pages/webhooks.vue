@@ -191,8 +191,21 @@
               </div>
             </div>
             <p v-if="detailsError" class="dialog-error" role="alert">{{ detailsError }}</p>
+            <div v-if="testMessage" class="banner banner-success">
+              {{ testMessage }}
+            </div>
+            <p v-if="testError" class="dialog-error" role="alert">{{ testError }}</p>
           </div>
           <footer class="dialog-footer">
+            <button
+              type="button"
+              class="button-secondary"
+              :disabled="testing"
+              @click="handleTestWebhook"
+            >
+              <span v-if="testing">Testing…</span>
+              <span v-else>Test Webhook</span>
+            </button>
             <button type="button" class="button-primary" @click="closeDetailsDialog">
               Close
             </button>
@@ -247,6 +260,9 @@ const showDetailsDialog = ref(false);
 const pendingDelete = ref<Webhook | null>(null);
 const pendingDetails = ref<Webhook | null>(null);
 const detailsError = ref('');
+const testing = ref(false);
+const testMessage = ref('');
+const testError = ref('');
 const form = reactive({
   url: '',
   events: [] as string[]
@@ -325,6 +341,8 @@ const closeDeleteDialog = () => {
 const openDetailsDialog = (webhook: Webhook) => {
   pendingDetails.value = webhook;
   detailsError.value = '';
+  testMessage.value = '';
+  testError.value = '';
   showDetailsDialog.value = true;
 };
 
@@ -332,6 +350,8 @@ const closeDetailsDialog = () => {
   showDetailsDialog.value = false;
   pendingDetails.value = null;
   detailsError.value = '';
+  testMessage.value = '';
+  testError.value = '';
 };
 
 const handleCreateWebhook = async () => {
@@ -418,6 +438,47 @@ const handleDeleteWebhook = async () => {
     }
   } finally {
     deleting.value = false;
+  }
+};
+
+const handleTestWebhook = async () => {
+  const organizationId = session.organizationId.value;
+  const token = session.token.value;
+  const webhookId = pendingDetails.value?._id;
+
+  if (!organizationId || !token || !webhookId) {
+    testError.value = 'Missing webhook information. Please refresh and try again.';
+    return;
+  }
+
+  testing.value = true;
+  testMessage.value = '';
+  testError.value = '';
+
+  try {
+    const response = await fetch(`${config.public.apiUrl}/organizations/${organizationId}/webhooks/${webhookId}/test`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { message?: string; error?: string };
+      throw new Error(payload.message ?? payload.error ?? 'Unable to test webhook.');
+    }
+
+    const data = (await response.json()) as { message?: string };
+    testMessage.value = data.message ?? 'Webhook test sent successfully.';
+  } catch (error) {
+    if (error instanceof Error) {
+      testError.value = error.message;
+    } else {
+      testError.value = 'Unable to test webhook. Please try again.';
+    }
+  } finally {
+    testing.value = false;
   }
 };
 
