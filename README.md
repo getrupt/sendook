@@ -77,7 +77,7 @@ curl -X POST https://api.sendook.com/v1/webhooks \
 import { Sendook } from "@sendook/node";
 
 // Initialize client with API key
-const client = new Sendook({ apiKey: "your_api_key" });
+const client = new Sendook("your_api_key");
 
 // Create an inbox
 const inbox = await client.inboxes.create({
