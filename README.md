@@ -25,6 +25,8 @@ The easiest way to start sending AND **receiving** emails at scale.
 
 #### Using the API endpoints
 
+How to create an inbox:
+
 ```curl
 curl -X POST https://api.sendook.com/v1/inboxes \
   -H "Authorization: Bearer your_api_key" \
@@ -33,7 +35,11 @@ curl -X POST https://api.sendook.com/v1/inboxes \
     "name": "rupt",
     "email": "rupt@sendook.com"
   }'
+```
 
+How to send a message:
+
+```curl
 curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
   -H "Authorization: Bearer your_api_key" \
   -H "Content-Type: application/json" \
@@ -43,7 +49,11 @@ curl -X POST https://api.sendook.com/v1/inboxes/{inbox_id}/messages/send \
     "text": "Thanks for signing up.",
     "html": "<p>Thanks for signing up.</p>"
   }'
+```
 
+How to create a webhook:
+
+```curl
 curl -X POST https://api.sendook.com/v1/webhooks \
   -H "Authorization: Bearer your_api_key" \
   -H "Content-Type: application/json" \
