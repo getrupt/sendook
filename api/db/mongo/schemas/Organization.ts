@@ -24,6 +24,10 @@ const organizationSchema = new mongoose.Schema(
     //   type: String,
     //   required: false,
     // },
+    dailyMessageLimit: {
+      type: Number,
+      required: false,
+    },
   },
   {
     timestamps: true,

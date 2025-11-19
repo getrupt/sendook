@@ -12,8 +12,10 @@ export const checkMessageLimit = async (
     startDate: dayjs().startOf("day").toDate(),
     endDate: dayjs().endOf("day").toDate(),
   });
+
+  const dailyMessageLimit = req.organization.dailyMessageLimit || parseInt(process.env.MESSAGE_LIMIT);
   
-  if (messagesCount >= parseInt(process.env.MESSAGE_LIMIT)) {
+  if (messagesCount >= dailyMessageLimit) {
     res.status(429).json({ error: "Message limit reached" });
     return;
   } else {

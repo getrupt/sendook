@@ -16,10 +16,11 @@ router.get(
       startDate: dayjs().startOf("day").toDate(),
       endDate: dayjs().endOf("day").toDate(),
     });
+    const dailyMessageLimit = req.organization.dailyMessageLimit || parseInt(process.env.MESSAGE_LIMIT);  
     return res.json({
       count: messagesCount,
-      limit: parseInt(process.env.MESSAGE_LIMIT),
-      percentage: messagesCount / parseInt(process.env.MESSAGE_LIMIT) * 100,
+      limit: dailyMessageLimit,
+      percentage: messagesCount / dailyMessageLimit * 100,
     });
   }
 );
