@@ -16,6 +16,7 @@ import {
 } from "../../../controllers/ThreadController";
 import { redis } from "../../../db/redis";
 import { RedisStore, type RedisReply } from "rate-limit-redis";
+import { checkMessageLimit } from "../../../middlewares/checkMessageLimit";
 
 const connection = redis.duplicate({
   maxRetriesPerRequest: null,
@@ -23,8 +24,8 @@ const connection = redis.duplicate({
 });
 
 const rateLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 1000,
+  windowMs: 60 * 60 * 1000,
+  limit: 100,
   standardHeaders: "draft-7",
   legacyHeaders: false,
   store: new RedisStore({
@@ -38,6 +39,7 @@ const router = Router({ mergeParams: true });
 router.post(
   "/send",
   rateLimiter,
+  checkMessageLimit,
   async (
     req: Request<
       { organizationId: string; inboxId: string },
@@ -174,6 +176,7 @@ router.get(
 router.post(
   "/:messageId/reply",
   rateLimiter,
+  checkMessageLimit,
   async (
     req: Request<
       { organizationId: string; inboxId: string; messageId: string },

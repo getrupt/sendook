@@ -2,9 +2,10 @@ import { Router } from "express";
 import apiKeyRouter from "./v1/api_keys";
 import inboxesRouter from "./v1/inboxes";
 import domainsRouter from "./v1/domains";
-import { getOrganizationById } from "../controllers/OrganizationController";
 import passport from "passport";
 import webhooksRouter from "./v1/webhooks";
+import statsRouter from "./v1/stats";
+import { getOrganizationById } from "../controllers/OrganizationController";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/:organizationId/api_keys", apiKeyRouter);
 router.use("/:organizationId/inboxes", inboxesRouter);
 router.use("/:organizationId/domains", domainsRouter);
 router.use("/:organizationId/webhooks", webhooksRouter);
+router.use("/:organizationId/stats", statsRouter);
 
 export default router;

@@ -24,6 +24,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "email-reply-parser": "^2.1.0",
     "express": "^5.1.0",
