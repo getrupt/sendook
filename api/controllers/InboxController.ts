@@ -18,7 +18,7 @@ export async function createInbox({
     ? new mongoose.Types.ObjectId(domain_id)
     : undefined;
   inbox.name = name;
-  inbox.email = email || `${name.replace(/[^a-zA-Z0-9]/g, "-")}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
+  inbox.email = email || await getNewRandomInboxEmail({ name });
   await inbox.save();
   return inbox;
 }
@@ -60,7 +60,8 @@ export async function getInboxByEmail(email: string) {
 }
 
 export async function getNewRandomInboxEmail({ name }: { name: string }) {
-  const email = `${name.replace(/[^a-zA-Z0-9]/g, "-")}-${Math.random()
+  const lowerCaseName = name.toLowerCase();
+  const email = `${lowerCaseName.replace(/[^a-zA-Z0-9]/g, "-")}-${Math.random()
     .toString(36)
     .substring(2, 12)}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
   const inbox = await getInboxByEmail(email);

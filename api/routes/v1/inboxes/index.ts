@@ -5,8 +5,10 @@ import { expressValidatorMiddleware } from "../../../middlewares/expressValidato
 import {
   createInbox,
   deleteInboxByOrganizationIdAndInboxId,
+  getInboxByEmail,
   getInboxByOrganizationIdAndInboxId,
   getInboxesByOrganizationId,
+  getNewRandomInboxEmail,
 } from "../../../controllers/InboxController";
 import { sendWebhookEvent } from "../../../controllers/WebhookAttemptController";
 import messagesRouter from "./messages";
@@ -40,7 +42,9 @@ router.post(
     res: Response
   ) => {
     let domainId: string | undefined;
+    let username: string | undefined;
     if (req.body.email) {
+      username = req.body.email?.split("@")[0];
       const domainName = req.body.email?.split("@")[1];
       if (!domainName) {
         return res.status(400).json({ error: "Invalid email address" });
@@ -49,18 +53,29 @@ router.post(
         organizationId: req.organization._id.toString(),
         name: domainName,
       });
-      if (!domain) {
-        return res.status(404).json({ error: "Domain not found" });
-      }
 
-      domainId = domain._id.toString();
+      if (domain) {
+        domainId = domain._id.toString();
+      }
+    }
+
+    let email = undefined;
+    if (domainId) {
+      email = req.body.email;
+    } else if (username) {
+      const defaultEmail = `${username}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
+      if (await getInboxByEmail(defaultEmail)) {
+        email = await getNewRandomInboxEmail({ name: username });
+      } else {
+        email = defaultEmail;
+      }
     }
 
     const inbox = await createInbox({
       organization_id: req.organization._id.toString(),
       name: req.body.name,
       domain_id: domainId,
-      email: domainId && req.body.email,
+      email,
     });
 
     await sendWebhookEvent({

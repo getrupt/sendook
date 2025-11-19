@@ -42,7 +42,7 @@
 
     <p class="auth-footer">
       New to Sendook?
-      <NuxtLink to="https://app.sendook.com/signup">Create an account</NuxtLink>
+      <NuxtLink to="/signup">Create an account</NuxtLink>
     </p>
   </div>
 </template>
