@@ -15,6 +15,7 @@ import messagesRouter from "./messages";
 import threadsRouter from "./threads";
 import { deleteMessagesByInboxId } from "../../../controllers/MessageController";
 import { getVerifiedDomainByOrganizationIdAndName } from "../../../controllers/DomainController";
+import type Inbox from "../../../models/Inbox";
 
 const router = Router({ mergeParams: true });
 
@@ -30,45 +31,48 @@ router.get(
 
 router.post(
   "/",
-  body("name").isString().notEmpty().trim(),
-  body("email").optional().isString().notEmpty().trim(),
+  body("name").optional().isString().notEmpty().trim(),
+  body("email").optional().isEmail().trim(),
   expressValidatorMiddleware,
   async (
     req: Request<
       { organizationId: string },
       {},
-      { name: string; email?: string }
+      { name?: string; email?: string }
     >,
     res: Response
   ) => {
     let domainId: string | undefined;
-    let username: string | undefined;
+    let email: string | undefined;
+
     if (req.body.email) {
-      username = req.body.email?.split("@")[0];
       const domainName = req.body.email?.split("@")[1];
       if (!domainName) {
         return res.status(400).json({ error: "Invalid email address" });
       }
-      const domain = await getVerifiedDomainByOrganizationIdAndName({
-        organizationId: req.organization._id.toString(),
-        name: domainName,
-      });
 
-      if (domain) {
+      if (domainName !== process.env.DEFAULT_EMAIL_DOMAIN) {
+        const domain = await getVerifiedDomainByOrganizationIdAndName({
+          organizationId: req.organization._id.toString(),
+          name: domainName,
+        });
+
+        if (!domain) {
+          return res.status(404).json({ error: "Invalid domain name" });
+        }
+        
         domainId = domain._id.toString();
       }
+
+      email = req.body.email;
     }
 
-    let email = undefined;
-    if (domainId) {
-      email = req.body.email;
-    } else if (username) {
-      const defaultEmail = `${username}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
-      if (await getInboxByEmail(defaultEmail)) {
-        email = await getNewRandomInboxEmail({ name: username });
-      } else {
-        email = defaultEmail;
-      }
+    if (!email) {
+      email = await getNewRandomInboxEmail({ name: req.body.name ?? "inbox" });
+    }
+
+    if (await getInboxByEmail(email)) {
+      return res.status(400).json({ error: "Inbox with this email already exists" });
     }
 
     const inbox = await createInbox({

@@ -30,6 +30,7 @@ describe("MessageController", function () {
       const inbox = await createInbox({
         organization_id: organization.id,
         name,
+        email: await getNewRandomInboxEmail({ name: "inbox" }),
       });
       const thread = await createThread({
         organizationId: organization.id,
