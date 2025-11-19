@@ -12,8 +12,9 @@ export const checkMessageLimit = async (
     startDate: dayjs().startOf("day").toDate(),
     endDate: dayjs().endOf("day").toDate(),
   });
+  
   if (messagesCount >= parseInt(process.env.MESSAGE_LIMIT)) {
-    res.status(400).json({ error: "Message limit reached" });
+    res.status(429).json({ error: "Message limit reached" });
     return;
   } else {
     next();

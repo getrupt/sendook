@@ -59,18 +59,22 @@ const fetchMessageLimit = async () => {
     return;
   }
 
-  const response = await fetch(`${getApiUrl()}/organizations/${organizationIdState.value}/stats/messages/daily`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${tokenState.value}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${getApiUrl()}/organizations/${organizationIdState.value}/stats/messages/daily`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenState.value}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to load message limit: ${response.status}`);
     }
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to load message limit: ${response.status}`);
+    const data = (await response.json()) as { count: number; limit: number; percentage: number };
+    messageLimitState.value = data;
+  } catch (error) {
+    console.error('Unable to load message limit', error);
   }
-  const data = (await response.json()) as { count: number; limit: number; percentage: number };
-  messageLimitState.value = data;
 };
 
 const fetchUser = async (router: ReturnType<typeof useRouter>) => {
