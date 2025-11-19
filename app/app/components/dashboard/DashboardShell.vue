@@ -17,6 +17,19 @@
         </nav>
       </div>
       <div>
+        <div class="message-limit">
+          <p class="message-limit-label">Daily message limit</p>
+          <div class="message-limit-progress">
+            <div class="progress-bar-container">
+              <div 
+                class="progress-bar-fill" 
+                :style="{ width: `${Math.min(session.messageLimit.value?.percentage || 0, 100)}%` }"
+                :class="progressBarClass"
+              ></div>
+            </div>
+            <p class="message-limit-text">{{ session.messageLimit.value?.count }} / {{ session.messageLimit.value?.limit }}</p>
+          </div>
+        </div>
         <div v-if="session.user.value" class="user-summary">
           <p class="user-name">{{ userDisplayName }}</p>
           <p v-if="userEmail" class="user-email">{{ userEmail }}</p>
@@ -74,6 +87,13 @@ const userDisplayName = computed(() => {
 });
 
 const userEmail = computed(() => session.user.value?.email ?? '');
+
+const progressBarClass = computed(() => {
+  const percentage = session.messageLimit.value?.percentage || 0;
+  if (percentage >= 90) return 'progress-danger';
+  if (percentage >= 75) return 'progress-warning';
+  return 'progress-normal';
+});
 
 const isActive = (target: string) => {
   if (target === '/') {
@@ -167,11 +187,70 @@ const handleLogout = () => {
   border: 1px solid rgba(99, 102, 241, 0.35);
 }
 
+.message-limit {
+  margin-top: auto;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.message-limit-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-weight: 500;
+}
+
+.message-limit-progress {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-bar-container {
+  flex: 1;
+  width: 100%;
+  height: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 0.25rem;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.progress-bar-fill.progress-normal {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.progress-bar-fill.progress-warning {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.progress-bar-fill.progress-danger {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.message-limit-text {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  text-align: center;
+}
+
 .user-summary {
   margin-top: auto;
   padding: 1rem;
   border-radius: 0.85rem;
   background: rgba(255, 255, 255, 0.04);
+  margin-top: 1rem;
 }
 
 .user-name {
