@@ -25,7 +25,7 @@
                 class="progress-bar-fill" 
                 :style="{ width: `${Math.min(session.messageLimit.value?.percentage || 0, 100)}%` }"
                 :class="progressBarClass"
-              ></div>
+              />
             </div>
             <p class="message-limit-text">{{ session.messageLimit.value?.count }} / {{ session.messageLimit.value?.limit }}</p>
           </div>
