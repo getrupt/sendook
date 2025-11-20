@@ -77,7 +77,7 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   font-weight: 700;
 }
@@ -119,7 +119,7 @@
 .nav-link {
   display: block;
   padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease;
@@ -140,14 +140,14 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   background: rgba(255, 255, 255, 0.04);
 }
 
 .user-avatar {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   background: rgba(99, 102, 241, 0.18);
   display: flex;
   align-items: center;

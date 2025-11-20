@@ -3,8 +3,7 @@
     <aside class="dashboard-sidebar">
       <div class="sidebar-inner">
         <div class="sidebar-brand">
-          <span class="brand-mark">S</span>
-          <span class="brand-name">Sendook</span>
+          <img src="/sendook-logo.svg" alt="Sendook" class="brand-logo">
         </div>
         <nav>
           <ul>
@@ -143,18 +142,9 @@ const handleLogout = () => {
   letter-spacing: 0.02em;
 }
 
-.brand-mark {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.9rem;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  font-weight: 700;
-}
-
-.brand-name {
-  font-size: 1.1rem;
+.brand-logo {
+  width: 150px;
+  display: block;
 }
 
 .dashboard-sidebar ul {
@@ -170,27 +160,28 @@ const handleLogout = () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 195, 1, 0);
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-link:hover {
-  background: rgba(99, 102, 241, 0.16);
+  background: rgba(255, 195, 1, 0.16);
   color: #fff;
 }
 
 .sidebar-link.active {
-  background: rgba(99, 102, 241, 0.26);
+  background: rgba(255, 195, 1, 0.26);
   color: #fff;
-  border: 1px solid rgba(99, 102, 241, 0.35);
+  border: 1px solid rgba(255, 195, 1, 0.35);
 }
 
 .message-limit {
   margin-top: auto;
   padding: 1rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.04);
   display: grid;
   gap: 0.5rem;
@@ -248,7 +239,7 @@ const handleLogout = () => {
 .user-summary {
   margin-top: auto;
   padding: 1rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.04);
   margin-top: 1rem;
 }
@@ -268,7 +259,7 @@ const handleLogout = () => {
 .logout {
   margin-top: 0.75rem;
   border: none;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   background: rgba(248, 113, 113, 0.14);
   color: #fecaca;
   padding: 0.75rem 1rem;
