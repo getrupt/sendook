@@ -51,12 +51,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Webhook'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Webhook'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -90,8 +87,12 @@ paths:
       summary: Delete a webhook
       operationId: deleteWebhook
       responses:
-        "204":
+        "200":
           description: Webhook deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -114,8 +115,31 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
+                  success:
+                    type: boolean
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/webhooks/{webhookId}/attempts:
+    parameters:
+      - $ref: '#/components/parameters/WebhookId'
+    get:
+      tags:
+        - Webhooks
+      summary: List webhook attempts
+      operationId: listWebhookAttempts
+      responses:
+        "200":
+          description: A collection of webhook attempts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookAttempt'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -158,12 +182,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ApiKey'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKey'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -197,8 +218,12 @@ paths:
       summary: Delete an API key
       operationId: deleteApiKey
       responses:
-        "204":
+        "200":
           description: API key deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -224,6 +249,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Domain'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+    get:
+      tags:
+        - Domains
+      summary: List domains
+      operationId: listDomains
+      responses:
+        "200":
+          description: A collection of domains
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Domain'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -257,8 +302,12 @@ paths:
       summary: Delete a domain
       operationId: deleteDomain
       responses:
-        "204":
+        "200":
           description: Domain deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -274,15 +323,39 @@ paths:
       summary: Trigger domain verification
       operationId: verifyDomain
       responses:
-        "202":
-          description: Verification initiated
+        "200":
+          description: Domain verification result
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: true
+                $ref: '#/components/schemas/Domain'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/domains/{domainId}/dns:
+    parameters:
+      - $ref: '#/components/parameters/DomainId'
+    get:
+      tags:
+        - Domains
+      summary: Get DNS records for domain verification
+      operationId: getDomainDns
+      responses:
+        "200":
+          description: DNS records for domain verification
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DnsRecord'
+        "401":
+          $ref: '#/components/responses/UnauthorizedResponse'
+        "404":
+          $ref: '#/components/responses/ErrorResponse'
         default:
           $ref: '#/components/responses/ErrorResponse'
       security:
@@ -323,12 +396,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Inbox'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inbox'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -362,8 +432,12 @@ paths:
       summary: Delete an inbox
       operationId: deleteInbox
       responses:
-        "204":
+        "200":
           description: Inbox deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inbox'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -441,12 +515,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Message'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -489,12 +560,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Thread'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Thread'
         "401":
           $ref: '#/components/responses/UnauthorizedResponse'
         default:
@@ -565,6 +633,13 @@ components:
       description: Unique identifier of the thread.
       schema:
         type: string
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      description: Unique identifier of the webhook.
+      schema:
+        type: string
     MessageSearchQuery:
       name: query
       in: query
@@ -626,12 +701,39 @@ components:
           type: string
         name:
           type: string
-        status:
-          type: string
+        verified:
+          type: boolean
+        records:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              name:
+                type: string
+              value:
+                type: string
+              status:
+                type: string
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
       additionalProperties: true
+    DnsRecord:
+      type: object
+      description: DNS record for domain verification.
+      properties:
+        type:
+          type: string
+          enum: [MX, TXT, CNAME]
+        name:
+          type: string
+        value:
+          type: string
     InboxCreateRequest:
       type: object
       required:
@@ -693,6 +795,11 @@ components:
           type: string
         html:
           type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          description: Optional attachments for the message.
     MessageReplyRequest:
       type: object
       required:
@@ -736,6 +843,101 @@ components:
           items:
             $ref: '#/components/schemas/Message'
       additionalProperties: true
+    WebhookCreateRequest:
+      type: object
+      required:
+        - url
+        - events
+      properties:
+        url:
+          type: string
+          description: HTTPS URL where webhook events will be sent.
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+              - inbox.created
+              - inbox.deleted
+              - inbox.updated
+              - message.sent
+              - message.received
+              - message.delivered
+              - message.bounced
+              - message.complained
+              - message.rejected
+          description: Array of event types to subscribe to (must contain at least one event).
+    Webhook:
+      type: object
+      description: Representation of a webhook.
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    WebhookAttempt:
+      type: object
+      description: Representation of a webhook attempt.
+      properties:
+        id:
+          type: string
+        webhookId:
+          type: string
+        organizationId:
+          type: string
+        inboxId:
+          type: string
+          nullable: true
+        messageId:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+        payload:
+          type: object
+          additionalProperties: true
+        status:
+          type: integer
+        error:
+          type: string
+          nullable: true
+        response:
+          type: object
+          additionalProperties: true
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Attachment:
+      type: object
+      description: Email attachment.
+      properties:
+        content:
+          type: string
+          format: byte
+          description: Base64-encoded file content.
+        name:
+          type: string
+          description: Filename for the attachment.
+        contentType:
+          type: string
+          description: MIME type of the attachment.
     Error:
       type: object
       properties:

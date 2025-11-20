@@ -47,11 +47,11 @@ defineOgImageComponent('Saas')
       <UContentSurround :surround="surround" />
     </UPageBody>
 
-    <!-- <template
+    <template
       v-if="page?.body?.toc?.links?.length"
       #right
     >
-      <UContentToc :links="page.body.toc.links" />
-    </template> -->
+      <UContentToc :links="page.body.toc.links?.map((link: any) => ({ ...link, children: [] }))" />
+    </template>
   </UPage>
 </template>
