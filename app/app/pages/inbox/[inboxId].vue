@@ -285,7 +285,7 @@ watch(
 .search-input {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   color: #fff;
   min-width: 240px;
@@ -294,7 +294,7 @@ watch(
 .placeholder-card {
   text-align: left;
   padding: 3rem;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(12, 12, 18, 0.5);
   display: grid;
@@ -307,7 +307,7 @@ watch(
 }
 
 .message-card {
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(12, 12, 18, 0.6);
   padding: 1.75rem;
@@ -355,7 +355,7 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
   color: rgba(255, 255, 255, 0.85);
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   padding: 0.65rem 1.2rem;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
@@ -368,7 +368,7 @@ watch(
 
 .banner {
   padding: 1rem 1.25rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   margin-bottom: 1.25rem;
   font-size: 0.95rem;
   display: flex;
@@ -406,7 +406,7 @@ watch(
   background: rgba(248, 113, 113, 0.14);
   border: 1px solid rgba(248, 113, 113, 0.36);
   padding: 1rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   font-size: 0.9rem;
 }
 
@@ -444,7 +444,7 @@ watch(
 .dialog-card {
   width: min(420px, 100%);
   background: rgba(10, 10, 16, 0.92);
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
   padding: 2rem;
@@ -489,7 +489,7 @@ watch(
 .dialog-form select {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.85rem 1rem;
   color: #fff;
 }
@@ -506,7 +506,7 @@ watch(
 }
 
 .dialog-error {
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.85rem 1rem;
   background: rgba(248, 113, 113, 0.16);
   border: 1px solid rgba(248, 113, 113, 0.36);

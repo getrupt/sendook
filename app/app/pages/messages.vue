@@ -57,7 +57,7 @@ useRequireAuth();
   gap: 0.5rem;
   border: none;
   padding: 0.85rem 1.3rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   background: rgba(99, 102, 241, 0.2);
@@ -72,7 +72,7 @@ useRequireAuth();
 .placeholder-card {
   text-align: left;
   padding: 3rem;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(12, 12, 18, 0.5);
   display: grid;

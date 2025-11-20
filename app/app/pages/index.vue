@@ -127,7 +127,7 @@ useRequireAuth();
   gap: 0.5rem;
   border: none;
   padding: 0.85rem 1.3rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   background: rgba(99, 102, 241, 0.2);
@@ -148,13 +148,13 @@ useRequireAuth();
   background: rgba(12, 12, 18, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 1.5rem;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
 }
 
 .tab-group {
   display: inline-flex;
   background: rgba(255, 255, 255, 0.04);
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.25rem;
 }
 
@@ -183,7 +183,7 @@ useRequireAuth();
 .filters select {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   padding: 0.65rem 1rem;
   color: rgba(255, 255, 255, 0.8);
 }
@@ -198,7 +198,7 @@ useRequireAuth();
   align-items: center;
   gap: 0.75rem;
   padding: 0.65rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.7);
@@ -221,7 +221,7 @@ useRequireAuth();
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.7);
@@ -253,7 +253,7 @@ useRequireAuth();
 .empty-icon {
   width: 72px;
   height: 72px;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   margin: 0 auto;
   display: grid;
   place-items: center;

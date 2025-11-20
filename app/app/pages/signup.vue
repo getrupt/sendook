@@ -1,6 +1,7 @@
 <template>
   <div class="auth-container">
-    <h2 class="auth-title">Create your account</h2>
+    <img src="/sendook-logo.svg" alt="Sendook" class="brand-logo">
+
     <p class="auth-subtitle">
       Start sending transactional email with Sendook. Enter your details below to continue.
     </p>
@@ -143,6 +144,13 @@ const handleSubmit = async () => {
 .auth-container {
   max-width: 420px;
   margin: 0 auto;
+  padding: 4rem 0;
+}
+
+.brand-logo {
+  width: 300px;
+  display: block;
+  margin-bottom: 2rem;
 }
 
 .auth-title {
@@ -184,7 +192,7 @@ const handleSubmit = async () => {
 .form-field input {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.9rem 1rem;
   color: #f5f7fa;
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -209,15 +217,15 @@ const handleSubmit = async () => {
   border: none;
   font-weight: 600;
   letter-spacing: 0.02em;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #ffd154 0%, #ffc301 100%);
+  color: #000;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .submit-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 15px 35px rgba(255, 195, 1, 0.35);
 }
 
 .submit-button:disabled {
@@ -229,7 +237,7 @@ const handleSubmit = async () => {
 
 .error-message {
   padding: 0.85rem 1rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   background: rgba(248, 113, 113, 0.14);
   border: 1px solid rgba(248, 113, 113, 0.4);
   color: #fecaca;
@@ -244,7 +252,7 @@ const handleSubmit = async () => {
 }
 
 .auth-footer a {
-  color: #a5b4fc;
+  color: #ffd154;
   text-decoration: none;
   font-weight: 600;
 }
