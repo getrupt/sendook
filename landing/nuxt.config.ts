@@ -30,6 +30,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  ui: {
+    colorMode: false
+  },
+
   routeRules: {
     '/docs': { redirect: '/docs/getting-started', prerender: false }
   },
