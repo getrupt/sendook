@@ -74,7 +74,7 @@ curl -X POST https://api.sendook.com/v1/webhooks \
 #### Using the TypeScript SDK
 
 ```typescript
-import { Sendook } from "@sendook/node";
+import Sendook from "@sendook/node";
 
 // Initialize client with API key
 const client = new Sendook("your_api_key");

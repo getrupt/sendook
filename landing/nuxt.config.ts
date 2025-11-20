@@ -9,6 +9,10 @@ export default defineNuxtConfig({
     'nuxt-og-image'
   ],
 
+  devtools: {
+    enabled: true
+  },
+
   app: {
     head: {
       title: 'sendook',
@@ -22,10 +26,6 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap' }
       ]
     }
-  },
-
-  devtools: {
-    enabled: true
   },
 
   css: ['~/assets/css/main.css'],
