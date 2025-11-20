@@ -30,6 +30,10 @@ export default defineNuxtConfig({
     }
   },
 
+  site: {
+    url: 'https://www.sendook.com'
+  },
+
   css: ['~/assets/css/main.css'],
 
   ui: {
