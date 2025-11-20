@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    '@scalar/nuxt',
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxt/ui',
@@ -8,6 +9,10 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-og-image'
   ],
+
+  devtools: {
+    enabled: true
+  },
 
   app: {
     head: {
@@ -24,10 +29,6 @@ export default defineNuxtConfig({
     }
   },
 
-  devtools: {
-    enabled: true
-  },
-
   css: ['~/assets/css/main.css'],
 
   routeRules: {
@@ -37,6 +38,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-07-11',
 
   nitro: {
+    experimental: {
+      openAPI: true
+    },
     prerender: {
       routes: [
         '/'
@@ -51,6 +55,13 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  scalar: {
+    url: 'https://registry.scalar.com/@scalar/apis/galaxy?format=yaml',
+    pathRouting: {
+      basePath: '/api'
     }
   }
 })
