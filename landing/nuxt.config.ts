@@ -59,7 +59,7 @@ export default defineNuxtConfig({
   },
 
   scalar: {
-    url: 'https://registry.scalar.com/@scalar/apis/galaxy?format=yaml',
+    url: 'https://registry.scalar.com/@rupt/apis/sendook-api/latest?format=yaml',
     pathRouting: {
       basePath: '/api'
     }
