@@ -31,7 +31,7 @@ router.get(
 
 router.post(
   "/",
-  body("name").optional().isString().notEmpty().trim(),
+  body("name").optional().isString().trim().notEmpty(),
   body("email").optional().isEmail().trim(),
   expressValidatorMiddleware,
   async (
