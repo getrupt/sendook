@@ -15,7 +15,7 @@ const items = computed(() => [{
         <AppLogo />
       </NuxtLink>
 
-      <div class="width-[20px]" />
+      <div class="w-[10px]" />
 
       <UNavigationMenu
         :items="items"
