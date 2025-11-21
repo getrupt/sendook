@@ -20,9 +20,7 @@ import Sendook from "@sendook/node";
 const sendook = new Sendook(process.env.SENDOOK_API_KEY);
 
 // Create an inbox
-const inbox = await sendook.inbox.create({
-  name: "My Inbox",
-});
+const inbox = await sendook.inbox.create();
 
 // Send an email
 const message = await sendook.inbox.message.send({
@@ -465,11 +463,7 @@ import Sendook from "@sendook/node";
 
 const sendook = new Sendook(process.env.SENDOOK_API_KEY);
 
-// TypeScript will provide autocomplete and type checking
-const inbox = await sendook.inbox.create({
-  name: "My Inbox", // ✅ TypeScript knows this is required
-  email: "test@example.com", // ✅ TypeScript knows this is optional
-});
+const inbox = await sendook.inbox.create();
 ```
 
 ## Development

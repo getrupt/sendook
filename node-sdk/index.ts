@@ -144,9 +144,9 @@ class SendookAPI {
       name,
       email,
     }: {
-      name: string;
+      name?: string;
       email?: string;
-    }) => {
+    } = {}) => {
       const response = await axios.post(`${this.apiUrl}/v1/inboxes`, {
         name,
         email,

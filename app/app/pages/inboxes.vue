@@ -74,8 +74,8 @@
           </header>
           <form class="dialog-form" @submit.prevent="handleCreateInbox">
             <label>
-              <span>Display name</span>
-              <input v-model="form.displayName" type="text" required :disabled="saving">
+              <span>Display name (optional)</span>
+              <input v-model="form.displayName" type="text" :disabled="saving" placeholder="My Support Inbox">
             </label>
 
             <label>
@@ -287,7 +287,7 @@ const handleCreateInbox = async () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: form.displayName,
+        name: form.displayName || undefined,
         email: form.email || undefined
       })
     });

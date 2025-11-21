@@ -29,14 +29,11 @@ describe("InboxAPI", function () {
   describe("getInbox", function () {
     it("should get an inbox", async function () {
       const sendook = new Sendook(process.env.API_KEY, process.env.API_URL);
-      const name = faker.person.fullName();
-      const newInbox = await sendook.inbox.create({
-        name,
-      });
+      const newInbox = await sendook.inbox.create();
       const inbox = await sendook.inbox.get(newInbox.id);
       expect(inbox).toBeDefined();
       expect(inbox.id).toBe(newInbox.id);
-      expect(inbox.name).toBe(name);
+      expect(inbox.name).toBeUndefined();
       expect(inbox.email).toBeDefined();
     });
   });

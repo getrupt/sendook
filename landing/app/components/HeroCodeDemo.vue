@@ -16,9 +16,7 @@ import Sendook from '@sendook/node';
 const client = new Sendook('your_api_key');
 
 // Create an inbox
-const inbox = await client.inbox.create({
-  name: 'Customer Support'
-});
+const inbox = await client.inbox.create();
 
 console.log(inbox.email);
 // => inbox-abc123@sendook.com
@@ -33,7 +31,7 @@ const inbox = await client.inbox.create({
 });
 
 console.log(inbox.email);
-// => inbox-abc123@yourdomain.sendook.com`,
+// => customer-support@sendook.com`,
     language: 'typescript'
   },
   send: {

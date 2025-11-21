@@ -59,14 +59,17 @@ export async function getInboxByEmail(email: string) {
   return await Inbox.findOne({ email });
 }
 
-export async function getNewRandomInboxEmail({ name }: { name: string }) {
+export async function getNewRandomInboxEmail({ name, tryCount = 0 }: { name: string, tryCount?: number }) {
   const lowerCaseName = name.toLowerCase();
-  const email = `${lowerCaseName.replace(/[^a-zA-Z0-9]/g, "-")}-${Math.random()
+  let email = `${lowerCaseName.replace(/[^a-zA-Z0-9]/g, "-")}-${Math.random()
     .toString(36)
     .substring(2, 12)}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
+  if (tryCount === 0) {
+    email = `${lowerCaseName.replace(/[^a-zA-Z0-9]/g, "-")}@${process.env.DEFAULT_EMAIL_DOMAIN}`;
+  }
   const inbox = await getInboxByEmail(email);
   if (inbox) {
-    return await getNewRandomInboxEmail({ name });
+    return await getNewRandomInboxEmail({ name, tryCount: tryCount + 1 });
   }
   return email;
 }

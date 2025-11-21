@@ -736,16 +736,14 @@ components:
           type: string
     InboxCreateRequest:
       type: object
-      required:
-        - name
       properties:
         name:
           type: string
-          description: Label for the inbox.
+          description: Optional label used when auto-generating an inbox address.
         email:
           type: string
           format: email
-          description: Optional email address for the inbox.
+          description: Optional custom email address. When set, the domain must belong to a verified Sendook domain.
     Inbox:
       type: object
       description: Representation of an inbox.
@@ -754,6 +752,10 @@ components:
           type: string
         name:
           type: string
+          nullable: true
+        domainId:
+          type: string
+          nullable: true
         email:
           type: string
           format: email
