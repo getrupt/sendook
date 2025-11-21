@@ -50,6 +50,16 @@ export default defineNuxtConfig({
     '/docs': { redirect: '/docs/getting-started', prerender: false }
   },
 
+  // content: {
+  //   highlight: {
+  //     theme: {
+  //       default: 'github-dark',
+  //       light: 'github-dark',
+  //       dark: 'github-dark-dimmed'
+  //     }
+  //   }
+  // },
+
   compatibilityDate: '2024-07-11',
 
   nitro: {

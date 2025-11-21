@@ -234,3 +234,16 @@ section {
   box-shadow: 0 8px 24px rgba(0, 163, 108, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+pre {
+  background: rgba(0, 0, 0, 0.8);
+  color: #e5edff;
+  border: 1px solid var(--docs-code-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+pre code {
+  background: transparent; /* prevent double background */
+  color: inherit;
+}

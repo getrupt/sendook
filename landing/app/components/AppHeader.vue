@@ -14,12 +14,14 @@ const items = computed(() => [{
       <NuxtLink to="/">
         <AppLogo />
       </NuxtLink>
-    </template>
 
-    <UNavigationMenu
-      :items="items"
-      variant="link"
-    />
+      <div class="width-[20px]" />
+
+      <UNavigationMenu
+        :items="items"
+        variant="link"
+      />
+    </template>
 
     <template #right>
       <UButton

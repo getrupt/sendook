@@ -64,7 +64,7 @@ await client.messages.send({
     }
   },
   webhook: {
-    title: 'Receive emails your webhook',
+    title: 'Receive emails via webhook',
     code: `\`\`\`typescript
 import Sendook from '@sendook/node';
 
