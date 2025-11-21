@@ -6,8 +6,14 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/content',
     '@vueuse/nuxt',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots'
   ],
+
+  devtools: {
+    enabled: true
+  },
 
   app: {
     head: {
@@ -24,11 +30,15 @@ export default defineNuxtConfig({
     }
   },
 
-  devtools: {
-    enabled: true
+  site: {
+    url: 'https://www.sendook.com'
   },
 
   css: ['~/assets/css/main.css'],
+
+  ui: {
+    colorMode: false
+  },
 
   routeRules: {
     '/docs': { redirect: '/docs/getting-started', prerender: false }

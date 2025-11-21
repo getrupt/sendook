@@ -7,6 +7,7 @@ export default interface Organization {
   // stripeCustomerId: string;
   // stripeSubscriptionId: string;
   // stripePaymentMethodId: string | null;
+  dailyMessageLimit: number | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 }

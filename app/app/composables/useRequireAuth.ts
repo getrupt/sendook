@@ -19,6 +19,11 @@ interface AuthUser {
 const tokenState = ref<string | null>(null);
 const userState = ref<AuthUser | null>(null);
 const organizationIdState = ref<string | null>(null);
+const messageLimitState = ref<{ 
+  count: number;
+  limit: number;
+  percentage: number;
+} | null>(null);
 const loadingState = ref(false);
 let fetchPromise: Promise<void> | null = null;
 
@@ -39,6 +44,7 @@ const getApiUrl = () => {
 const clearSessionAndRedirect = (router: ReturnType<typeof useRouter>) => {
   tokenState.value = null;
   userState.value = null;
+  messageLimitState.value = null;
   organizationIdState.value = null;
 
   if (typeof document !== 'undefined') {
@@ -46,6 +52,29 @@ const clearSessionAndRedirect = (router: ReturnType<typeof useRouter>) => {
   }
 
   router.replace('/login');
+};
+
+const fetchMessageLimit = async () => {
+  if (!tokenState.value || !organizationIdState.value) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${getApiUrl()}/organizations/${organizationIdState.value}/stats/messages/daily`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenState.value}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to load message limit: ${response.status}`);
+    }
+    const data = (await response.json()) as { count: number; limit: number; percentage: number };
+    messageLimitState.value = data;
+  } catch (error) {
+    console.error('Unable to load message limit', error);
+  }
 };
 
 const fetchUser = async (router: ReturnType<typeof useRouter>) => {
@@ -104,6 +133,10 @@ export function useRequireAuth() {
     if (!userState.value) {
       await fetchUser(router);
     }
+
+    if (!messageLimitState.value) {
+      await fetchMessageLimit();
+    }
   };
 
   onMounted(() => {
@@ -115,7 +148,9 @@ export function useRequireAuth() {
     user: userState,
     organizationId: organizationIdState,
     loading: loadingState,
-    refreshUser: () => fetchUser(router)
+    refreshUser: () => fetchUser(router),
+    messageLimit: messageLimitState,
+    refreshMessageLimit: () => fetchMessageLimit()
   };
 }
 

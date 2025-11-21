@@ -51,7 +51,7 @@ defineOgImageComponent('Saas')
       v-if="page?.body?.toc?.links?.length"
       #right
     >
-      <UContentToc :links="page.body.toc.links" />
+      <UContentToc :links="page.body.toc.links?.map((link: any) => ({ ...link, children: [] }))" />
     </template>
   </UPage>
 </template>

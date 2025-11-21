@@ -10,6 +10,15 @@ export default defineNuxtConfig({
     '@nuxt/ui'
   ],
 
+  app: {
+    head: {
+      title: 'Sendook - Email infrastructure for developers',
+      meta: [
+        { name: 'description', content: 'Sendook - Email infrastructure for developers' }
+      ],
+    }
+  },
+
   css: ['~/assets/css/tailwind.css'],
 
   postcss: {

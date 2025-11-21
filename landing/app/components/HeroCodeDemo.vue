@@ -11,36 +11,36 @@ const codeExamples = {
   create: {
     title: 'Create an inbox in one line',
     code: `\`\`\`typescript
-import { Sendook } from '@sendook/node-sdk';
+import Sendook from '@sendook/node';
 
-const client = new Sendook({ apiKey: 'your_api_key' });
+const client = new Sendook('your_api_key');
 
 // Create an inbox
-const inbox = await client.inboxes.create({
+const inbox = await client.inbox.create({
   name: 'Customer Support'
 });
 
 console.log(inbox.email);
-// => support-abc123@yourdomain.sendook.app
+// => inbox-abc123@sendook.com
 \`\`\``,
-    rawCode: `import { Sendook } from '@sendook/node-sdk';
+    rawCode: `import Sendook from '@sendook/node';
 
-const client = new Sendook({ apiKey: 'your_api_key' });
+const client = new Sendook('your_api_key');
 
 // Create an inbox
-const inbox = await client.inboxes.create({
+const inbox = await client.inbox.create({
   name: 'Customer Support'
 });
 
 console.log(inbox.email);
-// => support-abc123@yourdomain.sendook.app`,
+// => inbox-abc123@yourdomain.sendook.com`,
     language: 'typescript'
   },
   send: {
     title: 'Send an email to your inbox',
     code: `\`\`\`bash
 # Send from any email client
-To: support-abc123@yourdomain.sendook.app
+To: inbox-abc123@sendook.com
 Subject: New support request
 Body: I need help with my account
 
@@ -53,7 +53,7 @@ await client.messages.send({
 });
 \`\`\``,
     rawCode: `# Send from any email client
-To: support-abc123@yourdomain.sendook.app
+To: inbox-abc123@sendook.com
 Subject: New support request
 Body: I need help with my account
 
@@ -75,7 +75,7 @@ await client.messages.send({
   "message": {
     "id": "msg_xyz789",
     "from": "customer@example.com",
-    "to": "support-abc123@yourdomain.sendook.app",
+    "to": "inbox-abc123@sendook.com",
     "subject": "New support request",
     "body": "I need help with my account",
     "attachments": [],
@@ -89,7 +89,7 @@ await client.messages.send({
   "message": {
     "id": "msg_xyz789",
     "from": "customer@example.com",
-    "to": "support-abc123@yourdomain.sendook.app",
+    "to": "inbox-abc123@sendook.com",
     "subject": "New support request",
     "body": "I need help with my account",
     "attachments": [],
@@ -205,4 +205,3 @@ button {
   transition: all 0.2s ease;
 }
 </style>
-

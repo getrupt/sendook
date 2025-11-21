@@ -387,16 +387,16 @@ watch(
   gap: 0.5rem;
   border: none;
   padding: 0.85rem 1.3rem;
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  background: rgba(99, 102, 241, 0.2);
-  color: #c7d2fe;
+  background: rgba(255, 195, 1, 0.2);
+  color: rgba(255, 195, 1, 1);
   cursor: pointer;
 }
 
 .primary-action:hover {
-  background: rgba(99, 102, 241, 0.35);
+  background: rgba(255, 195, 1, 0.35);
 }
 
 .inboxes-grid {
@@ -418,7 +418,7 @@ watch(
 }
 
 .inbox-card {
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(12, 12, 18, 0.6);
   padding: 1.75rem;
@@ -445,7 +445,7 @@ watch(
   color: #fecaca;
   width: 34px;
   height: 34px;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
@@ -497,7 +497,7 @@ watch(
 .placeholder-card {
   text-align: left;
   padding: 3rem;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(12, 12, 18, 0.5);
   display: grid;
@@ -528,7 +528,7 @@ watch(
 .dialog-card {
   width: min(420px, 100%);
   background: rgba(10, 10, 16, 0.92);
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
   padding: 2rem;
@@ -572,7 +572,7 @@ watch(
 .dialog-form input {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.85rem 1rem;
   color: #fff;
 }
@@ -583,7 +583,7 @@ watch(
 }
 
 .dialog-error {
-  border-radius: 0.85rem;
+  border-radius: 0.5rem;
   padding: 0.85rem 1rem;
   background: rgba(248, 113, 113, 0.16);
   border: 1px solid rgba(248, 113, 113, 0.36);
@@ -614,17 +614,17 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
   color: rgba(255, 255, 255, 0.85);
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   padding: 0.75rem 1.2rem;
   cursor: pointer;
 }
 
 .button-primary {
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   padding: 0.75rem 1.2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #fff;
+  background: linear-gradient(135deg, #ffd154 0%, #ffc301 100%);
+  color: #000;
   font-weight: 600;
   cursor: pointer;
 }
@@ -677,7 +677,7 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.85);
-  border-radius: 0.75rem;
+  border-radius: 0.4rem;
   padding: 0.45rem 0.9rem;
   font-size: 0.75rem;
   font-weight: 600;

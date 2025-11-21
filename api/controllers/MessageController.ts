@@ -122,3 +122,26 @@ export async function deleteMessagesByInboxId(inboxId: string) {
     inboxId: new mongoose.Types.ObjectId(inboxId),
   });
 }
+
+export async function getMessagesCountByOrganizationId({
+  organizationId,
+  startDate,
+  endDate,
+}: {
+  organizationId: string;
+  startDate?: Date;
+  endDate?: Date;
+}) {
+  const filter: any = {
+    organizationId: new mongoose.Types.ObjectId(organizationId),
+  };
+
+  if (startDate) {
+    filter.createdAt = { $gte: startDate };
+  }
+  if (endDate) {
+    filter.createdAt = { ...filter.createdAt, $lte: endDate };
+  }
+
+  return await Message.countDocuments(filter);
+}
