@@ -8,7 +8,8 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-og-image',
     '@nuxtjs/sitemap',
-    '@nuxtjs/robots'
+    '@nuxtjs/robots',
+    'nuxt-gtag',
   ],
 
   devtools: {
@@ -32,6 +33,11 @@ export default defineNuxtConfig({
 
   site: {
     url: 'https://www.sendook.com'
+  },
+
+  gtag: {
+    enabled: process.env.NODE_ENV === 'production',
+    id: 'G-00EMQBGGCF'
   },
 
   css: ['~/assets/css/main.css'],
