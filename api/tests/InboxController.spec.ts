@@ -5,7 +5,7 @@ import { expect, beforeAll, afterAll, describe, it } from "bun:test";
 import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
 import { register } from "../controllers/AuthController";
-import { createInbox } from "../controllers/InboxController";
+import { createInbox, getNewRandomInboxEmail } from "../controllers/InboxController";
 
 describe("InboxController", function () {
   beforeAll(async function () {
@@ -25,7 +25,7 @@ describe("InboxController", function () {
       const name = faker.person.fullName();
       const inbox = await createInbox({
         organization_id: organization.id,
-        name,
+        email: await getNewRandomInboxEmail({ name: "inbox" }),
       });
       expect(inbox).toBeDefined();
       expect(inbox.organizationId.toString()).toBe(organization.id);

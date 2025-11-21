@@ -48,7 +48,7 @@ export interface DeleteDomainParams {
 }
 
 export interface CreateInboxParams {
-  name: string;
+  name?: string;
   email?: string;
 }
 
@@ -98,7 +98,7 @@ export interface ThreadMethods {
 }
 
 export interface InboxMethods {
-  create: (params: CreateInboxParams) => Promise<any>;
+  create: (params: CreateInboxParams = {}) => Promise<any>;
   list: () => Promise<any>;
   get: (inboxId: string) => Promise<any>;
   delete: (inboxId: string) => Promise<any>;
