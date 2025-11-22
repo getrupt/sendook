@@ -108,7 +108,6 @@ export const chargeUsage = async ({
       error.message === "Usage limit reached"
     ) {
       throw new Error("Usage limit reached");
-      return;
     }
     throw error;
   }

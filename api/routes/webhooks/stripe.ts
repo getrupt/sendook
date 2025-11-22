@@ -38,6 +38,7 @@ router.post("/",
         await updateOrganization(organization.id, { stripePaymentMethodId: paymentMethod.id });
       } catch (err) {
         console.error("Error processing payment method attached event", err);
+        return res.status(500).send("Error processing payment method attached event");
       }
     }
 

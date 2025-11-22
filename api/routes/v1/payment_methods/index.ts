@@ -53,8 +53,6 @@ router.post(
         customerId: organization.stripeCustomerId,
       });
 
-      // Update organization with payment method ID
-      // The webhook will also handle this, but we can do it immediately for better UX
       await updateOrganization(organization._id.toString(), {
         stripePaymentMethodId: paymentMethodId,
       });

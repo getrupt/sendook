@@ -7,7 +7,6 @@ export const checkUsageAccess = async (
   next: NextFunction
 ) => {
   try {
-    console.log("Checking usage access for organization", req.organization);
     await chargeUsage({
       organizationId: req.organization._id.toString(),
       stripeCustomerId: req.organization.stripeCustomerId,
