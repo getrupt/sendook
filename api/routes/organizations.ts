@@ -5,6 +5,7 @@ import domainsRouter from "./v1/domains";
 import passport from "passport";
 import webhooksRouter from "./v1/webhooks";
 import statsRouter from "./v1/stats";
+import paymentMethodsRouter from "./v1/payment_methods";
 import { getOrganizationById } from "../controllers/OrganizationController";
 
 const router = Router();
@@ -30,5 +31,6 @@ router.use("/:organizationId/inboxes", inboxesRouter);
 router.use("/:organizationId/domains", domainsRouter);
 router.use("/:organizationId/webhooks", webhooksRouter);
 router.use("/:organizationId/stats", statsRouter);
+router.use("/:organizationId/payment_methods", paymentMethodsRouter);
 
 export default router;

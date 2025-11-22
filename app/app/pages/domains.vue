@@ -460,7 +460,7 @@ const handleCreateDomain = async () => {
 const handleDeleteDomain = async () => {
   const organizationId = session.organizationId.value;
   const token = session.token.value;
-  const domainId = pendingDelete.value?._id;
+  const domainId = pendingDelete.value?.name;
 
   if (!organizationId || !token || !domainId) {
     deleteError.value = 'Missing domain information. Please refresh and try again.';

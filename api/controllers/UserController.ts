@@ -1,6 +1,5 @@
 import { hash } from "./EncryptionController";
 import User from "../db/mongo/schemas/User";
-import mongoose from "mongoose";
 
 export async function createUser(
   firstName: string,

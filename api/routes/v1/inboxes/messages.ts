@@ -17,6 +17,7 @@ import {
 import { redis } from "../../../db/redis";
 import { RedisStore, type RedisReply } from "rate-limit-redis";
 import { checkMessageLimit } from "../../../middlewares/checkMessageLimit";
+import { checkUsageAccess } from "../../../middlewares/checkUsageAccess";
 
 const connection = redis.duplicate({
   maxRetriesPerRequest: null,
@@ -40,6 +41,7 @@ router.post(
   "/send",
   rateLimiter,
   checkMessageLimit,
+  checkUsageAccess,
   async (
     req: Request<
       { organizationId: string; inboxId: string },
@@ -177,6 +179,7 @@ router.post(
   "/:messageId/reply",
   rateLimiter,
   checkMessageLimit,
+  checkUsageAccess,
   async (
     req: Request<
       { organizationId: string; inboxId: string; messageId: string },
