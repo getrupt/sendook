@@ -98,3 +98,67 @@ export async function attachPaymentMethod({
   });
   return paymentMethod;
 }
+
+export async function getPaymentMethod(paymentMethodId: string) {
+  const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+  return paymentMethod;
+}
+
+export async function getCustomerInvoices({
+  customerId,
+  limit = 10,
+}: {
+  customerId: string;
+  limit?: number;
+}) {
+  const invoices = await stripe.invoices.list({
+    customer: customerId,
+    limit,
+  });
+  return invoices;
+}
+
+export async function getCurrentMonthInvoice({
+  customerId,
+  subscriptionId,
+}: {
+  customerId: string;
+  subscriptionId?: string;
+}) {
+  // First try to get upcoming invoice if we have a subscription
+  if (subscriptionId) {
+    try {
+      const upcomingInvoice = await stripe.invoices.retrieveUpcoming({
+        subscription: subscriptionId,
+      });
+      return upcomingInvoice;
+    } catch (error) {
+      // If no upcoming invoice, continue to check current month
+    }
+  }
+
+  // Get current month invoices
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const invoices = await stripe.invoices.list({
+    customer: customerId,
+    created: {
+      gte: Math.floor(startOfMonth.getTime() / 1000),
+      lte: Math.floor(endOfMonth.getTime() / 1000),
+    },
+    limit: 1,
+  });
+
+  // If no current month invoice, get the most recent one
+  if (invoices.data.length === 0) {
+    const recentInvoices = await stripe.invoices.list({
+      customer: customerId,
+      limit: 1,
+    });
+    return recentInvoices.data[0] || null;
+  }
+
+  return invoices.data[0] || null;
+}

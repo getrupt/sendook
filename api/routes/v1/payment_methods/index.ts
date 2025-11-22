@@ -1,6 +1,11 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
-import { createSetupIntent, attachPaymentMethod } from "../../../controllers/StripeController";
+import { 
+  createSetupIntent, 
+  attachPaymentMethod, 
+  getPaymentMethod,
+  getCurrentMonthInvoice 
+} from "../../../controllers/StripeController";
 import { updateOrganization } from "../../../controllers/OrganizationController";
 
 const router = Router({ mergeParams: true });
@@ -58,6 +63,46 @@ router.post(
     } catch (error) {
       console.error("Error attaching payment method:", error);
       return res.status(500).json({ error: "Failed to attach payment method" });
+    }
+  }
+);
+
+router.get(
+  "/",
+  async (req: Request<{ organizationId: string }, {}, {}>, res: Response) => {
+    try {
+      const organization = req.organization;
+      if (!organization.stripePaymentMethodId) {
+        return res.json({ paymentMethod: null });
+      }
+
+      const paymentMethod = await getPaymentMethod(organization.stripePaymentMethodId);
+      return res.json({ paymentMethod });
+    } catch (error) {
+      console.error("Error getting payment method:", error);
+      return res.status(500).json({ error: "Failed to get payment method" });
+    }
+  }
+);
+
+router.get(
+  "/invoice/current",
+  async (req: Request<{ organizationId: string }, {}, {}>, res: Response) => {
+    try {
+      const organization = req.organization;
+      if (!organization.stripeCustomerId) {
+        return res.status(400).json({ error: "Organization does not have a Stripe customer ID" });
+      }
+
+      const invoice = await getCurrentMonthInvoice({
+        customerId: organization.stripeCustomerId,
+        subscriptionId: organization.stripeSubscriptionId,
+      });
+
+      return res.json({ invoice });
+    } catch (error) {
+      console.error("Error getting current month invoice:", error);
+      return res.status(500).json({ error: "Failed to get invoice" });
     }
   }
 );

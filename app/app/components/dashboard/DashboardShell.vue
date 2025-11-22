@@ -133,6 +133,7 @@ const links: NavLink[] = [
   { label: "API Keys", to: "/api-keys" },
   { label: "Domains", to: "/domains" },
   { label: "Webhooks", to: "/webhooks" },
+  { label: "Billing", to: "/billing" },
 ];
 
 const route = useRoute();
