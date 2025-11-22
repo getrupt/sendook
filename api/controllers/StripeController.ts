@@ -73,3 +73,28 @@ export async function sendStripeMeterEvent({
   });
   return meterEvent;
 }
+
+export async function createSetupIntent({
+  customerId,
+}: {
+  customerId: string;
+}) {
+  const setupIntent = await stripe.setupIntents.create({
+    customer: customerId,
+    payment_method_types: ['card'],
+  });
+  return setupIntent;
+}
+
+export async function attachPaymentMethod({
+  paymentMethodId,
+  customerId,
+}: {
+  paymentMethodId: string;
+  customerId: string;
+}) {
+  const paymentMethod = await stripe.paymentMethods.attach(paymentMethodId, {
+    customer: customerId,
+  });
+  return paymentMethod;
+}
