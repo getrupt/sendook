@@ -4,7 +4,7 @@ const activeTab = ref('create')
 const tabs = [
   { id: 'create', label: '1. Create Inbox', icon: 'i-lucide-inbox' },
   { id: 'send', label: '2. Send Email', icon: 'i-lucide-send' },
-  { id: 'webhook', label: '3. Receive Webhook', icon: 'i-lucide-webhook' }
+  { id: 'webhook', label: '3. Receive Email', icon: 'i-lucide-webhook' }
 ]
 
 const codeExamples = {
@@ -13,73 +13,67 @@ const codeExamples = {
     code: `\`\`\`typescript
 import Sendook from '@sendook/node';
 
-const client = new Sendook('your_api_key');
+const client = new Sendook('SENDOOK_API_KEY');
 
-// Create an inbox
 const inbox = await client.inbox.create();
-
-console.log(inbox.email);
-// => inbox-abc123@sendook.com
 \`\`\``,
     rawCode: `import Sendook from '@sendook/node';
 
-const client = new Sendook('your_api_key');
+const client = new Sendook('SENDOOK_API_KEY');
 
-// Create an inbox
-const inbox = await client.inbox.create({
-  name: 'Customer Support'
-});
-
-console.log(inbox.email);
-// => customer-support@sendook.com`,
-    language: 'typescript'
+const inbox = await client.inbox.create();
+`,
+    language: 'typescript',
+    api: {
+      url: '/docs/api/inboxes#create-an-inbox'
+    }
   },
   send: {
-    title: 'Send an email to your inbox',
-    code: `\`\`\`bash
-# Send from any email client
-To: inbox-abc123@sendook.com
-Subject: New support request
-Body: I need help with my account
+    title: 'Send an email',
+    code: `\`\`\`typescript
+import Sendook from '@sendook/node';
 
-# Or use the API to send
+const client = new Sendook('SENDOOK_API_KEY');
+
+const inbox = await client.inbox.create();
+
 await client.messages.send({
-  from: inbox.email,
-  to: 'customer@example.com',
+  inboxId: inbox.id,
+  to: ['customer@example.com'],
   subject: 'Re: New support request',
-  body: 'How can we help you?'
+  text: 'How can we help you?',
+  html: '<p>How can we help you?</p>'
 });
 \`\`\``,
-    rawCode: `# Send from any email client
-To: inbox-abc123@sendook.com
-Subject: New support request
-Body: I need help with my account
+    rawCode: `import Sendook from '@sendook/node';
 
-# Or use the API to send
+const client = new Sendook('SENDOOK_API_KEY');
+
+const inbox = await client.inbox.create();
+
 await client.messages.send({
-  from: inbox.email,
-  to: 'customer@example.com',
+  inboxId: inbox.id,
+  to: ['customer@example.com'],
   subject: 'Re: New support request',
-  body: 'How can we help you?'
+  text: 'How can we help you?',
+  html: '<p>How can we help you?</p>'
 });`,
-    language: 'bash'
+    language: 'typescript',
+    api: {
+      url: '/docs/api/messages#send-a-message'
+    }
   },
   webhook: {
-    title: 'Receive instant webhook notifications',
-    code: `\`\`\`json
-{
-  "event": "message.received",
-  "inbox_id": "inbox_abc123",
-  "message": {
-    "id": "msg_xyz789",
-    "from": "customer@example.com",
-    "to": "inbox-abc123@sendook.com",
-    "subject": "New support request",
-    "body": "I need help with my account",
-    "attachments": [],
-    "received_at": "2025-11-16T10:30:00Z"
-  }
-}
+    title: 'Receive emails via webhook',
+    code: `\`\`\`typescript
+import Sendook from '@sendook/node';
+
+const client = new Sendook('SENDOOK_API_KEY');
+
+await client.webhook.create({
+  url: 'https://your-app.com/webhooks/email',
+  events: ['message.received']
+});
 \`\`\``,
     rawCode: `{
   "event": "message.received",
@@ -89,22 +83,20 @@ await client.messages.send({
     "from": "customer@example.com",
     "to": "inbox-abc123@sendook.com",
     "subject": "New support request",
-    "body": "I need help with my account",
+    "text": "I need help with my account",
+    "html": "<p>I need help with my account</p>",
     "attachments": [],
     "received_at": "2025-11-16T10:30:00Z"
   }
 }`,
-    language: 'json'
+    language: 'json',
+    api: {
+      url: '/docs/api/webhooks#create-a-webhook'
+    }
   }
 }
 
 const currentExample = computed(() => codeExamples[activeTab.value as keyof typeof codeExamples])
-
-function copyToClipboard() {
-  if (typeof window !== 'undefined' && window.navigator.clipboard) {
-    window.navigator.clipboard.writeText(currentExample.value.rawCode)
-  }
-}
 </script>
 
 <template>
@@ -114,19 +106,22 @@ function copyToClipboard() {
       class="rounded-2xl overflow-hidden"
     >
       <!-- Tab Navigation -->
-      <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-3 bg-white">
+      <div class="flex items-center gap-2">
         <button
           v-for="tab in tabs"
           :key="tab.id"
-          @click="activeTab = tab.id"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer"
           :class="[
             activeTab === tab.id
               ? 'bg-primary-500 text-white shadow-sm'
-              : 'text-gray-600 hover:bg-gray-100'
+              : 'bg-white text-gray-600'
           ]"
+          @click="activeTab = tab.id"
         >
-          <UIcon :name="tab.icon" class="w-4 h-4" />
+          <UIcon
+            :name="tab.icon"
+            class="w-4 h-4"
+          />
           <span class="hidden sm:inline">{{ tab.label }}</span>
           <span class="sm:hidden">{{ tab.id === 'create' ? '1' : tab.id === 'send' ? '2' : '3' }}</span>
         </button>
@@ -134,34 +129,19 @@ function copyToClipboard() {
 
       <!-- Code Display -->
       <div class="relative">
-        <div class="absolute top-4 right-4 z-10">
-          <UButton
-            icon="i-lucide-copy"
-            size="xs"
-            color="neutral"
-            variant="subtle"
-            @click="copyToClipboard"
-          />
-        </div>
-
-        <div class="p-6 bg-gray-50">
-          <div class="mb-3">
+        <div class="bg-gray-50">
+          <div class="">
             <p class="text-sm font-medium text-gray-700">
               {{ currentExample.title }}
             </p>
           </div>
 
-          <div class="code-wrapper bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <MDC :value="currentExample.code" tag="div" class="code-block" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Visual Indicator -->
-      <div class="px-6 py-4 bg-white border-t border-gray-200">
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <UIcon name="i-lucide-sparkles" class="w-3.5 h-3.5 text-primary-500" />
-          <span>That's it! Email infrastructure in minutes, not days.</span>
+          <MDC
+            :value="currentExample.code"
+            :language="currentExample.language"
+            tag="div"
+            class="code-block m-0"
+          />
         </div>
       </div>
     </UPageCard>
@@ -196,6 +176,14 @@ function copyToClipboard() {
 
 .code-block {
   font-size: 13px;
+}
+
+.code-block > * {
+  margin: 10px 0 0 0;
+}
+
+.code-block > * > * {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* Smooth transitions for tab switching */

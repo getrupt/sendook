@@ -55,3 +55,9 @@ defineOgImageComponent('Saas')
     </template>
   </UPage>
 </template>
+
+<style scoped>
+pre.group {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+</style>
