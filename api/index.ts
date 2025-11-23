@@ -8,11 +8,26 @@ import authRouter from "./routes/auth";
 import organizationsRouter from "./routes/organizations";
 import webhooksRouter from "./routes/webhooks";
 import v1Router from "./routes/v1/index";
-
-startMongo();
+import runMigrations from "./migrations";
 
 const app = express();
 const port = process.env.PORT || 8006;
+
+startMongo().then(async () => {
+  console.log("MongoDB connected, running migrations...");
+  try {
+    await runMigrations();
+  } catch (error) {
+    console.error("Error running migrations:", error);
+  }
+  
+  app.listen(port, () => {
+    console.log(`Listening on port ${port}...`);
+  });
+}).catch((error) => {
+  console.error("Failed to start MongoDB:", error);
+  process.exit(1);
+});
 
 app.use((req, res, next) => {
   if (
@@ -49,7 +64,3 @@ app.use("/auth", authRouter);
 app.use("/organizations", organizationsRouter);
 app.use("/webhooks", webhooksRouter);
 app.use("/v1", v1Router);
-
-app.listen(port, () => {
-  console.log(`Listening on port ${port}...`);
-});
