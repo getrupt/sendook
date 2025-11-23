@@ -696,12 +696,6 @@ onUnmounted(() => {
     transform 0.2s ease;
 }
 
-.logout:hover {
-  background: rgba(248, 113, 113, 0.2);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
 .dashboard-main {
   background: rgba(10, 10, 16, 0.65);
   border-radius: 1.5rem;
