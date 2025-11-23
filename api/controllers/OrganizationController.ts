@@ -1,6 +1,7 @@
 import Organization from "../db/mongo/schemas/Organization";
 import type User from "../models/User";
 import { createStripeCustomer, createStripeSubscription } from "./StripeController";
+import { createUsage } from "./UsageController";
 
 export async function createOrganization({
   name,

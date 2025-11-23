@@ -9,6 +9,13 @@ router.get("/", async (req: Request, res: Response) => {
     date: new Date(),
   });
 
+  if (!usage) {
+    res.json({
+      count: 0,
+    });
+    return;
+  }
+
   return res.json(usage);
 });
 
