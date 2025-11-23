@@ -3,7 +3,7 @@
     <aside class="dashboard-sidebar">
       <div class="sidebar-inner">
         <div class="sidebar-brand">
-          <img src="/sendook-logo.svg" alt="Sendook" class="brand-logo">
+          <img src="/sendook-logo.svg" alt="Sendook" class="brand-logo" />
         </div>
         <nav>
           <ul>
@@ -20,29 +20,28 @@
       </div>
       <div>
         <div v-if="session.usage.value" class="message-limit">
-          <p
-            v-if="!session.user.value?.organizations?.[0]?.stripePaymentMethodId"
-            class="flex flex-row items-center message-limit-label"
-          >
-            <span class="flex-1">Free message limit</span>
+          <p class="flex flex-row items-center message-limit-label">
+            <span v-if="session.usage.value?.count < 100" class="flex-1" >Free usage</span>
+            <span v-else class="flex-1" >Message usage</span>
             <button
-              v-if="!session.user.value?.organizations?.[0]?.stripePaymentMethodId"
+              v-if="
+                !session.user.value?.organizations?.[0]?.stripePaymentMethodId
+              "
               class="cc-button"
               @click="handleAddPaymentMethod"
             >
-              <UIcon
-                name="i-heroicons-credit-card-20-solid"
-                size="20"
-              />
+              <UIcon name="i-heroicons-credit-card-20-solid" size="20" />
             </button>
+            <NuxtLink v-else to="/billing" class="news-button">
+              <UIcon name="i-heroicons-credit-card-20-solid" size="20" />
+            </NuxtLink>
           </p>
-          <p v-else class="message-limit-label">Sendook usage</p>
           <div class="message-limit-progress">
             <div class="progress-bar-container">
               <div
                 class="progress-bar-fill"
                 :style="{
-                  width: `${Math.min(((session.usage.value?.count ?? 0) / 100) * 100, 100)}%`,
+                  width: `${Math.min(((session.usage.value?.count ?? 0) / 100) * 100, 90)}%`,
                 }"
                 :class="progressBarClass"
               />
@@ -50,7 +49,7 @@
             <p class="message-limit-text">
               {{ session.usage.value?.count }}
               {{
-                !session.user.value?.organizations?.[0]?.stripePaymentMethodId
+                !session.user.value?.organizations?.[0]?.stripePaymentMethodId || session.usage.value?.count < 100
                   ? "/ 100"
                   : ""
               }}
@@ -76,11 +75,22 @@
     </section>
 
     <Transition name="fade">
-      <div v-if="showPaymentDialog" class="dialog-backdrop" role="dialog" aria-modal="true" @click.self="closePaymentDialog">
+      <div
+        v-if="showPaymentDialog"
+        class="dialog-backdrop"
+        role="dialog"
+        aria-modal="true"
+        @click.self="closePaymentDialog"
+      >
         <div class="dialog-card">
           <header class="dialog-header">
             <h2>Add Payment Method</h2>
-            <button type="button" class="icon-close" aria-label="Close" @click="closePaymentDialog">
+            <button
+              type="button"
+              class="icon-close"
+              aria-label="Close"
+              @click="closePaymentDialog"
+            >
               ×
             </button>
           </header>
@@ -92,21 +102,32 @@
               </div>
               <div id="card-errors" role="alert" class="stripe-errors"></div>
             </div>
-            
+
             <div>
               <label class="form-label">Billing Address</label>
               <div id="address-element" class="stripe-element-container">
                 <!-- Stripe Address Element will mount here -->
               </div>
             </div>
-            
-            <p v-if="errorMessage" class="dialog-error" role="alert">{{ errorMessage }}</p>
+
+            <p v-if="errorMessage" class="dialog-error" role="alert">
+              {{ errorMessage }}
+            </p>
 
             <footer>
-              <button type="button" class="button-secondary" :disabled="processing" @click="closePaymentDialog">
+              <button
+                type="button"
+                class="button-secondary"
+                :disabled="processing"
+                @click="closePaymentDialog"
+              >
                 Cancel
               </button>
-              <button type="submit" class="button-primary" :disabled="processing">
+              <button
+                type="submit"
+                class="button-primary"
+                :disabled="processing"
+              >
                 <span v-if="processing">Processing…</span>
                 <span v-else>Add Payment Method</span>
               </button>
@@ -121,7 +142,13 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { loadStripe, type Stripe, type StripeElements, type StripeCardElement, type StripeAddressElement } from "@stripe/stripe-js";
+import {
+  loadStripe,
+  type Stripe,
+  type StripeElements,
+  type StripeCardElement,
+  type StripeAddressElement,
+} from "@stripe/stripe-js";
 
 interface NavLink {
   label: string;
@@ -196,11 +223,13 @@ const getApiUrl = () => {
 
 const initializeStripe = async () => {
   if (typeof window === "undefined") return;
-  
+
   // You'll need to set STRIPE_PUBLISHABLE_KEY in your environment
   const config = useRuntimeConfig();
-  const publishableKey = config.public.stripePublishableKey as string | undefined;
-  
+  const publishableKey = config.public.stripePublishableKey as
+    | string
+    | undefined;
+
   if (!publishableKey) {
     console.error("Stripe publishable key not configured");
     return;
@@ -238,7 +267,7 @@ const setupCardElement = async () => {
       throw new Error("Failed to create setup intent");
     }
 
-    const data = await response.json() as { clientSecret?: string };
+    const data = (await response.json()) as { clientSecret?: string };
     const secret = data.clientSecret;
 
     if (!secret) {
@@ -246,7 +275,7 @@ const setupCardElement = async () => {
     }
 
     clientSecret.value = secret;
-    elements.value = stripe.value.elements({ 
+    elements.value = stripe.value.elements({
       clientSecret: secret,
       appearance: {
         theme: "night",
@@ -255,19 +284,19 @@ const setupCardElement = async () => {
           colorBackground: "rgba(10, 10, 16, 0.92)",
           colorText: "#ffffff",
           colorDanger: "#fecaca",
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: "system-ui, -apple-system, sans-serif",
           spacingUnit: "4px",
           borderRadius: "0.5rem",
         },
       },
     });
-    
+
     // Create card element
     cardElement.value = elements.value.create("card", {
       style: {
         base: {
           color: "#ffffff",
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: "system-ui, -apple-system, sans-serif",
           fontSize: "16px",
           "::placeholder": {
             color: "rgba(255, 255, 255, 0.5)",
@@ -314,11 +343,11 @@ const setupCardElement = async () => {
 const handleAddPaymentMethod = async () => {
   showPaymentDialog.value = true;
   errorMessage.value = "";
-  
+
   if (!stripe.value) {
     await initializeStripe();
   }
-  
+
   await nextTick();
   await setupCardElement();
 };
@@ -342,7 +371,12 @@ const closePaymentDialog = () => {
 };
 
 const handleSubmitPayment = async () => {
-  if (!stripe.value || !cardElement.value || !addressElement.value || !session.organizationId.value) {
+  if (
+    !stripe.value ||
+    !cardElement.value ||
+    !addressElement.value ||
+    !session.organizationId.value
+  ) {
     errorMessage.value = "Payment form not ready. Please try again.";
     return;
   }
@@ -362,7 +396,7 @@ const handleSubmitPayment = async () => {
 
     // Get billing address from address element
     const addressResult = await addressElement.value.getValue();
-    
+
     if (!addressResult.complete) {
       errorMessage.value = "Please complete the billing address form.";
       processing.value = false;
@@ -370,9 +404,8 @@ const handleSubmitPayment = async () => {
     }
 
     // Confirm the setup intent with billing address
-    const { error: confirmError, setupIntent } = await stripe.value.confirmCardSetup(
-      clientSecret.value,
-      {
+    const { error: confirmError, setupIntent } =
+      await stripe.value.confirmCardSetup(clientSecret.value, {
         payment_method: {
           card: cardElement.value,
           billing_details: {
@@ -389,15 +422,16 @@ const handleSubmitPayment = async () => {
             },
           },
         },
-      }
-    );
+      });
 
     if (confirmError) {
       const errorContainer = document.getElementById("card-errors");
       if (errorContainer) {
-        errorContainer.textContent = confirmError.message || "An error occurred";
+        errorContainer.textContent =
+          confirmError.message || "An error occurred";
       }
-      errorMessage.value = confirmError.message || "Failed to confirm payment method";
+      errorMessage.value =
+        confirmError.message || "Failed to confirm payment method";
       processing.value = false;
       return;
     }
@@ -435,7 +469,8 @@ const handleSubmitPayment = async () => {
     closePaymentDialog();
   } catch (error) {
     console.error("Error submitting payment method:", error);
-    errorMessage.value = error instanceof Error ? error.message : "Failed to add payment method";
+    errorMessage.value =
+      error instanceof Error ? error.message : "Failed to add payment method";
     processing.value = false;
   }
 };
@@ -529,7 +564,7 @@ onUnmounted(() => {
 
 .message-limit {
   margin-top: auto;
-  padding: 1rem;
+  padding: 0.6rem 1rem 0.7rem;
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.04);
   display: grid;
@@ -549,6 +584,21 @@ onUnmounted(() => {
   border-radius: 0.5rem;
   background: rgba(248, 113, 113, 0.14);
   color: #fecaca;
+  padding: 0.2rem 0.4rem 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.news-button {
+  margin-right: -0.5rem;
+  border: none;
+  background: rgba(255, 195, 1, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
   padding: 0.2rem 0.4rem 0;
   font-weight: 600;
   cursor: pointer;
@@ -798,7 +848,9 @@ onUnmounted(() => {
   border-radius: 0.4rem;
   padding: 0.75rem 1.2rem;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .button-secondary:hover:not(:disabled) {
@@ -814,7 +866,9 @@ onUnmounted(() => {
   color: #000;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .button-primary:hover:not(:disabled) {
