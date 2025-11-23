@@ -21,7 +21,7 @@
       <div>
         <div v-if="session.usage.value" class="message-limit">
           <p class="flex flex-row items-center message-limit-label">
-            <span v-if="session.usage.value?.count < 100" class="flex-1" >Free usage</span>
+            <span v-if="session.usage.value && session.usage.value.count < usageLimit" class="flex-1" >Free usage</span>
             <span v-else class="flex-1" >Message usage</span>
             <button
               v-if="
@@ -41,7 +41,7 @@
               <div
                 class="progress-bar-fill"
                 :style="{
-                  width: `${Math.min(((session.usage.value?.count ?? 0) / 100) * 100, 90)}%`,
+                  width: `${Math.min(((session.usage.value?.count ?? 0) / usageLimit) * 100, 100)}%`,
                 }"
                 :class="progressBarClass"
               />
@@ -49,8 +49,8 @@
             <p class="message-limit-text">
               {{ session.usage.value?.count }}
               {{
-                !session.user.value?.organizations?.[0]?.stripePaymentMethodId || session.usage.value?.count < 100
-                  ? "/ 100"
+                !session.user.value?.organizations?.[0]?.stripePaymentMethodId || (session.usage.value && session.usage.value.count < usageLimit)
+                  ? `/ ${usageLimit}`
                   : ""
               }}
             </p>
@@ -166,6 +166,8 @@ const links: NavLink[] = [
 const route = useRoute();
 const router = useRouter();
 const session = useRequireAuth();
+const config = useRuntimeConfig();
+const usageLimit = Number(config.public.usageLimit) || 100;
 
 const userDisplayName = computed(() => {
   const current = session.user.value;
