@@ -15,17 +15,13 @@ const port = process.env.PORT || 8006;
 
 startMongo().then(async () => {
   console.log("MongoDB connected, running migrations...");
-  try {
-    await runMigrations();
-  } catch (error) {
-    console.error("Error running migrations:", error);
-  }
+  await runMigrations();
   
   app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
   });
 }).catch((error) => {
-  console.error("Failed to start MongoDB:", error);
+  console.error("Failed to run migrations:", error);
   process.exit(1);
 });
 

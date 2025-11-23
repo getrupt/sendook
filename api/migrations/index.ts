@@ -13,7 +13,7 @@ interface MigrationModule {
 async function getMigrationFiles(): Promise<string[]> {
   const migrationsDir = __dirname;
   const files = await readdir(migrationsDir);
-  
+
   return files
     .filter((file) => file.endsWith(".ts") && file !== "index.ts")
     .sort();
@@ -24,9 +24,12 @@ async function getCompletedMigrations(): Promise<Set<string>> {
   return new Set(completed.map((m) => m.filename));
 }
 
-async function recordMigrationStart(filename: string, path: string): Promise<void> {
-  await Migration.findOneAndUpdate(
-    { filename },
+async function recordMigrationStart(
+  filename: string,
+  path: string
+): Promise<boolean> {
+  const result = await Migration.findOneAndUpdate(
+    { filename, status: { $nin: ["running", "completed"] } },
     {
       filename,
       path,
@@ -35,6 +38,23 @@ async function recordMigrationStart(filename: string, path: string): Promise<voi
     },
     { upsert: true, new: true }
   );
+  
+  if (!result) {
+    return false;
+  }
+  
+  const existing = await Migration.findOne({
+    filename,
+    status: { $in: ["running", "completed"] },
+    _id: { $ne: result._id },
+  });
+  
+  if (existing) {
+    await Migration.deleteOne({ _id: result._id });
+    return false;
+  }
+  
+  return result.status === "running";
 }
 
 async function recordMigrationSuccess(filename: string): Promise<void> {
@@ -47,7 +67,10 @@ async function recordMigrationSuccess(filename: string): Promise<void> {
   );
 }
 
-async function recordMigrationError(filename: string, error: string): Promise<void> {
+async function recordMigrationError(
+  filename: string,
+  error: string
+): Promise<void> {
   await Migration.findOneAndUpdate(
     { filename },
     {
@@ -88,7 +111,14 @@ async function runMigrations(): Promise<void> {
       console.log(`\n--- Running migration: ${filename} ---`);
 
       try {
-        await recordMigrationStart(filename, migrationPath);
+        const claimed = await recordMigrationStart(filename, migrationPath);
+        
+        if (!claimed) {
+          console.log(
+            `Migration ${filename} is already being handled by another instance. Skipping...`
+          );
+          continue;
+        }
 
         const migrationModule = (await import(
           `./${filename}`
@@ -146,4 +176,3 @@ async function runMigrations(): Promise<void> {
 }
 
 export default runMigrations;
-
