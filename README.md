@@ -127,6 +127,11 @@ docker run -p 8006:8006 \
   -e DEFAULT_EMAIL_DOMAIN="sendook.com" \
   -e AWS_ACCESS_KEY_ID="your_aws_key" \
   -e AWS_SECRET_ACCESS_KEY="your_aws_secret" \
+  -e STRIPE_SECRET_KEY="your_stripe_secret_key"
+  -e STRIPE_WEBHOOK_SECRET="your_stripe_webhook_secret"
+  -e STRIPE_PRICE_ID="your_stripe_price_id"
+  -e STRIPE_PRODUCT_ID="your_stripe_product_id"
+  -e STRIPE_METER_EVENT="your_stripe_meter_event"
   sendook-api
 ```
 
