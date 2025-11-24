@@ -31,6 +31,9 @@ export async function register(
     user,
   });
 
+  user.organizations.addToSet(organization.id);
+  await user.save();
+
   const apiKey = await createApiKey({
     organizationId: organization.id,
     name: "Default API Key",

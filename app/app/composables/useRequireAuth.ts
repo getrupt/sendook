@@ -16,6 +16,16 @@ interface AuthUser {
   [key: string]: unknown;
 }
 
+interface Usage {
+  id: string;
+  organizationId: string;
+  count: number;
+  periodStart: Date;
+  periodEnd: Date;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+}
+
 const tokenState = ref<string | null>(null);
 const userState = ref<AuthUser | null>(null);
 const organizationIdState = ref<string | null>(null);
@@ -24,6 +34,7 @@ const messageLimitState = ref<{
   limit: number;
   percentage: number;
 } | null>(null);
+const usageState = ref<Usage | null>(null);
 const loadingState = ref(false);
 let fetchPromise: Promise<void> | null = null;
 
@@ -46,6 +57,7 @@ const clearSessionAndRedirect = (router: ReturnType<typeof useRouter>) => {
   userState.value = null;
   messageLimitState.value = null;
   organizationIdState.value = null;
+  usageState.value = null;
 
   if (typeof document !== 'undefined') {
     document.cookie = 'sendook_token=; Max-Age=0; path=/; SameSite=Lax';
@@ -74,6 +86,32 @@ const fetchMessageLimit = async () => {
     messageLimitState.value = data;
   } catch (error) {
     console.error('Unable to load message limit', error);
+  }
+};
+
+const fetchUsage = async () => {
+  if (!tokenState.value || !organizationIdState.value) {
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${getApiUrl()}/organizations/${organizationIdState.value}/stats/usage`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenState.value}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to load usage: ${response.status}`);
+    }
+    const data = (await response.json()) as Usage;
+    usageState.value = data;
+  } catch (error) {
+    console.error('Unable to load usage', error);
+  } finally {
+    loadingState.value = false;
+    fetchPromise = null;
   }
 };
 
@@ -137,6 +175,10 @@ export function useRequireAuth() {
     if (!messageLimitState.value) {
       await fetchMessageLimit();
     }
+
+    if (!usageState.value) {
+      await fetchUsage();
+    }
   };
 
   onMounted(() => {
@@ -150,7 +192,9 @@ export function useRequireAuth() {
     loading: loadingState,
     refreshUser: () => fetchUser(router),
     messageLimit: messageLimitState,
-    refreshMessageLimit: () => fetchMessageLimit()
+    refreshMessageLimit: () => fetchMessageLimit(),
+    usage: usageState,
+    refreshUsage: () => fetchUsage()
   };
 }
 

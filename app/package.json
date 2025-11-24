@@ -15,6 +15,7 @@
     "@nuxt/image": "2.0.0",
     "@nuxt/scripts": "0.13.0",
     "@nuxt/ui": "4.1.0",
+    "@stripe/stripe-js": "^4.8.0",
     "@unhead/vue": "^2.0.3",
     "better-sqlite3": "^12.4.1",
     "eslint": "^9.0.0",

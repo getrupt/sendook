@@ -1,9 +1,7 @@
 import Organization from "../db/mongo/schemas/Organization";
 import type User from "../models/User";
-// import {
-//   createStripeCustomer,
-//   createStripeSubscription,
-// } from "./StripeController";
+import { createStripeCustomer, createStripeSubscription } from "./StripeController";
+import { createUsage } from "./UsageController";
 
 export async function createOrganization({
   name,
@@ -12,24 +10,24 @@ export async function createOrganization({
   name: string;
   user: User;
 }) {
-  // const customer = await createStripeCustomer({
-  //   name,
-  //   email: user.email,
-  // });
+  const customer = await createStripeCustomer({
+    name,
+    email: user.email,
+  });
 
-  // if (!process.env.STRIPE_PRICE_ID) {
-  //   throw new Error("STRIPE_PRICE_ID is not set");
-  // }
+  if (!process.env.STRIPE_PRICE_ID) {
+    throw new Error("STRIPE_PRICE_ID is not set");
+  }
 
-  // const subscription = await createStripeSubscription({
-  //   customerId: customer.id,
-  //   priceId: process.env.STRIPE_PRICE_ID,
-  // });
+  const subscription = await createStripeSubscription({
+    customerId: customer.id,
+    priceId: process.env.STRIPE_PRICE_ID,
+  });
 
   const organization = new Organization();
   organization.name = name;
-  // project.stripeCustomerId = customer.id;
-  // project.stripeSubscriptionId = subscription.id;
+  organization.stripeCustomerId = customer.id;
+  organization.stripeSubscriptionId = subscription.id;
   organization.users.addToSet(user.id);
   await organization.save();
 
