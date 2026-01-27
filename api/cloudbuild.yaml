@@ -1,6 +1,7 @@
 steps:
   # Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
+    dir: "api"
     args:
       - "build"
       - "-t"
@@ -25,7 +26,7 @@ steps:
   - name: "gcr.io/cloud-builders/gke-deploy"
     args:
       - "run"
-      - "--filename=k8s/"
+      - "--filename=api/k8s/"
       - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:$TAG_NAME"
       - "--location=${_REGION}"
       - "--cluster=${_GKE_CLUSTER}"
