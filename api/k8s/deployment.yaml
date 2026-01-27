@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
         - name: sendook-api
-          # This placeholder image is replaced by Cloud Build's gke-deploy --image flag
-          image: sendook-api
+          image: IMAGE_PLACEHOLDER
           ports:
             - containerPort: 3000
           envFrom:
