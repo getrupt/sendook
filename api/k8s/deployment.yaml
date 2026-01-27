@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sendook-api
+  labels:
+    app: sendook-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sendook-api
+  template:
+    metadata:
+      labels:
+        app: sendook-api
+    spec:
+      containers:
+        - name: sendook-api
+          # This placeholder image is replaced by Cloud Build's gke-deploy --image flag
+          image: sendook-api
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: sendook-api-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20

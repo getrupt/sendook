@@ -1,0 +1,44 @@
+steps:
+  # Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:$TAG_NAME"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:latest"
+      - "."
+
+  # Push the tagged image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:$TAG_NAME"
+
+  # Push the latest tag
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:latest"
+
+  # Deploy to GKE
+  - name: "gcr.io/cloud-builders/gke-deploy"
+    args:
+      - "run"
+      - "--filename=k8s/"
+      - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:$TAG_NAME"
+      - "--location=${_REGION}"
+      - "--cluster=${_GKE_CLUSTER}"
+
+# These substitutions should be overridden in your Cloud Build trigger settings
+substitutions:
+  _GKE_CLUSTER: ""      # Set in trigger: your GKE cluster name
+  _REGION: ""           # Set in trigger: e.g., us-central1
+  _ARTIFACT_REPO: ""    # Set in trigger: your Artifact Registry repo name
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:$TAG_NAME"
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPO}/sendook-api:latest"

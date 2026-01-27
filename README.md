@@ -142,6 +142,7 @@ docker run -p 8006:8006 \
 - `DEFAULT_EMAIL_DOMAIN`
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
+- `REDIS_HOST`
 
 **Development:**
 

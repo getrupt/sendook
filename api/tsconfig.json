@@ -25,6 +25,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types", "./node_modules/@types"]
   }
 }
